@@ -15,27 +15,24 @@
  */
 package org.jetbrains.plugins.gradle.service.project.wizard;
 
-import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.openapi.externalSystem.service.project.wizard.AbstractExternalModuleBuilder;
-import com.intellij.openapi.externalSystem.service.project.wizard.ExternalModuleSettingsStep;
-import com.intellij.openapi.module.JavaModuleType;
-import com.intellij.openapi.module.ModuleType;
-import com.intellij.openapi.module.StdModuleTypes;
-import com.intellij.openapi.projectRoots.JavaSdkType;
-import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
-import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
+import java.io.File;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.service.settings.GradleProjectSettingsControl;
 import org.jetbrains.plugins.gradle.settings.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
-
-import java.io.File;
+import com.intellij.ide.util.projectWizard.ModuleWizardStep;
+import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.openapi.externalSystem.service.project.wizard.AbstractExternalModuleBuilder;
+import com.intellij.openapi.externalSystem.service.project.wizard.ExternalModuleSettingsStep;
+import com.intellij.openapi.projectRoots.JavaSdkType;
+import com.intellij.openapi.projectRoots.SdkTypeId;
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
+import com.intellij.openapi.util.io.FileUtilRt;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author Denis Zhdanov
@@ -81,11 +78,6 @@ public class GradleModuleBuilder extends AbstractExternalModuleBuilder<GradlePro
 
   @Override
   public String getGroupName() {
-    return JavaModuleType.JAVA_GROUP;
-  }
-
-  @Override
-  public ModuleType getModuleType() {
-    return StdModuleTypes.JAVA;
+    return "Java";
   }
 }

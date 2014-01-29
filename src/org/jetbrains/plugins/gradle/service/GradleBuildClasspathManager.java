@@ -15,6 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.ExternalSystemManager;
 import com.intellij.openapi.externalSystem.model.project.ExternalModuleBuildClasspathPojo;
@@ -22,15 +32,10 @@ import com.intellij.openapi.externalSystem.model.project.ExternalProjectBuildCla
 import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemLocalSettings;
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Vladislav.Soroka
@@ -65,14 +70,13 @@ public class GradleBuildClasspathManager {
     Map<String/*module path*/, List<VirtualFile> /*module build classpath*/> map = ContainerUtil.newHashMap();
 
     final LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
-    final JarFileSystem jarFileSystem = JarFileSystem.getInstance();
     for (ExternalProjectBuildClasspathPojo projectBuildClasspathPojo : localSettings.getProjectBuildClasspath().values()) {
       List<VirtualFile> projectBuildClasspath = ContainerUtil.newArrayList();
       for (String path : projectBuildClasspathPojo.getProjectBuildClasspath()) {
         final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByPath(path);
         if (virtualFile != null) {
           ContainerUtil.addIfNotNull(
-            projectBuildClasspath, virtualFile.isDirectory() ? virtualFile : jarFileSystem.getJarRootForLocalFile(virtualFile));
+            projectBuildClasspath, virtualFile.isDirectory() ? virtualFile : ArchiveVfsUtil.getJarRootForLocalFile(virtualFile));
         }
       }
 
@@ -81,7 +85,7 @@ public class GradleBuildClasspathManager {
         for (String path : moduleBuildClasspathPojo.getEntries()) {
           final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByPath(path);
           if (virtualFile != null) {
-            ContainerUtil.addIfNotNull(moduleBuildClasspath, jarFileSystem.getJarRootForLocalFile(virtualFile));
+            ContainerUtil.addIfNotNull(moduleBuildClasspath, ArchiveVfsUtil.getJarRootForLocalFile(virtualFile));
           }
         }
 

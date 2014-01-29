@@ -15,23 +15,23 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve.dsl;
 
+import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames;
+import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
+import org.jetbrains.plugins.groovy.highlighter.GroovyHighlighterColors;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.util.InheritanceUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames;
-import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-
-import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
-import static org.jetbrains.plugins.groovy.highlighter.DefaultHighlighter.MAP_KEY;
 
 /**
  * @author Vladislav.Soroka
@@ -59,7 +59,7 @@ public class GradleDslAnnotator implements Annotator {
 
         PsiElement nameElement = referenceExpression.getReferenceNameElement();
         if (nameElement != null) {
-          holder.createInfoAnnotation(nameElement, null).setTextAttributes(MAP_KEY);
+          holder.createInfoAnnotation(nameElement, null).setTextAttributes(GroovyHighlighterColors.MAP_KEY);
         }
       }
     }

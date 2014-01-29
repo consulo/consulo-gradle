@@ -15,6 +15,39 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.model.DomainObjectSet;
+import org.gradle.tooling.model.GradleTask;
+import org.gradle.tooling.model.idea.IdeaCompilerOutput;
+import org.gradle.tooling.model.idea.IdeaContentRoot;
+import org.gradle.tooling.model.idea.IdeaDependency;
+import org.gradle.tooling.model.idea.IdeaDependencyScope;
+import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaModuleDependency;
+import org.gradle.tooling.model.idea.IdeaProject;
+import org.gradle.tooling.model.idea.IdeaSingleEntryLibraryDependency;
+import org.gradle.tooling.model.idea.IdeaSourceDirectory;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.gradle.model.BuildScriptClasspathModel;
+import org.jetbrains.plugins.gradle.model.ClasspathEntryModel;
+import org.jetbrains.plugins.gradle.model.ExtIdeaContentRoot;
+import org.jetbrains.plugins.gradle.model.ModuleExtendedModel;
+import org.jetbrains.plugins.gradle.model.ProjectDependenciesModel;
+import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
+import org.jetbrains.plugins.gradle.model.data.ClasspathEntry;
+import org.jetbrains.plugins.gradle.util.GradleBundle;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
+import org.jetbrains.plugins.gradle.util.GradleUtil;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.SimpleJavaParameters;
 import com.intellij.externalSystem.JavaProjectData;
@@ -23,15 +56,19 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.model.DataNode;
 import com.intellij.openapi.externalSystem.model.ExternalSystemException;
 import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.project.*;
+import com.intellij.openapi.externalSystem.model.project.ContentRootData;
+import com.intellij.openapi.externalSystem.model.project.ExternalSystemSourceType;
+import com.intellij.openapi.externalSystem.model.project.LibraryData;
+import com.intellij.openapi.externalSystem.model.project.LibraryDependencyData;
+import com.intellij.openapi.externalSystem.model.project.LibraryLevel;
+import com.intellij.openapi.externalSystem.model.project.LibraryPathType;
+import com.intellij.openapi.externalSystem.model.project.ModuleData;
+import com.intellij.openapi.externalSystem.model.project.ModuleDependencyData;
+import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.externalSystem.model.task.TaskData;
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
 import com.intellij.openapi.externalSystem.util.Order;
-import com.intellij.openapi.module.EmptyModuleType;
-import com.intellij.openapi.module.JavaModuleType;
-import com.intellij.openapi.module.ModuleType;
-import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.roots.DependencyScope;
 import com.intellij.openapi.util.KeyValue;
 import com.intellij.openapi.util.io.FileUtil;
@@ -46,27 +83,6 @@ import com.intellij.util.containers.ContainerUtilRt;
 import com.intellij.util.net.HttpConfigurable;
 import com.intellij.util.text.CharArrayUtil;
 import groovy.lang.GroovyObject;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.model.DomainObjectSet;
-import org.gradle.tooling.model.GradleTask;
-import org.gradle.tooling.model.idea.*;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.gradle.model.*;
-import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
-import org.jetbrains.plugins.gradle.model.data.ClasspathEntry;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.jetbrains.plugins.gradle.util.GradleUtil;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 /**
  * {@link BaseGradleProjectResolverExtension} provides base implementation of Gradle project resolver.
@@ -138,7 +154,6 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
     final String path = gradleModule.getGradleProject().getPath();
     final ModuleData moduleData = new ModuleData(StringUtil.isEmpty(path) || ":".equals(path) ? moduleName : path,
                                            GradleConstants.SYSTEM_ID,
-                                           StdModuleTypes.JAVA.getId(),
                                            moduleName,
                                            moduleConfigPath,
                                            moduleConfigPath);
@@ -191,7 +206,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
       if (rootDirectory == null) continue;
 
       ContentRootData ideContentRoot = new ContentRootData(GradleConstants.SYSTEM_ID, rootDirectory.getAbsolutePath());
-      ideModule.getData().setModuleFileDirectoryPath(ideContentRoot.getRootPath());
+      ideModule.getData().setModuleDirPath(ideContentRoot.getRootPath());
       populateContentRoot(ideContentRoot, ExternalSystemSourceType.SOURCE, gradleContentRoot.getSourceDirectories());
       populateContentRoot(ideContentRoot, ExternalSystemSourceType.TEST, gradleContentRoot.getTestDirectories());
 
@@ -362,10 +377,6 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
     ContainerUtilRt.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(GroovyObject.class));
     ContainerUtilRt.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(JavaProjectData.class));
     ContainerUtilRt.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(LanguageLevel.class));
-    ContainerUtilRt.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(StdModuleTypes.class));
-    ContainerUtilRt.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(JavaModuleType.class));
-    ContainerUtilRt.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(ModuleType.class));
-    ContainerUtilRt.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(EmptyModuleType.class));
     for (String entry : additionalEntries) {
       classPath.add(entry);
     }

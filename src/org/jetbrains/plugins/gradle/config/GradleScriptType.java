@@ -15,34 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
-import com.intellij.compiler.options.CompileStepBeforeRun;
-import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
-import com.intellij.execution.*;
-import com.intellij.execution.configurations.JavaParameters;
-import com.intellij.execution.configurations.RunProfile;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.externalSystem.psi.search.ExternalModuleBuildGlobalSearchScope;
-import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.JdkOrderEntry;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderEntry;
-import com.intellij.openapi.roots.OrderEnumerator;
-import com.intellij.openapi.roots.impl.LibraryScopeCache;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.NonClasspathDirectoryScope;
-import icons.GradleIcons;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.Icon;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.execution.GradleTaskLocation;
@@ -61,15 +43,38 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
-
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.intellij.compiler.options.CompileStepBeforeRun;
+import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
+import com.intellij.execution.CantRunException;
+import com.intellij.execution.ExecutionException;
+import com.intellij.execution.Executor;
+import com.intellij.execution.Location;
+import com.intellij.execution.RunManagerEx;
+import com.intellij.execution.configurations.JavaParameters;
+import com.intellij.execution.configurations.RunProfile;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.externalSystem.psi.search.ExternalModuleBuildGlobalSearchScope;
+import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.roots.OrderEnumerator;
+import com.intellij.openapi.roots.SdkOrderEntry;
+import com.intellij.openapi.roots.impl.LibraryScopeCache;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.io.FileUtilRt;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.NonClasspathDirectoryScope;
+import icons.GradleIcons;
 
 /**
  * @author peter
@@ -314,8 +319,8 @@ public class GradleScriptType extends GroovyScriptType {
     final Module module = ModuleUtilCore.findModuleForPsiElement(file);
     if (module != null) {
       for (OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries()) {
-        if (entry instanceof JdkOrderEntry) {
-          GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(module.getProject()).getScopeForSdk((JdkOrderEntry)entry);
+        if (entry instanceof SdkOrderEntry) {
+          GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(module.getProject()).getScopeForSdk((SdkOrderEntry)entry);
           result = result.uniteWith(scopeForSdk);
         }
       }

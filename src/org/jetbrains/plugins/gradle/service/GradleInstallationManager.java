@@ -10,6 +10,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.ContainerUtilRt;
@@ -382,12 +383,11 @@ public class GradleInstallationManager {
     List<File> files = getClassRoots(project, null);
     if(files == null) return null;
     final LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
-    final JarFileSystem jarFileSystem = JarFileSystem.getInstance();
     return ContainerUtil.mapNotNull(files, new Function<File, VirtualFile>() {
       @Override
       public VirtualFile fun(File file) {
         final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByIoFile(file);
-        return virtualFile != null ? jarFileSystem.getJarRootForLocalFile(virtualFile) : null;
+        return virtualFile != null ? ArchiveVfsUtil.getJarRootForLocalFile(virtualFile) : null;
       }
     });
   }

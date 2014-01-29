@@ -1,16 +1,14 @@
 package org.jetbrains.plugins.gradle.remote;
 
+import java.io.File;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.JdkUtil;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.util.containers.ContainerUtilRt;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Encapsulates functionality of deciding what java should be used by the gradle process.
@@ -36,17 +34,7 @@ public class GradleJavaHelper {
       }
     }
 
-    if (project != null) {
-      Sdk sdk = ProjectRootManager.getInstance(project).getProjectSdk();
-      if (sdk != null) {
-        String path = sdk.getHomePath();
-        if (path != null && JdkUtil.checkForJdk(new File(path))) {
-          return path;
-        }
-      }
-    }
-
-    Sdk[] sdks = ProjectJdkTable.getInstance().getAllJdks();
+    Sdk[] sdks = SdkTable.getInstance().getAllSdks();
     if (sdks != null) {
       for (Sdk sdk : sdks) {
         String path = sdk.getHomePath();

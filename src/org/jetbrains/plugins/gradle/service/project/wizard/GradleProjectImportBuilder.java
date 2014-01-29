@@ -15,6 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service.project.wizard;
 
+import java.io.File;
+import java.util.List;
+
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
+import org.jetbrains.plugins.gradle.util.GradleBundle;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.externalSystem.JavaProjectData;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.externalSystem.model.DataNode;
@@ -23,21 +33,16 @@ import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataMan
 import com.intellij.openapi.externalSystem.service.project.wizard.AbstractExternalProjectImportBuilder;
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.projectRoots.JavaSdk;
+import com.intellij.openapi.projectRoots.JavaSdkVersion;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkTable;
+import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.LanguageLevelProjectExtension;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.java.LanguageLevel;
 import icons.GradleIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-
-import javax.swing.*;
-import java.io.File;
-import java.util.List;
 
 /**
  * @author Denis Zhdanov
@@ -109,7 +114,7 @@ public class GradleProjectImportBuilder extends AbstractExternalProjectImportBui
   @Nullable
   private static Sdk findJdk(@NotNull JavaSdkVersion version) {
     JavaSdk javaSdk = JavaSdk.getInstance();
-    List<Sdk> javaSdks = ProjectJdkTable.getInstance().getSdksOfType(javaSdk);
+    List<Sdk> javaSdks = SdkTable.getInstance().getSdksOfType(javaSdk);
     Sdk candidate = null;
     for (Sdk sdk : javaSdks) {
       JavaSdkVersion v = javaSdk.getVersion(sdk);
