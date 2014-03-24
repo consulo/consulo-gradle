@@ -38,10 +38,8 @@ import com.intellij.openapi.projectRoots.JavaSdkVersion;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.roots.LanguageLevelProjectExtension;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.pom.java.LanguageLevel;
 import icons.GradleIcons;
 
 /**
@@ -69,27 +67,13 @@ public class GradleProjectImportBuilder extends AbstractExternalProjectImportBui
   protected void doPrepare(@NotNull WizardContext context) {
     String pathToUse = context.getProjectFileDirectory();
     VirtualFile file = LocalFileSystem.getInstance().refreshAndFindFileByPath(pathToUse);
-    if (file != null && file.isDirectory()) {
-      pathToUse = new File(pathToUse, GradleConstants.DEFAULT_SCRIPT_NAME).getAbsolutePath();
+    if (file != null && !file.isDirectory()) {
+      getControl(null).setLinkedProjectPath(file.getParent().getPath());
     }
-    getControl(context.getProject()).setLinkedProjectPath(pathToUse);
   }
 
   @Override
   protected void beforeCommit(@NotNull DataNode<ProjectData> dataNode, @NotNull Project project) {
-    if (!ExternalSystemApiUtil.isNewProjectConstruction()) {
-      return;
-    }
-    DataNode<JavaProjectData> javaProjectNode = ExternalSystemApiUtil.find(dataNode, JavaProjectData.KEY);
-    if (javaProjectNode == null) {
-      return;
-    }
-
-    final LanguageLevel externalLanguageLevel = javaProjectNode.getData().getLanguageLevel();
-    final LanguageLevelProjectExtension languageLevelExtension = LanguageLevelProjectExtension.getInstance(project);
-    if (externalLanguageLevel != languageLevelExtension.getLanguageLevel()) {
-      languageLevelExtension.setLanguageLevel(externalLanguageLevel);
-    }
   }
 
   @Override

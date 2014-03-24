@@ -15,18 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service.project.wizard;
 
-import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
-import com.intellij.ide.util.projectWizard.ProjectBuilder;
-import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.ide.wizard.Step;
-import com.intellij.openapi.externalSystem.service.project.wizard.SelectExternalProjectStep;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.projectImport.ProjectOpenProcessorBase;
-import com.intellij.util.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
+import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
+import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.ide.wizard.Step;
+import com.intellij.openapi.externalSystem.service.project.wizard.SelectExternalProjectStep;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.projectImport.ProjectOpenProcessorBase;
+import com.intellij.util.Function;
 
 /**
  * @author Denis Zhdanov
