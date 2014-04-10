@@ -15,6 +15,18 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
+import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
+import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
 import com.intellij.openapi.module.Module;
@@ -37,20 +49,8 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.containers.ConcurrentFactoryMap;
 import com.intellij.util.containers.FactoryMap;
 import com.intellij.util.lang.UrlClassLoader;
-import com.sun.jdi.AbsentInformationException;
-import com.sun.jdi.ReferenceType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
-import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import consulo.internal.com.sun.jdi.AbsentInformationException;
+import consulo.internal.com.sun.jdi.ReferenceType;
 
 /**
  * @author John Murph
