@@ -39,32 +39,6 @@
           </library>
         </orderEntry>
         <orderEntry type="module-library">
-          <library name="consulo:Java">
-            <CLASSES>
-              <root url="jar://$MODULE_DIR$/dep/java/lib/java-manifest.jar!/" />
-              <root url="jar://$MODULE_DIR$/dep/java/lib/java-rt.jar!/" />
-              <root url="jar://$MODULE_DIR$/dep/java/lib/java.jar!/" />
-              <root url="jar://$MODULE_DIR$/dep/java/lib/jdk-annotations.jar!/" />
-            </CLASSES>
-            <DOCUMENTATION />
-            <SOURCES>
-              <root url="file://$MODULE_DIR$/../consulo-java/java-psi-impl/src" />
-            </SOURCES>
-          </library>
-        </orderEntry>
-        <orderEntry type="module-library">
-          <library name="consulo:XML">
-            <CLASSES>
-              <root url="jar://$MODULE_DIR$/dep/xml/lib/jsr173_1.0_api.jar!/" />
-              <root url="jar://$MODULE_DIR$/dep/xml/lib/resolver.jar!/" />
-              <root url="jar://$MODULE_DIR$/dep/xml/lib/xerces.jar!/" />
-              <root url="jar://$MODULE_DIR$/dep/xml/lib/xml.jar!/" />
-            </CLASSES>
-            <DOCUMENTATION />
-            <SOURCES />
-          </library>
-        </orderEntry>
-        <orderEntry type="module-library">
           <library name="consulo:Maven Integration">
             <CLASSES>
               <root url="jar://$MODULE_DIR$/dep/maven/lib/lucene-core-2.4.1.jar!/" />
@@ -74,6 +48,31 @@
               <root url="jar://$MODULE_DIR$/dep/maven/lib/maven3-server-impl.jar!/" />
               <root url="jar://$MODULE_DIR$/dep/maven/lib/plexus-utils-2.0.6.jar!/" />
               <root url="jar://$MODULE_DIR$/dep/maven/lib/wadl-core.jar!/" />
+            </CLASSES>
+            <DOCUMENTATION />
+            <SOURCES />
+          </library>
+        </orderEntry>
+        <orderEntry type="module-library">
+          <library name="consulo:Java">
+            <CLASSES>
+              <root url="jar://$MODULE_DIR$/dep/java/lib/java-manifest.jar!/" />
+              <root url="jar://$MODULE_DIR$/dep/java/lib/java-rt.jar!/" />
+              <root url="jar://$MODULE_DIR$/dep/java/lib/java.jar!/" />
+              <root url="jar://$MODULE_DIR$/dep/java/lib/jdi.jar!/" />
+              <root url="jar://$MODULE_DIR$/dep/java/lib/jdk-annotations.jar!/" />
+            </CLASSES>
+            <DOCUMENTATION />
+            <SOURCES />
+          </library>
+        </orderEntry>
+        <orderEntry type="module-library">
+          <library name="consulo:XML">
+            <CLASSES>
+              <root url="jar://$MODULE_DIR$/dep/xml/lib/jsr173_1.0_api.jar!/" />
+              <root url="jar://$MODULE_DIR$/dep/xml/lib/resolver.jar!/" />
+              <root url="jar://$MODULE_DIR$/dep/xml/lib/xerces.jar!/" />
+              <root url="jar://$MODULE_DIR$/dep/xml/lib/xml.jar!/" />
             </CLASSES>
             <DOCUMENTATION />
             <SOURCES />
