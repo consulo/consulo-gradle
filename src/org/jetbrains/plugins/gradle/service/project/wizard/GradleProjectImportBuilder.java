@@ -90,7 +90,7 @@ public class GradleProjectImportBuilder extends AbstractExternalProjectImportBui
       JavaSdkVersion version = data.getJdkVersion();
       Sdk jdk = findJdk(version);
       if (jdk != null) {
-        context.setProjectJdk(jdk);
+        //context.setProjectJdk(jdk);
       }
     }
   }
