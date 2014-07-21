@@ -1,12 +1,15 @@
 package org.jetbrains.plugins.gradle.settings;
 
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.externalSystem.service.project.PlatformFacade;
-import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemLocalSettings;
-import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemLocalSettings;
+import com.intellij.openapi.project.Project;
 
 /**
  * @author Denis Zhdanov
@@ -17,8 +20,8 @@ public class GradleLocalSettings extends AbstractExternalSystemLocalSettings
   implements PersistentStateComponent<AbstractExternalSystemLocalSettings.State>
 {
 
-  public GradleLocalSettings(@NotNull Project project, @NotNull PlatformFacade facade) {
-    super(GradleConstants.SYSTEM_ID, project, facade);
+  public GradleLocalSettings(@NotNull Project project) {
+    super(GradleConstants.SYSTEM_ID, project);
   }
 
   @NotNull

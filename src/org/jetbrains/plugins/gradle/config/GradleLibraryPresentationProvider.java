@@ -15,6 +15,17 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
+import java.io.File;
+import java.util.regex.Matcher;
+
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
+import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.LibraryKind;
 import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
@@ -22,16 +33,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.GradleIcons;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
-
-import javax.swing.*;
-import java.io.File;
-import java.util.regex.Matcher;
 
 /**
  * @author nik
@@ -99,7 +100,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
     if (jars != null) {
       for (File file : jars) {
         if (file.getName().endsWith(".jar")) {
-          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), OrderRootType.CLASSES);
+          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), OrderRootType.BINARIES);
         }
       }
     }

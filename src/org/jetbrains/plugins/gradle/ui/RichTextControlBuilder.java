@@ -1,15 +1,26 @@
 package org.jetbrains.plugins.gradle.ui;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.ui.MultiRowFlowPanel;
-import com.intellij.util.ui.UIUtil;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.ui.MultiRowFlowPanel;
 
 /**
  * Allows to build controls that show target user text with 'reach info' (e.g. inline icon button).
@@ -201,7 +212,7 @@ public class RichTextControlBuilder {
   }
   
   private void addRow(@NotNull Collection<JComponent> rowComponents) {
-    JPanel row = new MultiRowFlowPanel(FlowLayout.CENTER, getGapToUse(0), getGapToUse(3));
+	  JPanel row = new MultiRowFlowPanel(FlowLayout.CENTER, 0, 3);
     row.setBackground(myBackgroundColor);
     myComponents.add(row);
     if (rowComponents.isEmpty()) {
@@ -220,13 +231,7 @@ public class RichTextControlBuilder {
     myResult.add(row, constraints);
   }
 
-  private static int getGapToUse(int gap) {
-    // There is a problem with flow layout controls paint under Alloy LAF - it looks like it doesn't take given gaps into consideration.
-    // Alloy LAF sources are closed, so we use this dirty hack here.
-    return UIUtil.isUnderAlloyLookAndFeel() ? gap - 4 : gap;
-  }
-
-  /**
+	/**
    * Encapsulates functionality for showing particular {@link RichTextControlBuilder#setText(String) rich text}.
    */
   public interface RichTextProcessor {

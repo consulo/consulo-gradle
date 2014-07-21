@@ -1,19 +1,12 @@
 package org.jetbrains.plugins.gradle.service;
 
-import com.intellij.openapi.externalSystem.service.project.PlatformFacade;
-import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.OrderEnumerator;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.JarFileSystem;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.ContainerUtilRt;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.gradle.StartParameter;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.util.DistributionLocator;
@@ -30,13 +23,19 @@ import org.jetbrains.plugins.gradle.util.GradleEnvironment;
 import org.jetbrains.plugins.gradle.util.GradleLog;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
+import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.OrderEnumerator;
+import com.intellij.openapi.util.Ref;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
+import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.ContainerUtilRt;
 
 /**
  * Encapsulates algorithm of gradle libraries discovery.
@@ -65,12 +64,7 @@ public class GradleInstallationManager {
     GRADLE_ENV_PROPERTY_NAME = System.getProperty("gradle.home.env.key", "GRADLE_HOME");
   }
 
-  @NotNull private final PlatformFacade myPlatformFacade;
   @Nullable private Ref<File> myCachedGradleHomeFromPath;
-
-  public GradleInstallationManager(@NotNull PlatformFacade facade) {
-    myPlatformFacade = facade;
-  }
 
   /**
    * Allows to get file handles for the gradle binaries to use.
@@ -387,7 +381,7 @@ public class GradleInstallationManager {
       @Override
       public VirtualFile fun(File file) {
         final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByIoFile(file);
-        return virtualFile != null ? ArchiveVfsUtil.getJarRootForLocalFile(virtualFile) : null;
+        return virtualFile != null ? ArchiveVfsUtil.getArchiveRootForLocalFile(virtualFile) : null;
       }
     });
   }
@@ -397,7 +391,7 @@ public class GradleInstallationManager {
     if (project == null) return null;
 
     if(rootProjectPath == null) {
-      for (Module module : myPlatformFacade.getModules(project)) {
+      for (Module module : ModuleManager.getInstance(project).getModules()) {
         rootProjectPath = module.getOptionValue(ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
         List<File> result = findGradleSdkClasspath(project, rootProjectPath);
         if(!result.isEmpty()) return result;

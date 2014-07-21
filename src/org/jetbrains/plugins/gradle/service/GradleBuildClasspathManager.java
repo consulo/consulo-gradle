@@ -76,7 +76,7 @@ public class GradleBuildClasspathManager {
         final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByPath(path);
         if (virtualFile != null) {
           ContainerUtil.addIfNotNull(
-            projectBuildClasspath, virtualFile.isDirectory() ? virtualFile : ArchiveVfsUtil.getJarRootForLocalFile(virtualFile));
+            projectBuildClasspath, virtualFile.isDirectory() ? virtualFile : ArchiveVfsUtil.getArchiveRootForLocalFile(virtualFile));
         }
       }
 
@@ -85,7 +85,7 @@ public class GradleBuildClasspathManager {
         for (String path : moduleBuildClasspathPojo.getEntries()) {
           final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByPath(path);
           if (virtualFile != null) {
-            ContainerUtil.addIfNotNull(moduleBuildClasspath, ArchiveVfsUtil.getJarRootForLocalFile(virtualFile));
+            ContainerUtil.addIfNotNull(moduleBuildClasspath, ArchiveVfsUtil.getArchiveRootForLocalFile(virtualFile));
           }
         }
 
