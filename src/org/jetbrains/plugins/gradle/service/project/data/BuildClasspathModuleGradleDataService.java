@@ -15,6 +15,20 @@
  */
 package org.jetbrains.plugins.gradle.service.project.data;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
+import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
+import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
+import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
+import org.jetbrains.plugins.gradle.settings.GradleSettings;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.ExternalSystemManager;
 import com.intellij.openapi.externalSystem.model.DataNode;
@@ -34,128 +48,137 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.FactoryMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
-import org.jetbrains.plugins.gradle.model.data.ClasspathEntry;
-import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
-import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
-import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Vladislav.Soroka
  * @since 8/27/13
  */
 @Order(ExternalSystemConstants.UNORDERED)
-public class BuildClasspathModuleGradleDataService implements ProjectDataService<BuildScriptClasspathData, Module> {
+public class BuildClasspathModuleGradleDataService implements ProjectDataService<BuildScriptClasspathData, Module>
+{
 
-  @NotNull
-  @Override
-  public Key<BuildScriptClasspathData> getTargetDataKey() {
-    return BuildScriptClasspathData.KEY;
-  }
+	@NotNull
+	@Override
+	public Key<BuildScriptClasspathData> getTargetDataKey()
+	{
+		return BuildScriptClasspathData.KEY;
+	}
 
-  @Override
-  public void importData(@NotNull final Collection<DataNode<BuildScriptClasspathData>> toImport,
-                         @NotNull final Project project,
-                         boolean synchronous) {
-    if (toImport.isEmpty()) {
-      return;
-    }
-    if (!project.isInitialized()) {
-      return;
-    }
+	@Override
+	public void importData(@NotNull final Collection<DataNode<BuildScriptClasspathData>> toImport, @NotNull final Project project,
+			boolean synchronous)
+	{
+		if(toImport.isEmpty())
+		{
+			return;
+		}
+		if(!project.isInitialized())
+		{
+			return;
+		}
 
-    final GradleInstallationManager gradleInstallationManager = ServiceManager.getService(GradleInstallationManager.class);
+		final GradleInstallationManager gradleInstallationManager = ServiceManager.getService(GradleInstallationManager.class);
 
-    ExternalSystemManager<?, ?, ?, ?, ?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
-    assert manager != null;
-    AbstractExternalSystemLocalSettings localSettings = manager.getLocalSettingsProvider().fun(project);
+		ExternalSystemManager<?, ?, ?, ?, ?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
+		assert manager != null;
+		AbstractExternalSystemLocalSettings localSettings = manager.getLocalSettingsProvider().fun(project);
 
-    //noinspection MismatchedQueryAndUpdateOfCollection
-    Map<String/* externalProjectPath */, Set<String>> externalProjectGradleSdkLibs = new FactoryMap<String, Set<String>>() {
-      @Nullable
-      @Override
-      protected Set<String> create(String externalProjectPath) {
-        GradleProjectSettings settings = GradleSettings.getInstance(project).getLinkedProjectSettings(externalProjectPath);
-        if (settings == null || settings.getDistributionType() == null) return null;
+		//noinspection MismatchedQueryAndUpdateOfCollection
+		Map<String/* externalProjectPath */, Set<String>> externalProjectGradleSdkLibs = new FactoryMap<String, Set<String>>()
+		{
+			@Nullable
+			@Override
+			protected Set<String> create(String externalProjectPath)
+			{
+				GradleProjectSettings settings = GradleSettings.getInstance(project).getLinkedProjectSettings(externalProjectPath);
+				if(settings == null || settings.getDistributionType() == null)
+				{
+					return null;
+				}
 
-        final Set<String> gradleSdkLibraries = ContainerUtil.newHashSet();
-        File gradleHome =
-          gradleInstallationManager.getGradleHome(settings.getDistributionType(), externalProjectPath, settings.getGradleHome());
-        if (gradleHome != null && gradleHome.isDirectory()) {
+				final Set<String> gradleSdkLibraries = ContainerUtil.newLinkedHashSet();
+				File gradleHome = gradleInstallationManager.getGradleHome(settings.getDistributionType(), externalProjectPath,
+						settings.getGradleHome());
+				if(gradleHome != null && gradleHome.isDirectory())
+				{
 
-          final Collection<File> libraries = gradleInstallationManager.getClassRoots(project, externalProjectPath);
-          if (libraries != null) {
-            for (File library : libraries) {
-              gradleSdkLibraries.add(FileUtil.toCanonicalPath(library.getPath()));
-            }
-          }
-        }
-        return gradleSdkLibraries;
-      }
-    };
+					final Collection<File> libraries = gradleInstallationManager.getClassRoots(project, externalProjectPath);
+					if(libraries != null)
+					{
+						for(File library : libraries)
+						{
+							gradleSdkLibraries.add(FileUtil.toCanonicalPath(library.getPath()));
+						}
+					}
+				}
+				return gradleSdkLibraries;
+			}
+		};
 
-    for (final DataNode<BuildScriptClasspathData> node : toImport) {
-      if (GradleConstants.SYSTEM_ID.equals(node.getData().getOwner())) {
+		for(final DataNode<BuildScriptClasspathData> node : toImport)
+		{
+			if(GradleConstants.SYSTEM_ID.equals(node.getData().getOwner()))
+			{
 
 
-        DataNode<ProjectData> projectDataNode = ExternalSystemApiUtil.findParent(node, ProjectKeys.PROJECT);
-        assert projectDataNode != null;
+				DataNode<ProjectData> projectDataNode = ExternalSystemApiUtil.findParent(node, ProjectKeys.PROJECT);
+				assert projectDataNode != null;
 
-        String linkedExternalProjectPath = projectDataNode.getData().getLinkedExternalProjectPath();
-        DataNode<ModuleData> moduleDataNode = ExternalSystemApiUtil.findParent(node, ProjectKeys.MODULE);
-        if (moduleDataNode == null) continue;
+				String linkedExternalProjectPath = projectDataNode.getData().getLinkedExternalProjectPath();
+				DataNode<ModuleData> moduleDataNode = ExternalSystemApiUtil.findParent(node, ProjectKeys.MODULE);
+				if(moduleDataNode == null)
+				{
+					continue;
+				}
 
-        String externalModulePath = moduleDataNode.getData().getLinkedExternalProjectPath();
-        GradleProjectSettings settings = GradleSettings.getInstance(project).getLinkedProjectSettings(linkedExternalProjectPath);
-        if (settings == null || settings.getDistributionType() == null) continue;
+				String externalModulePath = moduleDataNode.getData().getLinkedExternalProjectPath();
+				GradleProjectSettings settings = GradleSettings.getInstance(project).getLinkedProjectSettings(linkedExternalProjectPath);
+				if(settings == null || settings.getDistributionType() == null)
+				{
+					continue;
+				}
 
-        final Set<String> buildClasspath = ContainerUtil.newHashSet();
-        BuildScriptClasspathData buildScriptClasspathData = node.getData();
-        for (ClasspathEntry classpathEntry : buildScriptClasspathData.getClasspathEntries()) {
-          if (classpathEntry.getSourcesFile() != null) {
-            buildClasspath.add(FileUtil.toCanonicalPath(classpathEntry.getSourcesFile().getPath()));
-          }
-          else {
-            buildClasspath.add(FileUtil.toCanonicalPath(classpathEntry.getClassesFile().getPath()));
-          }
-        }
+				final Set<String> buildClasspath = ContainerUtil.newLinkedHashSet();
+				BuildScriptClasspathData buildScriptClasspathData = node.getData();
+				for(BuildScriptClasspathData.ClasspathEntry classpathEntry : buildScriptClasspathData.getClasspathEntries())
+				{
+					for(String path : classpathEntry.getSourcesFile())
+					{
+						buildClasspath.add(FileUtil.toCanonicalPath(path));
+					}
 
-        ExternalProjectBuildClasspathPojo projectBuildClasspathPojo =
-          localSettings.getProjectBuildClasspath().get(linkedExternalProjectPath);
-        if (projectBuildClasspathPojo == null) {
-          projectBuildClasspathPojo = new ExternalProjectBuildClasspathPojo(
-            moduleDataNode.getData().getExternalName(),
-            ContainerUtil.<String>newArrayList(),
-            ContainerUtil.<String, ExternalModuleBuildClasspathPojo>newHashMap());
-          localSettings.getProjectBuildClasspath().put(linkedExternalProjectPath, projectBuildClasspathPojo);
-        }
+					for(String path : classpathEntry.getClassesFile())
+					{
+						buildClasspath.add(FileUtil.toCanonicalPath(path));
+					}
+				}
 
-        List<String> projectBuildClasspath = ContainerUtil.newArrayList(externalProjectGradleSdkLibs.get(linkedExternalProjectPath));
-        // add main java root of buildSrc project
-        projectBuildClasspath.add(linkedExternalProjectPath + "/buildSrc/src/main/java");
-        // add main groovy root of buildSrc project
-        projectBuildClasspath.add(linkedExternalProjectPath + "/buildSrc/src/main/groovy");
+				ExternalProjectBuildClasspathPojo projectBuildClasspathPojo = localSettings.getProjectBuildClasspath().get
+						(linkedExternalProjectPath);
+				if(projectBuildClasspathPojo == null)
+				{
+					projectBuildClasspathPojo = new ExternalProjectBuildClasspathPojo(moduleDataNode.getData().getExternalName(),
+							ContainerUtil.<String>newArrayList(), ContainerUtil.<String, ExternalModuleBuildClasspathPojo>newHashMap());
+					localSettings.getProjectBuildClasspath().put(linkedExternalProjectPath, projectBuildClasspathPojo);
+				}
 
-        projectBuildClasspathPojo.setProjectBuildClasspath(projectBuildClasspath);
-        projectBuildClasspathPojo.getModulesBuildClasspath().put(
-          externalModulePath, new ExternalModuleBuildClasspathPojo(externalModulePath, ContainerUtil.newArrayList(buildClasspath)));
-      }
-    }
+				List<String> projectBuildClasspath = ContainerUtil.newArrayList(externalProjectGradleSdkLibs.get(linkedExternalProjectPath));
+				// add main java root of buildSrc project
+				projectBuildClasspath.add(linkedExternalProjectPath + "/buildSrc/src/main/java");
+				// add main groovy root of buildSrc project
+				projectBuildClasspath.add(linkedExternalProjectPath + "/buildSrc/src/main/groovy");
 
-    GradleBuildClasspathManager.getInstance(project).reload();
-  }
+				projectBuildClasspathPojo.setProjectBuildClasspath(projectBuildClasspath);
+				projectBuildClasspathPojo.getModulesBuildClasspath().put(externalModulePath, new ExternalModuleBuildClasspathPojo
+						(externalModulePath, ContainerUtil.newArrayList(buildClasspath)));
+			}
+		}
 
-  @Override
-  public void removeData(@NotNull Collection<? extends Module> toRemove, @NotNull Project project, boolean synchronous) {
-  }
+		GradleBuildClasspathManager.getInstance(project).reload();
+	}
+
+	@Override
+	public void removeData(@NotNull Collection<? extends Module> toRemove, @NotNull Project project, boolean synchronous)
+	{
+	}
 }

@@ -15,35 +15,119 @@
  */
 package org.jetbrains.plugins.gradle.model.data;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.externalSystem.model.Key;
 import com.intellij.openapi.externalSystem.model.ProjectKeys;
 import com.intellij.openapi.externalSystem.model.ProjectSystemId;
 import com.intellij.openapi.externalSystem.model.project.AbstractExternalEntityData;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * @author Vladislav.Soroka
  * @since 12/20/13
  */
-public class BuildScriptClasspathData extends AbstractExternalEntityData {
-  private static final long serialVersionUID = 1L;
-  @NotNull
-  public static final Key<BuildScriptClasspathData> KEY =
-    Key.create(BuildScriptClasspathData.class, ProjectKeys.LIBRARY_DEPENDENCY.getProcessingWeight() + 1);
+public class BuildScriptClasspathData extends AbstractExternalEntityData
+{
+	private static final long serialVersionUID = 1L;
+	@NotNull
+	public static final Key<BuildScriptClasspathData> KEY = Key.create(BuildScriptClasspathData.class,
+			ProjectKeys.LIBRARY_DEPENDENCY.getProcessingWeight() + 1);
 
-  @NotNull
-  private final List<ClasspathEntry> myClasspathEntries;
+	@NotNull
+	private final List<ClasspathEntry> myClasspathEntries;
 
 
-  public BuildScriptClasspathData(@NotNull ProjectSystemId owner, @NotNull List<ClasspathEntry> classpathEntries) {
-    super(owner);
-    myClasspathEntries = classpathEntries;
-  }
+	public BuildScriptClasspathData(@NotNull ProjectSystemId owner, @NotNull List<ClasspathEntry> classpathEntries)
+	{
+		super(owner);
+		myClasspathEntries = classpathEntries;
+	}
 
-  @NotNull
-  public List<ClasspathEntry> getClasspathEntries() {
-    return myClasspathEntries;
-  }
+	@NotNull
+	public List<ClasspathEntry> getClasspathEntries()
+	{
+		return myClasspathEntries;
+	}
+
+	public static class ClasspathEntry implements Serializable
+	{
+
+		private static final long serialVersionUID = 1L;
+
+		@NotNull
+		private final Set<String> myClassesFile;
+
+		@NotNull
+		private final Set<String> mySourcesFile;
+
+		@NotNull
+		private final Set<String> myJavadocFile;
+
+		public ClasspathEntry(@NotNull Set<String> classesFile, @NotNull Set<String> sourcesFile, @NotNull Set<String> javadocFile)
+		{
+			myClassesFile = classesFile;
+			mySourcesFile = sourcesFile;
+			myJavadocFile = javadocFile;
+		}
+
+		@NotNull
+		public Set<String> getClassesFile()
+		{
+			return myClassesFile;
+		}
+
+		@NotNull
+		public Set<String> getSourcesFile()
+		{
+			return mySourcesFile;
+		}
+
+		@NotNull
+		public Set<String> getJavadocFile()
+		{
+			return myJavadocFile;
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this == o)
+			{
+				return true;
+			}
+			if(!(o instanceof ClasspathEntry))
+			{
+				return false;
+			}
+
+			ClasspathEntry entry = (ClasspathEntry) o;
+
+			if(!myClassesFile.equals(entry.myClassesFile))
+			{
+				return false;
+			}
+			if(!myJavadocFile.equals(entry.myJavadocFile))
+			{
+				return false;
+			}
+			if(!mySourcesFile.equals(entry.mySourcesFile))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			int result = myClassesFile.hashCode();
+			result = 31 * result + mySourcesFile.hashCode();
+			result = 31 * result + myJavadocFile.hashCode();
+			return result;
+		}
+	}
 }

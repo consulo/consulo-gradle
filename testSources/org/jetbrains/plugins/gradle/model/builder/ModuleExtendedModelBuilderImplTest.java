@@ -21,8 +21,6 @@ import com.intellij.util.containers.ContainerUtil;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaSourceDirectory;
-import org.jetbrains.plugins.gradle.model.ExtIdeaContentRoot;
-import org.jetbrains.plugins.gradle.model.ModuleExtendedModel;
 import org.junit.Assert;
 import org.junit.Test;
 

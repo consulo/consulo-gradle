@@ -23,9 +23,6 @@ import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaModuleDependency;
 import org.gradle.tooling.model.idea.IdeaSingleEntryLibraryDependency;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.gradle.model.GradleDependencyScope;
-import org.jetbrains.plugins.gradle.model.ProjectDependenciesModel;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;

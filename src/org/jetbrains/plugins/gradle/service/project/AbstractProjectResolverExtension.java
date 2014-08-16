@@ -15,6 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaProject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.SimpleJavaParameters;
 import com.intellij.externalSystem.JavaProjectData;
@@ -26,15 +36,7 @@ import com.intellij.openapi.externalSystem.model.task.TaskData;
 import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
 import com.intellij.openapi.externalSystem.util.Order;
 import com.intellij.openapi.util.KeyValue;
-import org.gradle.tooling.model.idea.IdeaModule;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import com.intellij.util.Consumer;
 
 /**
  * {@link org.jetbrains.plugins.gradle.service.project.AbstractProjectResolverExtension} provides dummy implementation of Gradle project resolver.
@@ -43,117 +45,156 @@ import java.util.Set;
  * @since 10/14/13
  */
 @Order(ExternalSystemConstants.UNORDERED)
-public abstract class AbstractProjectResolverExtension implements GradleProjectResolverExtension {
+public abstract class AbstractProjectResolverExtension implements GradleProjectResolverExtension
+{
 
-  @NotNull protected ProjectResolverContext resolverCtx;
-  @NotNull protected GradleProjectResolverExtension nextResolver;
+	@NotNull
+	protected ProjectResolverContext resolverCtx;
+	@NotNull
+	protected GradleProjectResolverExtension nextResolver;
 
-  @Override
-  public void setProjectResolverContext(@NotNull ProjectResolverContext projectResolverContext) {
-    resolverCtx = projectResolverContext;
-  }
+	@Override
+	public void setProjectResolverContext(@NotNull ProjectResolverContext projectResolverContext)
+	{
+		resolverCtx = projectResolverContext;
+	}
 
-  @Override
-  public void setNext(@Nullable GradleProjectResolverExtension next) {
-    // there always should be at least gradle basic resolver further in the chain
-    //noinspection ConstantConditions
-    assert next != null;
-    nextResolver = next;
-  }
+	@Override
+	public void setNext(@NotNull GradleProjectResolverExtension next)
+	{
+		// there always should be at least gradle basic resolver further in the chain
+		//noinspection ConstantConditions
+		assert next != null;
+		nextResolver = next;
+	}
 
-  @Nullable
-  @Override
-  public GradleProjectResolverExtension getNext() {
-    return nextResolver;
-  }
+	@Nullable
+	@Override
+	public GradleProjectResolverExtension getNext()
+	{
+		return nextResolver;
+	}
 
-  @NotNull
-  @Override
-  public ProjectData createProject() {
-    return nextResolver.createProject();
-  }
+	@NotNull
+	@Override
+	public ProjectData createProject()
+	{
+		return nextResolver.createProject();
+	}
 
-  @NotNull
-  @Override
-  public JavaProjectData createJavaProjectData() {
-    return nextResolver.createJavaProjectData();
-  }
+	@NotNull
+	@Override
+	public JavaProjectData createJavaProjectData()
+	{
+		return nextResolver.createJavaProjectData();
+	}
 
-  @NotNull
-  @Override
-  public ModuleData createModule(@NotNull IdeaModule gradleModule, @NotNull ProjectData projectData) {
-    return nextResolver.createModule(gradleModule, projectData);
-  }
+	@Override
+	public void populateProjectExtraModels(@NotNull IdeaProject gradleProject, @NotNull DataNode<ProjectData> ideProject)
+	{
+		nextResolver.populateProjectExtraModels(gradleProject, ideProject);
+	}
 
-  @Override
-  public void populateModuleExtraModels(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule) {
-    nextResolver.populateModuleExtraModels(gradleModule, ideModule);
-  }
+	@NotNull
+	@Override
+	public ModuleData createModule(@NotNull IdeaModule gradleModule, @NotNull ProjectData projectData)
+	{
+		return nextResolver.createModule(gradleModule, projectData);
+	}
 
-  @Override
-  public void populateModuleContentRoots(@NotNull IdeaModule gradleModule,
-                                         @NotNull DataNode<ModuleData> ideModule) {
-    nextResolver.populateModuleContentRoots(gradleModule, ideModule);
-  }
+	@Override
+	public void populateModuleExtraModels(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule)
+	{
+		nextResolver.populateModuleExtraModels(gradleModule, ideModule);
+	}
+
+	@Override
+	public void populateModuleContentRoots(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule)
+	{
+		nextResolver.populateModuleContentRoots(gradleModule, ideModule);
+	}
 
 
-  @Override
-  public void populateModuleCompileOutputSettings(@NotNull IdeaModule gradleModule,
-                                                  @NotNull DataNode<ModuleData> ideModule) {
-    nextResolver.populateModuleCompileOutputSettings(gradleModule, ideModule);
-  }
+	@Override
+	public void populateModuleCompileOutputSettings(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule)
+	{
+		nextResolver.populateModuleCompileOutputSettings(gradleModule, ideModule);
+	}
 
-  @Override
-  public void populateModuleDependencies(@NotNull IdeaModule gradleModule,
-                                         @NotNull DataNode<ModuleData> ideModule,
-                                         @NotNull DataNode<ProjectData> ideProject) {
-    nextResolver.populateModuleDependencies(gradleModule, ideModule, ideProject);
-  }
+	@Override
+	public void populateModuleDependencies(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule,
+			@NotNull DataNode<ProjectData> ideProject)
+	{
+		nextResolver.populateModuleDependencies(gradleModule, ideModule, ideProject);
+	}
 
-  @NotNull
-  @Override
-  public Collection<TaskData> populateModuleTasks(@NotNull IdeaModule gradleModule,
-                                                  @NotNull DataNode<ModuleData> ideModule,
-                                                  @NotNull DataNode<ProjectData> ideProject)
-    throws IllegalArgumentException, IllegalStateException {
-    return nextResolver.populateModuleTasks(gradleModule, ideModule, ideProject);
-  }
+	@NotNull
+	@Override
+	public Collection<TaskData> populateModuleTasks(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule,
+			@NotNull DataNode<ProjectData> ideProject) throws IllegalArgumentException, IllegalStateException
+	{
+		return nextResolver.populateModuleTasks(gradleModule, ideModule, ideProject);
+	}
 
-  @NotNull
-  @Override
-  public Collection<TaskData> filterRootProjectTasks(@NotNull List<TaskData> allTasks) {
-    return nextResolver.filterRootProjectTasks(allTasks);
-  }
+	@NotNull
+	@Override
+	public Collection<TaskData> filterRootProjectTasks(@NotNull List<TaskData> allTasks)
+	{
+		return nextResolver.filterRootProjectTasks(allTasks);
+	}
 
-  @NotNull
-  @Override
-  public Set<Class> getExtraProjectModelClasses() {
-    return Collections.emptySet();
-  }
+	@NotNull
+	@Override
+	public Set<Class> getExtraProjectModelClasses()
+	{
+		return Collections.emptySet();
+	}
 
-  @NotNull
-  @Override
-  public List<KeyValue<String, String>> getExtraJvmArgs() {
-    return Collections.emptyList();
-  }
+	@NotNull
+	@Override
+	public Set<Class> getToolingExtensionsClasses()
+	{
+		return Collections.emptySet();
+	}
 
-  @NotNull
-  @Override
-  public ExternalSystemException getUserFriendlyError(@NotNull Throwable error,
-                                                      @NotNull String projectPath,
-                                                      @Nullable String buildFilePath) {
-    return nextResolver.getUserFriendlyError(error, projectPath, buildFilePath);
-  }
+	@NotNull
+	@Override
+	public List<KeyValue<String, String>> getExtraJvmArgs()
+	{
+		return Collections.emptyList();
+	}
 
-  @Override
-  public void enhanceRemoteProcessing(@NotNull SimpleJavaParameters parameters) throws ExecutionException {
-  }
+	@NotNull
+	@Override
+	public List<String> getExtraCommandLineArgs()
+	{
+		return Collections.emptyList();
+	}
 
-  @Override
-  public void enhanceLocalProcessing(@NotNull List<URL> urls) {
-  }
+	@NotNull
+	@Override
+	public ExternalSystemException getUserFriendlyError(@NotNull Throwable error, @NotNull String projectPath, @Nullable String buildFilePath)
+	{
+		return nextResolver.getUserFriendlyError(error, projectPath, buildFilePath);
+	}
 
-  @Override
-  public void preImportCheck() {
-  }
+	@Override
+	public void enhanceRemoteProcessing(@NotNull SimpleJavaParameters parameters) throws ExecutionException
+	{
+	}
+
+	@Override
+	public void enhanceLocalProcessing(@NotNull List<URL> urls)
+	{
+	}
+
+	@Override
+	public void preImportCheck()
+	{
+	}
+
+	@Override
+	public void enhanceTaskProcessing(@NotNull List<String> taskNames, @Nullable String debuggerSetup, @NotNull Consumer<String> initScriptConsumer)
+	{
+	}
 }

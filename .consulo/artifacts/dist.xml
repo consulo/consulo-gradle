@@ -7,8 +7,13 @@
           <element id="zip-archive" name="gradle.jar">
             <element id="module-production-resource-output" name="consulo-gradle" />
             <element id="module-output" name="consulo-gradle" />
+            <element id="module-output" name="tooling-extension-api" />
+            <element id="module-production-resource-output" name="tooling-extension-impl" />
+            <element id="module-output" name="tooling-extension-impl" />
           </element>
           <element id="dir-copy" path="$PROJECT_DIR$/lib" />
+          <element id="dir-copy" path="$PROJECT_DIR$/tooling-extension-api/lib" />
+          <element id="dir-copy" path="$PROJECT_DIR$/tooling-extension-impl/lib" />
         </element>
       </element>
     </root>
