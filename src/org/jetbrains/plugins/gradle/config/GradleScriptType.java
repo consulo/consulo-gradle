@@ -58,10 +58,10 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleExtensionWithSdkOrderEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderEnumerator;
-import com.intellij.openapi.roots.SdkOrderEntry;
 import com.intellij.openapi.roots.impl.LibraryScopeCache;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.io.FileUtilRt;
@@ -319,8 +319,8 @@ public class GradleScriptType extends GroovyScriptType {
     final Module module = ModuleUtilCore.findModuleForPsiElement(file);
     if (module != null) {
       for (OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries()) {
-        if (entry instanceof SdkOrderEntry) {
-          GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(module.getProject()).getScopeForSdk((SdkOrderEntry)entry);
+        if (entry instanceof ModuleExtensionWithSdkOrderEntry) {
+          GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(module.getProject()).getScopeForSdk((ModuleExtensionWithSdkOrderEntry)entry);
           result = result.uniteWith(scopeForSdk);
         }
       }
