@@ -14,11 +14,12 @@
   ~
   -->
 
-<idea-plugin url="http://confluence.jetbrains.com/display/IDEADEV/Gradle+integration">
+<idea-plugin>
 	<name>Gradle</name>
 	<id>org.jetbrains.plugins.gradle</id>
 	<vendor>JetBrains</vendor>
 	<description>Gradle integration</description>
+	<version>SNAPSHOT</version>
 
 	<depends>org.intellij.groovy</depends>
 	<depends optional="true" config-file="gradle-maven-integration.xml">org.jetbrains.idea.maven</depends>
