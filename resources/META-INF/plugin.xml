@@ -61,6 +61,7 @@
 		<internalFileTemplate name="Gradle Build Script"/>
 		<internalFileTemplate name="Gradle Build Script with wrapper"/>
 		<projectConfigurable id="reference.settingsdialog.project.gradle"
+							 parentId="execution"
 							 instance="org.jetbrains.plugins.gradle.service.settings.GradleConfigurable"
 							 key="gradle.name" bundle="i18n.GradleBundle"/>
 		<library.presentationProvider implementation="org.jetbrains.plugins.gradle.config.GradleLibraryPresentationProvider" order="last"/>
