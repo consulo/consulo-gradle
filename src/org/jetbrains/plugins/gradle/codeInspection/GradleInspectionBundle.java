@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.codeInspection;
 
-import org.consulo.lombok.annotations.Bundle;
+import consulo.lombok.annotations.Bundle;
 
 /**
  * @author Vladislav.Soroka
