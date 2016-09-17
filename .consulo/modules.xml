@@ -4,7 +4,7 @@
     <modules>
       <module name="consulo-gradle" dirurl="file://$PROJECT_DIR$" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" custom-plugin-dir-url="file://$MODULE_DIR$/dep" />
+          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo SNAPSHOT" />
           <extension id="java" sdk-module-name="" sdk-name="1.8" language-level-module-name="" language-level-name="JDK_1_8" special-dir-location="SOURCE_DIR" />
           <extension id="lombok" />
           <content url="file://$MODULE_DIR$">
@@ -27,69 +27,16 @@
               <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" type="sources" />
             </library>
           </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:XML">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/jsr173_1.0_api.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/resolver.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/xerces.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/xml.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
           <orderEntry type="module" module-name="tooling-extension-impl" />
-          <orderEntry type="module-library">
-            <library name="consulo:Java">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/java/lib/asm-all.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/coverate_rt.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/instrumentation-util.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/jacocoant.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/java-i18n.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/java-manifest.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/java-rt.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/java.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/javascript-impl.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/jdi.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/jdk-annotations.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/jimage-jdk6.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:Maven Integration">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/artifact-resolver-m2.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/artifact-resolver-m3.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/artifact-resolver-m31.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/commons-cli-1.2.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/lucene-core-2.4.1.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/maven-server-api.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/maven.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/maven2-server-impl.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/maven3-server-common.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/maven30-server-impl.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/maven32-server-impl.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/plexus-archiver-2.4.4.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/plexus-utils-2.0.6.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/maven/lib/wadl-core.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:Groovy">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/groovy/lib/groovy-all-2.0.6.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/groovy/lib/groovy-rt.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/groovy/lib/groovy.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
+          <orderEntry type="library" name="consulo-plugin: org.intellij.groovy" level="project" />
+          <orderEntry type="library" name="consulo-plugin: org.jetbrains.idea.maven" level="project" />
+          <orderEntry type="library" name="consulo-plugin: com.intellij.xml" level="project" />
+          <orderEntry type="library" name="consulo-plugin: consulo.java" level="project" />
         </module-layer>
       </module>
       <module name="tooling-extension-api" dirurl="file://$PROJECT_DIR$/tooling-extension-api" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-gradle" sdk-name="Consulo 1.SNAPSHOT" />
           <extension id="java" sdk-module-name="consulo-gradle" sdk-name="" language-level-module-name="consulo-gradle" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
@@ -125,7 +72,7 @@
       </module>
       <module name="tooling-extension-impl" dirurl="file://$PROJECT_DIR$/tooling-extension-impl" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="consulo-gradle" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../dep" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-gradle" sdk-name="" />
           <extension id="groovy" />
           <extension id="java" sdk-module-name="consulo-gradle" sdk-name="" language-level-module-name="consulo-gradle" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
@@ -137,21 +84,13 @@
           <orderEntry type="sourceFolder" />
           <orderEntry type="module" module-name="tooling-extension-api" exported="" />
           <orderEntry type="module-library">
-            <library name="consulo:Groovy">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/groovy/lib/groovy-all-2.0.6.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/groovy/lib/groovy-rt.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/groovy/lib/groovy.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
             <library>
               <binaries>
                 <root url="jar://$MODULE_DIR$/lib/gradle-reporting-2.0.jar!/" />
               </binaries>
             </library>
           </orderEntry>
+          <orderEntry type="library" name="consulo-plugin: org.intellij.groovy" level="project" />
         </module-layer>
       </module>
     </modules>

@@ -15,15 +15,10 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven.codeInsight.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
+import static com.intellij.patterns.PlatformPatterns.psiElement;
+
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.maven.indices.MavenArtifactSearchResult;
@@ -38,10 +33,19 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
-
-import java.util.List;
-
-import static com.intellij.patterns.PlatformPatterns.psiElement;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.completion.CompletionUtil;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.icons.AllIcons;
+import com.intellij.patterns.ElementPattern;
+import com.intellij.patterns.PatternCondition;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ProcessingContext;
+import consulo.codeInsight.completion.CompletionProvider;
 
 /**
  * @author Vladislav.Soroka
@@ -84,9 +88,9 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
     //    compile group: 'com.google.code.guice', name: 'guice', version: '1.0'
     //    runtime([group:'junit', name:'junit-dep', version:'4.7'])
     //    compile(group:'junit', name:'junit-dep', version:'4.7')
-    extend(CompletionType.BASIC, IN_MAP_DEPENDENCY_NOTATION, new CompletionProvider<CompletionParameters>() {
+    extend(CompletionType.BASIC, IN_MAP_DEPENDENCY_NOTATION, new CompletionProvider() {
       @Override
-      protected void addCompletions(@NotNull CompletionParameters params,
+	  public void addCompletions(@NotNull CompletionParameters params,
                                     ProcessingContext context,
                                     @NotNull final CompletionResultSet result) {
         result.stopHere();
@@ -136,9 +140,9 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
     // e.g.:
     //    compile 'junit:junit:4.11'
     //    compile('junit:junit:4.11')
-    extend(CompletionType.BASIC, IN_METHOD_DEPENDENCY_NOTATION, new CompletionProvider<CompletionParameters>() {
+    extend(CompletionType.BASIC, IN_METHOD_DEPENDENCY_NOTATION, new CompletionProvider() {
       @Override
-      protected void addCompletions(@NotNull CompletionParameters params,
+	  public void addCompletions(@NotNull CompletionParameters params,
                                     ProcessingContext context,
                                     @NotNull final CompletionResultSet result) {
         result.stopHere();

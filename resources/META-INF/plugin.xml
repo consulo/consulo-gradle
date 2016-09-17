@@ -15,8 +15,8 @@
   -->
 
 <idea-plugin>
-	<name>Gradle</name>
 	<id>org.jetbrains.plugins.gradle</id>
+	<name>Gradle</name>
 	<vendor>JetBrains</vendor>
 	<description>Gradle integration</description>
 	<version>SNAPSHOT</version>
@@ -46,7 +46,7 @@
 		<projectResolve implementation="org.jetbrains.plugins.gradle.service.project.BaseGradleProjectResolverExtension"/>
 	</extensions>
 
-	<extensions defaultExtensionNs="org.consulo.java">
+	<extensions defaultExtensionNs="consulo.java">
 		<elementFinder implementation="org.jetbrains.plugins.gradle.config.GradleClassFinder"/>
 	</extensions>
 
@@ -54,7 +54,6 @@
 
 		<postStartupActivity implementation="org.jetbrains.plugins.gradle.service.project.GradleStartupActivity"/>
 
-		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
 		<projectImportProvider implementation="org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportProvider"/>
 		<projectImportBuilder implementation="org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder"/>
 		<moduleBuilder builderClass="org.jetbrains.plugins.gradle.service.project.wizard.GradleModuleBuilder"/>
