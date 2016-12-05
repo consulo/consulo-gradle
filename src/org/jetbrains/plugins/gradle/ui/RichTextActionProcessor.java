@@ -32,15 +32,7 @@ public class RichTextActionProcessor implements RichTextControlBuilder.RichTextP
     final Presentation presentation = action.getTemplatePresentation();
     
     if (presentation.getIcon() != null) {
-      return new ActionButton(action, presentation.clone(), GradleConstants.TOOL_WINDOW_TOOLBAR_PLACE, new Dimension(0, 0)) {
-        @Override
-        protected void paintButtonLook(Graphics g) {
-          // Don't draw border at the inline button.
-          ActionButtonLook look = getButtonLook();
-          look.paintBackground(g, this);
-          look.paintIcon(g, this, getIcon());
-        }
-      };
+      return new ActionButton(action, presentation.clone(), GradleConstants.TOOL_WINDOW_TOOLBAR_PLACE, new Dimension(0, 0));
     }
 
     final String text = action.getTemplatePresentation().getText();
