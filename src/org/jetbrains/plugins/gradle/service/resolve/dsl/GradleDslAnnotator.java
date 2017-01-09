@@ -20,7 +20,7 @@ import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.ca
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames;
 import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
-import org.jetbrains.plugins.groovy.highlighter.GroovyHighlighterColors;
+import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
@@ -59,7 +59,7 @@ public class GradleDslAnnotator implements Annotator {
 
         PsiElement nameElement = referenceExpression.getReferenceNameElement();
         if (nameElement != null) {
-          holder.createInfoAnnotation(nameElement, null).setTextAttributes(GroovyHighlighterColors.MAP_KEY);
+          holder.createInfoAnnotation(nameElement, null).setTextAttributes(GroovySyntaxHighlighter.MAP_KEY);
         }
       }
     }
