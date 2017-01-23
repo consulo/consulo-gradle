@@ -15,12 +15,31 @@
  */
 package org.jetbrains.plugins.gradle.codeInspection;
 
-import consulo.lombok.annotations.Bundle;
+import org.jetbrains.annotations.PropertyKey;
+import com.intellij.AbstractBundle;
 
 /**
  * @author Vladislav.Soroka
  * @since 9/13/13
  */
-@Bundle("org.jetbrains.plugins.gradle.codeInspection.GradleInspectionBundle")
-public class GradleInspectionBundle {
+public class GradleInspectionBundle extends AbstractBundle
+{
+	private static final String BUNDLE = "org.jetbrains.plugins.gradle.codeInspection.GradleInspectionBundle";
+
+	private static final GradleInspectionBundle ourInstance = new GradleInspectionBundle();
+
+	private GradleInspectionBundle()
+	{
+		super(BUNDLE);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = BUNDLE) String key)
+	{
+		return ourInstance.getMessage(key);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = BUNDLE) String key, Object... params)
+	{
+		return ourInstance.getMessage(key, params);
+	}
 }
