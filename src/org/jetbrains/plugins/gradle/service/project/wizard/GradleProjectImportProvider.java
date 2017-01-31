@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.gradle.service.project.wizard;
 
-import com.intellij.openapi.externalSystem.service.project.wizard.AbstractExternalProjectImportProvider;
-import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
+import com.intellij.openapi.externalSystem.service.project.wizard.AbstractExternalProjectImportProvider;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author Denis Zhdanov

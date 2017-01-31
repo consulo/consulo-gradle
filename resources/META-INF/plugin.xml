@@ -55,9 +55,6 @@
 
 		<postStartupActivity implementation="org.jetbrains.plugins.gradle.service.project.GradleStartupActivity"/>
 
-		<projectImportProvider implementation="org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportProvider"/>
-		<projectImportBuilder implementation="org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder"/>
-		<moduleBuilder builderClass="org.jetbrains.plugins.gradle.service.project.wizard.GradleModuleBuilder"/>
 		<internalFileTemplate name="Gradle Build Script"/>
 		<internalFileTemplate name="Gradle Build Script with wrapper"/>
 		<projectConfigurable id="reference.settingsdialog.project.gradle"
@@ -65,7 +62,6 @@
 							 instance="org.jetbrains.plugins.gradle.service.settings.GradleConfigurable"
 							 key="gradle.name" bundle="i18n.GradleBundle"/>
 		<library.presentationProvider implementation="org.jetbrains.plugins.gradle.config.GradleLibraryPresentationProvider" order="last"/>
-		<projectOpenProcessor implementation="org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectOpenProcessor"/>
 		<configurationType implementation="org.jetbrains.plugins.gradle.service.execution.GradleExternalTaskConfigurationType"/>
 
 		<externalSystemConfigLocator implementation="org.jetbrains.plugins.gradle.service.settings.GradleConfigLocator"/>
@@ -94,6 +90,7 @@
 						 key="multiple.repository.urls" groupName="Probable bugs" enabledByDefault="true" level="WARNING"
 						 implementationClass="org.jetbrains.plugins.gradle.codeInspection.MultipleRepositoryUrlsInspection"/>
 
+		<moduleImportProvider implementation="consulo.gradle.importProvider.GradleModuleImportProvider" />
 	</extensions>
 
 	<extensions defaultExtensionNs="org.intellij.groovy">
