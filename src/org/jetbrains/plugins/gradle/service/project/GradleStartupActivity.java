@@ -15,6 +15,17 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
+import javax.swing.event.HyperlinkEvent;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
+import org.jetbrains.plugins.gradle.settings.GradleSettings;
+import org.jetbrains.plugins.gradle.util.GradleBundle;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.ide.actions.ImportModuleAction;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
@@ -28,18 +39,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
-import org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder;
-import org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportProvider;
-import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-
-import javax.swing.event.HyperlinkEvent;
-import java.io.File;
-import java.io.FilenameFilter;
+import consulo.gradle.importProvider.GradleModuleImportProvider;
 
 /**
  * @author Vladislav.Soroka
@@ -89,9 +89,7 @@ public class GradleStartupActivity implements StartupActivity {
           protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent e) {
             if (IMPORT_EVENT_DESCRIPTION.equals(e.getDescription())) {
               final ProjectDataManager projectDataManager = ServiceManager.getService(ProjectDataManager.class);
-              GradleProjectImportBuilder gradleProjectImportBuilder = new GradleProjectImportBuilder(projectDataManager);
-              final GradleProjectImportProvider gradleProjectImportProvider = new GradleProjectImportProvider(gradleProjectImportBuilder);
-              AddModuleWizard wizard = new AddModuleWizard(null, files[0].getPath(), gradleProjectImportProvider);
+              AddModuleWizard wizard = new AddModuleWizard(null, files[0].getPath(), new GradleModuleImportProvider(projectDataManager));
               if ((wizard.getStepCount() <= 0 || wizard.showAndGet())) {
                 ImportModuleAction.createFromWizard(project, wizard);
               }
