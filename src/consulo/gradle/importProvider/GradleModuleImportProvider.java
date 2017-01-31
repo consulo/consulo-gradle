@@ -54,7 +54,20 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	@Override
 	public boolean canImport(@NotNull VirtualFile fileOrDirectory)
 	{
-		return !fileOrDirectory.isDirectory() && GradleConstants.EXTENSION.equals(fileOrDirectory.getExtension());
+		if(fileOrDirectory.isDirectory())
+		{
+			return fileOrDirectory.findChild(GradleConstants.DEFAULT_SCRIPT_NAME) != null;
+		}
+		else
+		{
+			return !fileOrDirectory.isDirectory() && GradleConstants.EXTENSION.equals(fileOrDirectory.getExtension());
+		}
+	}
+
+	@Override
+	public String getPathToBeImported(@NotNull VirtualFile file)
+	{
+		return file.isDirectory() ? file.findChild(GradleConstants.DEFAULT_SCRIPT_NAME).getPath() : file.getPath();
 	}
 
 	@NotNull
