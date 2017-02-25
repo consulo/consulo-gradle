@@ -25,7 +25,6 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.components.StorageScheme;
 import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemSettings;
 import com.intellij.openapi.externalSystem.settings.ExternalSystemSettingsListener;
 import com.intellij.openapi.project.Project;
@@ -34,20 +33,14 @@ import com.intellij.util.containers.ContainerUtilRt;
 import com.intellij.util.xmlb.annotations.AbstractCollection;
 
 /**
- * Holds shared project-level gradle-related settings (should be kept at the '*.ipr' or under '.idea').
+ * Holds shared project-level gradle-related settings (should be kept under '.consulo').
  *
  * @author peter
  */
-@State(
-		name = "GradleSettings",
-		storages = {
-				@Storage(file = StoragePathMacros.PROJECT_FILE),
-				@Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/gradle.xml", scheme = StorageScheme.DIRECTORY_BASED)
-		})
+@State(name = "GradleSettings", storages = @Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/gradle.xml"))
 public class GradleSettings extends AbstractExternalSystemSettings<GradleSettings, GradleProjectSettings,
 		GradleSettingsListener> implements PersistentStateComponent<GradleSettings.MyState>
 {
-
 	@Nullable
 	private String myServiceDirectoryPath;
 	@Nullable
