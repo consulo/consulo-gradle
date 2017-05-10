@@ -1,1 +1,1 @@
-![Build Status](http://must-be.org/vulcan/statusImage?name=consulo-gradle)
+[![Build Status](https://ci.consulo.io/job/consulo-gradle/badge/icon)](https://ci.consulo.io/job/consulo-gradle/)
