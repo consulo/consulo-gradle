@@ -54,6 +54,7 @@ import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.psi.search.ExternalModuleBuildGlobalSearchScope;
+import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -256,7 +257,7 @@ public class GradleScriptType extends GroovyScriptType
 				{
 					throw new CantRunException("Target module is undefined");
 				}
-				String rootProjectPath = module.getOptionValue(ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
+				String rootProjectPath = ExternalSystemApiUtil.getExtensionSystemOption(module, ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
 				if(StringUtil.isEmpty(rootProjectPath))
 				{
 					throw new CantRunException(String.format("Module '%s' is not backed by gradle", module.getName()));
@@ -383,7 +384,7 @@ public class GradleScriptType extends GroovyScriptType
 				}
 			}
 
-			String modulePath = module.getOptionValue(ExternalSystemConstants.LINKED_PROJECT_PATH_KEY);
+			String modulePath = ExternalSystemApiUtil.getExternalProjectPath(module);
 			if(modulePath == null)
 			{
 				return result;

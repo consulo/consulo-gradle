@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.openapi.externalSystem.model.execution.ExternalTaskPojo;
-import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import static com.intellij.util.containers.ContainerUtil.ar;
+import static com.intellij.util.containers.ContainerUtil.getLastItem;
+import static com.intellij.util.containers.ContainerUtil.newHashMap;
+import static org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames.*;
+import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleLocalSettings;
@@ -34,15 +35,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static com.intellij.util.containers.ContainerUtil.*;
-import static org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames.*;
-import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
+import com.intellij.openapi.externalSystem.model.execution.ExternalTaskPojo;
+import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
+import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 
 /**
  * @author Vladislav.Soroka
@@ -157,7 +160,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
 
     Module module = ModuleUtilCore.findModuleForPsiElement(place);
     if (module == null) return;
-    String path = module.getOptionValue(ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
+    String path = ExternalSystemApiUtil.getExtensionSystemOption(module, ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
     GradleLocalSettings localSettings = GradleLocalSettings.getInstance(place.getProject());
     Collection<ExternalTaskPojo> taskPojos = localSettings.getAvailableTasks().get(path);
     if (taskPojos == null) return;

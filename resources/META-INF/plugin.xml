@@ -68,7 +68,17 @@
 		<externalSystemManager implementation="org.jetbrains.plugins.gradle.GradleManager"/>
 		<externalProjectDataService implementation="org.jetbrains.plugins.gradle.service.project.data.BuildClasspathModuleGradleDataService"/>
 
+		<moduleExtensionProvider key="GRADLE"
+								 name="Gradle"
+								 parentKey="java"
+								 icon="/icons/gradle.png"
+								 systemOnly="true"
+								 immutableClass="consulo.externalSystem.module.extension.impl.ExternalSystemModuleExtensionImpl"
+								 mutableClass="consulo.externalSystem.module.extension.impl.ExternalSystemMutableModuleExtensionImpl"/>
+
 		<applicationService serviceImplementation="org.jetbrains.plugins.gradle.service.GradleInstallationManager"/>
+
+		<resolveScopeEnlarger implementation="org.jetbrains.plugins.gradle.config.GradleBuildClasspathResolveScopeEnlarger"/>
 
 		<projectService serviceImplementation="org.jetbrains.plugins.gradle.settings.GradleSettings"/>
 		<projectService serviceImplementation="org.jetbrains.plugins.gradle.settings.GradleLocalSettings"/>
@@ -90,7 +100,7 @@
 						 key="multiple.repository.urls" groupName="Probable bugs" enabledByDefault="true" level="WARNING"
 						 implementationClass="org.jetbrains.plugins.gradle.codeInspection.MultipleRepositoryUrlsInspection"/>
 
-		<moduleImportProvider implementation="consulo.gradle.importProvider.GradleModuleImportProvider" />
+		<moduleImportProvider implementation="consulo.gradle.importProvider.GradleModuleImportProvider"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="org.intellij.groovy">
