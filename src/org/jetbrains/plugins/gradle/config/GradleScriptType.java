@@ -369,32 +369,34 @@ public class GradleScriptType extends GroovyScriptType
 			return baseScope;
 		}
 
-		final List<VirtualFile> files;
-		GlobalSearchScope result = GlobalSearchScope.EMPTY_SCOPE;
 		final Module module = ModuleUtilCore.findModuleForPsiElement(file);
-		if(module != null)
+		if(module == null)
 		{
-			for(OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries())
-			{
-				if(entry instanceof ModuleExtensionWithSdkOrderEntry)
-				{
-					GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(module.getProject()).getScopeForSdk(
-							(ModuleExtensionWithSdkOrderEntry) entry);
-					result = result.uniteWith(scopeForSdk);
-				}
-			}
-
-			String modulePath = ExternalSystemApiUtil.getExternalProjectPath(module);
-			if(modulePath == null)
-			{
-				return result;
-			}
-
-			files = GradleBuildClasspathManager.getInstance(file.getProject()).getModuleClasspathEntries(modulePath);
-
-			result.union(NonClasspathDirectoriesScope.compose(files));
-			result = new ExternalModuleBuildGlobalSearchScope(result, modulePath);
+			return GlobalSearchScope.EMPTY_SCOPE;
 		}
+
+		Project project = module.getProject();
+		GlobalSearchScope result = GlobalSearchScope.EMPTY_SCOPE;
+		for(OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries())
+		{
+			if(entry instanceof ModuleExtensionWithSdkOrderEntry)
+			{
+				GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(project).getScopeForSdk((ModuleExtensionWithSdkOrderEntry)
+						entry);
+				result = result.uniteWith(scopeForSdk);
+			}
+		}
+
+		String modulePath = ExternalSystemApiUtil.getExternalProjectPath(module);
+		if(modulePath == null)
+		{
+			return result;
+		}
+
+		final Collection<VirtualFile> files = GradleBuildClasspathManager.getInstance(project).getModuleClasspathEntries(modulePath);
+
+		result = new ExternalModuleBuildGlobalSearchScope(project, result.uniteWith(new NonClasspathDirectoriesScope(files)), modulePath);
+
 		return result;
 	}
 }
