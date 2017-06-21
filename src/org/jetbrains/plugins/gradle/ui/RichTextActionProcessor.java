@@ -1,27 +1,34 @@
 package org.jetbrains.plugins.gradle.ui;
 
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.ide.DataManager;
-import com.intellij.ide.ui.LafManager;
-import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.actionSystem.ex.ActionButtonLook;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.actionSystem.impl.ActionButton;
 import com.intellij.openapi.actionSystem.impl.PresentationFactory;
 import com.intellij.openapi.util.AsyncResult;
 import com.intellij.ui.ClickListener;
 import com.intellij.util.ui.UIUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
 
 /**
  * @author Denis Zhdanov
  * @since 1/16/12 5:20 PM
  */
 public class RichTextActionProcessor implements RichTextControlBuilder.RichTextProcessor {
-  
+
   @Override
   public JComponent process(@NotNull String s) {
     final ActionManager actionManager = ActionManager.getInstance();
@@ -30,7 +37,7 @@ public class RichTextActionProcessor implements RichTextControlBuilder.RichTextP
       return null;
     }
     final Presentation presentation = action.getTemplatePresentation();
-    
+
     if (presentation.getIcon() != null) {
       return new ActionButton(action, presentation.clone(), GradleConstants.TOOL_WINDOW_TOOLBAR_PLACE, new Dimension(0, 0));
     }
