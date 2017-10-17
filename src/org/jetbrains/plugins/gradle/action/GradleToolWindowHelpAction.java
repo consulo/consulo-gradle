@@ -1,14 +1,10 @@
 package org.jetbrains.plugins.gradle.action;
 
+import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.ide.actions.ContextHelpAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
 
 /**
  * @author Denis Zhdanov
@@ -18,7 +14,7 @@ public class GradleToolWindowHelpAction extends ContextHelpAction {
 
   @Override
   public void update(AnActionEvent event) {
-    final Project project = CommonDataKeys.PROJECT.getData(event.getDataContext());
+    final Project project = event.getProject();
     if (project == null) {
       event.getPresentation().setVisible(false);
       return;
