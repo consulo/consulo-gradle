@@ -21,6 +21,7 @@ import com.intellij.openapi.projectRoots.JavaSdk;
 import com.intellij.openapi.projectRoots.JavaSdkVersion;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import consulo.externalSystem.service.module.wizard.AbstractExternalModuleImportProvider;
@@ -52,15 +53,16 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	}
 
 	@Override
-	public boolean canImport(@NotNull VirtualFile fileOrDirectory)
+	public boolean canImport(@NotNull File fileOrDirectory)
 	{
 		if(fileOrDirectory.isDirectory())
 		{
-			return fileOrDirectory.findChild(GradleConstants.DEFAULT_SCRIPT_NAME) != null;
+			return new File(fileOrDirectory, GradleConstants.DEFAULT_SCRIPT_NAME).exists();
 		}
 		else
 		{
-			return !fileOrDirectory.isDirectory() && GradleConstants.EXTENSION.equals(fileOrDirectory.getExtension());
+			String extension = FileUtilRt.getExtension(fileOrDirectory.getName());
+			return GradleConstants.EXTENSION.equalsIgnoreCase(extension);
 		}
 	}
 
