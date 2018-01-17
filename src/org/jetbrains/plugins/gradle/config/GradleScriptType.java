@@ -50,7 +50,6 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.Location;
 import com.intellij.execution.RunManagerEx;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.psi.search.ExternalModuleBuildGlobalSearchScope;
@@ -75,6 +74,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.NonClasspathDirectoriesScope;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import icons.GradleIcons;
 
 /**
@@ -243,7 +243,7 @@ public class GradleScriptType extends GroovyScriptType
 			}
 
 			@Override
-			public void configureCommandLine(JavaParameters params,
+			public void configureCommandLine(OwnJavaParameters params,
 					@Nullable Module module,
 					boolean tests,
 					VirtualFile script,
