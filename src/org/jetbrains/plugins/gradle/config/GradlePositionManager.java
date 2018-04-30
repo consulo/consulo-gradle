@@ -25,9 +25,9 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
@@ -75,13 +75,12 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
     return runtimeName.startsWith(SCRIPT_CLOSURE_PREFIX) || GRADLE_CLASS_PATTERN.matcher(runtimeName).matches();
   }
 
-  public boolean isAppropriateScriptFile(@NotNull final PsiFile scriptFile) {
-    return scriptFile instanceof GroovyFile &&
-           GroovyScriptTypeDetector.isSpecificScriptFile((GroovyFile)scriptFile, GradleScriptType.INSTANCE);
+  public boolean isAppropriateScriptFile(@NotNull final GroovyFile scriptFile) {
+    return GroovyScriptUtil.isSpecificScriptFile((GroovyFile)scriptFile, GradleScriptType.INSTANCE);
   }
 
   @NotNull
-  public String getRuntimeScriptName(@NotNull final String originalName, GroovyFile groovyFile) {
+  public String getRuntimeScriptName(GroovyFile groovyFile) {
     VirtualFile virtualFile = groovyFile.getVirtualFile();
     if (virtualFile == null) return "";
 

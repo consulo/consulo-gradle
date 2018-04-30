@@ -33,6 +33,7 @@ import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.extensions.GroovyRunnableScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrApplicationStatement;
@@ -80,9 +81,8 @@ import icons.GradleIcons;
 /**
  * @author peter
  */
-public class GradleScriptType extends GroovyScriptType
+public class GradleScriptType extends GroovyRunnableScriptType
 {
-
 	private static final Pattern MAIN_CLASS_NAME_PATTERN = Pattern.compile("\nSTARTER_MAIN_CLASS=(.*)\n");
 
 	public static final GroovyScriptType INSTANCE = new GradleScriptType();

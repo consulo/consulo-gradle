@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.resolve.DefaultImportContributor;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.resolve.DefaultImportContributor;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 
 /**
  * @author peter
@@ -140,7 +140,7 @@ public class GradleDefaultImportContributor extends DefaultImportContributor {
 
   @Override
   public List<String> appendImplicitlyImportedPackages(@NotNull GroovyFile file) {
-    if (file.isScript() && GroovyScriptTypeDetector.getScriptType(file) instanceof GradleScriptType) {
+    if (file.isScript() && GroovyScriptUtil.getScriptType(file) instanceof GradleScriptType) {
       return Arrays.asList(IMPLICIT_GRADLE_PACKAGES);
     }
     return Collections.emptyList();
