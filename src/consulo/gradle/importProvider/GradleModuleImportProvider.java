@@ -3,8 +3,6 @@ package consulo.gradle.importProvider;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.Icon;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
@@ -25,6 +23,7 @@ import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import consulo.externalSystem.service.module.wizard.AbstractExternalModuleImportProvider;
+import consulo.ui.image.Image;
 import icons.GradleIcons;
 
 /**
@@ -47,7 +46,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 
 	@Nullable
 	@Override
-	public Icon getIcon()
+	public Image getIcon()
 	{
 		return GradleIcons.Gradle;
 	}

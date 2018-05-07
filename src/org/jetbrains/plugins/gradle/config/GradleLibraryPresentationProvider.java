@@ -32,6 +32,7 @@ import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.awt.TargetAWT;
 import icons.GradleIcons;
 
 /**
@@ -51,7 +52,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
   @NotNull
   @Override
   public Icon getIcon() {
-    return GradleIcons.Gradle;
+    return TargetAWT.to(GradleIcons.Gradle);
   }
 
   @Nls

@@ -86,6 +86,7 @@ import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtilRt;
 import com.intellij.util.messages.MessageBusConnection;
+import consulo.ui.image.Image;
 import icons.GradleIcons;
 
 /**
@@ -275,14 +276,14 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 
 	@Nullable
 	@Override
-	public Icon getProjectIcon()
+	public Image getProjectIcon()
 	{
 		return GradleIcons.Gradle;
 	}
 
 	@Nullable
 	@Override
-	public Icon getTaskIcon()
+	public Image getTaskIcon()
 	{
 		return DefaultExternalSystemUiAware.INSTANCE.getTaskIcon();
 	}

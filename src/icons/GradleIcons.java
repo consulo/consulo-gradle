@@ -15,20 +15,22 @@
  */
 package icons;
 
-import com.intellij.openapi.util.IconLoader;
+import javax.swing.Icon;
 
-import javax.swing.*;
+import com.intellij.openapi.util.IconLoader;
+import consulo.ui.image.Image;
+import consulo.ui.migration.SwingImageRef;
 
 /**
  * NOTE THIS FILE IS AUTO-GENERATED
  * DO NOT EDIT IT BY HAND, run build/scripts/icons.gant instead
  */
 public class GradleIcons {
-  private static Icon load(String path) {
+  private static SwingImageRef load(String path) {
     return IconLoader.getIcon(path, GradleIcons.class);
   }
 
-  public static final Icon Gradle = load("/icons/gradle.png"); // 16x16
+  public static final Image Gradle = load("/icons/gradle.png"); // 16x16
   public static final Icon GradleImport = load("/icons/gradleImport.png"); // 16x16
   public static final Icon GradleNavigate = load("/icons/gradleNavigate.png"); // 16x16
   public static final Icon GradlePlugin = load("/icons/gradlePlugin.png"); // 16x16
