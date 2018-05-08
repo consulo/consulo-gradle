@@ -77,6 +77,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.NonClasspathDirectoriesScope;
 import consulo.awt.TargetAWT;
 import consulo.java.execution.configurations.OwnJavaParameters;
+import consulo.ui.image.Image;
 import icons.GradleIcons;
 
 /**
@@ -95,9 +96,9 @@ public class GradleScriptType extends GroovyRunnableScriptType
 
 	@NotNull
 	@Override
-	public Icon getScriptIcon()
+	public Image getScriptIcon()
 	{
-		return TargetAWT.to(GradleIcons.Gradle);
+		return GradleIcons.Gradle;
 	}
 
 	@Override
