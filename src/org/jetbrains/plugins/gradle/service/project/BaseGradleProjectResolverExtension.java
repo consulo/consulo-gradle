@@ -159,7 +159,16 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 		// Gradle API doesn't expose gradleProject compile output path yet.
 		JavaProjectData javaProjectData = new JavaProjectData(GradleConstants.SYSTEM_ID, projectDirPath + "/build/classes");
 		javaProjectData.setJdkVersion(ideaProject.getJdkName());
-		javaProjectData.setLanguageLevel(ideaProject.getLanguageLevel().getLevel());
+
+		LanguageLevel languageLevel = StringUtil.parseEnum(ideaProject.getLanguageLevel().getLevel(), null, LanguageLevel.class);
+		if(languageLevel != null)
+		{
+			javaProjectData.setLanguageLevel(languageLevel);
+		}
+		else
+		{
+			javaProjectData.setLanguageLevel(ideaProject.getLanguageLevel().getLevel());
+		}
 		return javaProjectData;
 	}
 
