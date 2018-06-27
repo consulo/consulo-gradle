@@ -17,8 +17,8 @@ import org.gradle.tooling.model.gradle.GradleScript;
 import org.gradle.wrapper.WrapperConfiguration;
 import org.gradle.wrapper.WrapperExecutor;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.io.*;
 import java.net.URI;
@@ -47,12 +47,12 @@ public class GradleUtil {
    * custom gradle icon at the file chooser ({@link icons.GradleIcons#Gradle}, is used at the file chooser dialog via
    * the dedicated gradle project open processor).
    */
-  @NotNull
+  @Nonnull
   public static FileChooserDescriptor getGradleProjectFileChooserDescriptor() {
     return DescriptorHolder.GRADLE_BUILD_FILE_CHOOSER_DESCRIPTOR;
   }
 
-  @NotNull
+  @Nonnull
   public static FileChooserDescriptor getGradleHomeFileChooserDescriptor() {
     return DescriptorHolder.GRADLE_HOME_FILE_CHOOSER_DESCRIPTOR;
   }
@@ -144,8 +144,8 @@ public class GradleUtil {
    * @param rootProjectPath  path to root project's directory which contains 'build.gradle'
    * @return                 path to the given sub-project's directory which contains 'build.gradle'
    */
-  @NotNull
-  public static String getConfigPath(@NotNull GradleProject subProject, @NotNull String rootProjectPath) {
+  @Nonnull
+  public static String getConfigPath(@Nonnull GradleProject subProject, @Nonnull String rootProjectPath) {
     try {
       GradleScript script = subProject.getBuildScript();
       if (script != null) {
@@ -182,7 +182,7 @@ public class GradleUtil {
     return buffer.toString();
   }
 
-  @NotNull
+  @Nonnull
   public static String getLastUsedGradleHome() {
     return PropertiesComponent.getInstance().getValue(LAST_USED_GRADLE_HOME_KEY, "");
   }
@@ -239,8 +239,8 @@ public class GradleUtil {
     return candidates[0];
   }
 
-  @NotNull
-  public static String createJvmArg(@NotNull String name, @NotNull String value) {
+  @Nonnull
+  public static String createJvmArg(@Nonnull String name, @Nonnull String value) {
     return String.format(JVM_ARG_FORMAT, name, value);
   }
 }

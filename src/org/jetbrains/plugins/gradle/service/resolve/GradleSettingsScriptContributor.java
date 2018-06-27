@@ -17,7 +17,7 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
@@ -30,7 +30,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 public class GradleSettingsScriptContributor extends NonCodeMembersContributor {
 
   @Override
-  public void processDynamicElements(@NotNull PsiType qualifierType,
+  public void processDynamicElements(@Nonnull PsiType qualifierType,
                                      PsiClass aClass,
                                      PsiScopeProcessor processor,
                                      PsiElement place,

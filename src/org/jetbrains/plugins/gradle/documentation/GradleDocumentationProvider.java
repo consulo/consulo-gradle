@@ -25,7 +25,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleDocumentationBundle;
 import org.jetbrains.plugins.groovy.dsl.CustomMembersGenerator;
@@ -55,7 +55,7 @@ public class GradleDocumentationProvider implements DocumentationProvider {
     return result.isEmpty() ? null : result;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public String generateDoc(PsiElement element, PsiElement originalElement) {
     PsiFile file = element.getContainingFile();
@@ -63,7 +63,7 @@ public class GradleDocumentationProvider implements DocumentationProvider {
     return element instanceof GrLiteral ? findDoc(element, GrLiteral.class.cast(element).getValue()) : null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiElement getDocumentationElementForLookupItem(PsiManager psiManager, Object object, PsiElement element) {
     final PsiFile file = element.getContainingFile();
@@ -72,14 +72,14 @@ public class GradleDocumentationProvider implements DocumentationProvider {
     return !StringUtil.isEmpty(doc) ? new CustomMembersGenerator.GdslNamedParameter(String.valueOf(object), doc, element, null) : null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiElement getDocumentationElementForLink(PsiManager psiManager, String link, PsiElement context) {
     return JavaDocUtil.findReferenceTarget(psiManager, link, context);
   }
 
   @Nullable
-  private static String findDoc(@Nullable PsiElement element, Object argValue) {
+  private static String findDoc(@javax.annotation.Nullable PsiElement element, Object argValue) {
     String result = null;
     if (element instanceof GrLiteral) {
       GrLiteral grLiteral = (GrLiteral)element;

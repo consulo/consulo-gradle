@@ -28,7 +28,7 @@ import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.util.GradleVersion;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.service.project.GradleExecutionHelper;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
@@ -67,14 +67,14 @@ public abstract class AbstractModelBuilderTest {
 
   private static File ourTempDir;
 
-  @NotNull
+  @Nonnull
   private final String gradleVersion;
   protected File testDir;
   protected ProjectImportAction.AllModels allModels;
 
   @Rule public TestName name = new TestName();
 
-  public AbstractModelBuilderTest(@NotNull String gradleVersion) {
+  public AbstractModelBuilderTest(@Nonnull String gradleVersion) {
     this.gradleVersion = gradleVersion;
   }
 
@@ -131,7 +131,7 @@ public abstract class AbstractModelBuilderTest {
     assertNotNull(allModels);
   }
 
-  @NotNull
+  @Nonnull
   private Set<Class> getToolingExtensionClasses() {
     final Set<Class> classes = ContainerUtil.<Class>set(
       ExternalProject.class,
@@ -145,7 +145,7 @@ public abstract class AbstractModelBuilderTest {
     return classes;
   }
 
-  @NotNull
+  @Nonnull
   protected Set<Class> doGetToolingExtensionClasses() {
     return Collections.emptySet();
   }
@@ -214,36 +214,38 @@ public abstract class AbstractModelBuilderTest {
     private static final String GRADLE_RELEASE_REPO = "http://services.gradle.org/distributions";
     private static final String GRADLE_SNAPSHOT_REPO = "http://services.gradle.org/distributions-snapshots";
 
-    @NotNull private final String myReleaseRepoUrl;
-    @NotNull private final String mySnapshotRepoUrl;
+    @Nonnull
+    private final String myReleaseRepoUrl;
+    @Nonnull
+    private final String mySnapshotRepoUrl;
 
     public DistributionLocator() {
       this(DistributionLocator.getRepoUrl(false), DistributionLocator.getRepoUrl(true));
     }
 
-    public DistributionLocator(@NotNull String releaseRepoUrl, @NotNull String snapshotRepoUrl) {
+    public DistributionLocator(@Nonnull String releaseRepoUrl, @Nonnull String snapshotRepoUrl) {
       myReleaseRepoUrl = releaseRepoUrl;
       mySnapshotRepoUrl = snapshotRepoUrl;
     }
 
-    @NotNull
-    public URI getDistributionFor(@NotNull GradleVersion version) throws URISyntaxException {
+    @Nonnull
+    public URI getDistributionFor(@Nonnull GradleVersion version) throws URISyntaxException {
       return getDistribution(getDistributionRepository(version), version, "gradle", "bin");
     }
 
-    @NotNull
-    private String getDistributionRepository(@NotNull GradleVersion version) {
+    @Nonnull
+    private String getDistributionRepository(@Nonnull GradleVersion version) {
       return version.isSnapshot() ? mySnapshotRepoUrl : myReleaseRepoUrl;
     }
 
-    private static URI getDistribution(@NotNull String repositoryUrl,
-                                       @NotNull GradleVersion version,
-                                       @NotNull String archiveName,
-                                       @NotNull String archiveClassifier) throws URISyntaxException {
+    private static URI getDistribution(@Nonnull String repositoryUrl,
+                                       @Nonnull GradleVersion version,
+                                       @Nonnull String archiveName,
+                                       @Nonnull String archiveClassifier) throws URISyntaxException {
       return new URI(String.format("%s/%s-%s-%s.zip", repositoryUrl, archiveName, version.getVersion(), archiveClassifier));
     }
 
-    @NotNull
+    @Nonnull
     public static String getRepoUrl(boolean isSnapshotUrl) {
       final String envRepoUrl = System.getenv(isSnapshotUrl ? SNAPSHOT_REPOSITORY_ENV : RELEASE_REPOSITORY_ENV);
       if (envRepoUrl != null) return envRepoUrl;

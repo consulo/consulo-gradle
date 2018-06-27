@@ -2,7 +2,7 @@ package org.jetbrains.plugins.gradle.model;
 
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.projectRoots.JavaSdkVersion;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public class GradleProjectTest {
     doTestJdkVersion("this is version 1.5.1_0b12   ", JavaSdkVersion.JDK_1_5);
   }
 
-  private void doTestJdkVersion(@NotNull String version, @NotNull JavaSdkVersion expected) {
+  private void doTestJdkVersion(@Nonnull String version, @Nonnull JavaSdkVersion expected) {
     // TODO den implement
 //    myProject.setJdkVersion(version);
 //    assertEquals(expected, myProject.getJdkVersion());

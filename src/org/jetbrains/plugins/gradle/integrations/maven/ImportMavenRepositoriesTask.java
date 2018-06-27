@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.idea.maven.indices.MavenIndex;
 import org.jetbrains.idea.maven.indices.MavenProjectIndicesManager;
 import org.jetbrains.idea.maven.model.MavenRemoteRepository;
@@ -63,7 +63,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @since 10/29/13
  */
 public class ImportMavenRepositoriesTask implements Runnable {
-  @NotNull
+  @Nonnull
   private final static MavenRemoteRepository mavenCentralRemoteRepository;
 
   static {
@@ -105,7 +105,7 @@ public class ImportMavenRepositoriesTask implements Runnable {
 
     final Set<MavenRemoteRepository> mavenRemoteRepositories = new ReadAction<Set<MavenRemoteRepository>>() {
       @Override
-      protected void run(@NotNull Result<Set<MavenRemoteRepository>> result) throws Throwable {
+      protected void run(@Nonnull Result<Set<MavenRemoteRepository>> result) throws Throwable {
         Set<MavenRemoteRepository> myRemoteRepositories = ContainerUtil.newHashSet();
         for (PsiFile psiFile : psiFiles) {
           List<GrClosableBlock> repositoriesBlocks = ContainerUtil.newArrayList();
@@ -141,9 +141,9 @@ public class ImportMavenRepositoriesTask implements Runnable {
     });
   }
 
-  @NotNull
-  private static Collection<? extends GrClosableBlock> findClosableBlocks(@NotNull final PsiElement element,
-                                                                          @NotNull final String... blockNames) {
+  @Nonnull
+  private static Collection<? extends GrClosableBlock> findClosableBlocks(@Nonnull final PsiElement element,
+                                                                          @Nonnull final String... blockNames) {
     List<GrMethodCall> methodCalls = PsiTreeUtil.getChildrenOfTypeAsList(element, GrMethodCall.class);
     return ContainerUtil.mapNotNull(methodCalls, new Function<GrMethodCall, GrClosableBlock>() {
       @Override
@@ -156,7 +156,7 @@ public class ImportMavenRepositoriesTask implements Runnable {
     });
   }
 
-  @NotNull
+  @Nonnull
   private static Collection<? extends MavenRemoteRepository> findMavenRemoteRepositories(@Nullable GrClosableBlock repositoriesBlock) {
     Set<MavenRemoteRepository> myRemoteRepositories = ContainerUtil.newHashSet();
     for (GrMethodCall repo : PsiTreeUtil

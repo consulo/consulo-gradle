@@ -17,7 +17,8 @@ package org.jetbrains.plugins.gradle.service.resolve.dsl;
 
 import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames;
 import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
@@ -39,7 +40,7 @@ import com.intellij.psi.util.InheritanceUtil;
  */
 public class GradleDslAnnotator implements Annotator {
   @Override
-  public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+  public void annotate(@Nonnull PsiElement element, @Nonnull AnnotationHolder holder) {
     if (element instanceof GrReferenceExpression) {
       GrReferenceExpression referenceExpression = (GrReferenceExpression)element;
       final GrExpression qualifier = ResolveUtil.getSelfOrWithQualifier(referenceExpression);

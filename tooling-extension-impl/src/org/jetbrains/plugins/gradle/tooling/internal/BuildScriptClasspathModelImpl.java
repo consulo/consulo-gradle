@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.internal.ImmutableDomainObjectSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.model.BuildScriptClasspathModel;
 import org.jetbrains.plugins.gradle.model.ClasspathEntryModel;
 
@@ -34,9 +34,9 @@ public class BuildScriptClasspathModelImpl implements BuildScriptClasspathModel
 {
 
   private final List<ClasspathEntryModel> myClasspathEntries;
-  @Nullable
+  @javax.annotation.Nullable
   private File gradleHomeDir;
-  @NotNull
+  @Nonnull
   private String myGradleVersion;
 
   public BuildScriptClasspathModelImpl() {
@@ -52,21 +52,21 @@ public class BuildScriptClasspathModelImpl implements BuildScriptClasspathModel
     gradleHomeDir = file;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public File getGradleHomeDir() {
     return gradleHomeDir;
   }
 
-  public void add(@NotNull ClasspathEntryModel classpathEntryModel) {
+  public void add(@Nonnull ClasspathEntryModel classpathEntryModel) {
     myClasspathEntries.add(classpathEntryModel);
   }
 
-  public void setGradleVersion(@NotNull String gradleVersion) {
+  public void setGradleVersion(@Nonnull String gradleVersion) {
     myGradleVersion = gradleVersion;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getGradleVersion() {
     return myGradleVersion;

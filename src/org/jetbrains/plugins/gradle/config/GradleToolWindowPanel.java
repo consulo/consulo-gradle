@@ -10,7 +10,7 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.SideBorder;
 import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.ui.UIUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 import org.jetbrains.plugins.gradle.ui.RichTextControlBuilder;
@@ -50,7 +50,7 @@ public abstract class GradleToolWindowPanel extends SimpleToolWindowPanel {
   private final Project myProject;
   private final String  myPlace;
 
-  protected GradleToolWindowPanel(@NotNull Project project, @NotNull String place) {
+  protected GradleToolWindowPanel(@Nonnull Project project, @Nonnull String place) {
     super(true);
     myProject = project;
     myPlace = place;
@@ -106,7 +106,7 @@ public abstract class GradleToolWindowPanel extends SimpleToolWindowPanel {
   /**
    * @return    list of UI controls to be displayed vertically at the toolbar
    */
-  @NotNull
+  @Nonnull
   protected List<JComponent> getToolbarControls() {
     return Collections.emptyList();
   }
@@ -126,7 +126,7 @@ public abstract class GradleToolWindowPanel extends SimpleToolWindowPanel {
     }
   }
 
-  @NotNull
+  @Nonnull
   public Project getProject() {
     return myProject;
   }
@@ -134,7 +134,7 @@ public abstract class GradleToolWindowPanel extends SimpleToolWindowPanel {
   /**
    * @return    GUI control to be displayed at the current tab
    */
-  @NotNull
+  @Nonnull
   protected abstract JComponent buildContent();
   
   /**

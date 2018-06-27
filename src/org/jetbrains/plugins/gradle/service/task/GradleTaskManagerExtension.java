@@ -19,8 +19,8 @@ import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.externalSystem.model.ExternalSystemException;
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
 
 import java.util.List;
@@ -33,15 +33,15 @@ public interface GradleTaskManagerExtension {
 
   ExtensionPointName<GradleTaskManagerExtension> EP_NAME = ExtensionPointName.create("org.jetbrains.plugins.gradle.taskManager");
 
-  boolean executeTasks(@NotNull final ExternalSystemTaskId id,
-                       @NotNull final List<String> taskNames,
-                       @NotNull String projectPath,
-                       @Nullable final GradleExecutionSettings settings,
-                       @NotNull final List<String> vmOptions,
-                       @NotNull final List<String> scriptParameters,
+  boolean executeTasks(@Nonnull final ExternalSystemTaskId id,
+                       @Nonnull final List<String> taskNames,
+                       @Nonnull String projectPath,
+                       @javax.annotation.Nullable final GradleExecutionSettings settings,
+                       @Nonnull final List<String> vmOptions,
+                       @Nonnull final List<String> scriptParameters,
                        @Nullable final String debuggerSetup,
-                       @NotNull final ExternalSystemTaskNotificationListener listener) throws ExternalSystemException;
+                       @Nonnull final ExternalSystemTaskNotificationListener listener) throws ExternalSystemException;
 
-  boolean cancelTask(@NotNull ExternalSystemTaskId id, @NotNull ExternalSystemTaskNotificationListener listener)
+  boolean cancelTask(@Nonnull ExternalSystemTaskId id, @Nonnull ExternalSystemTaskNotificationListener listener)
     throws ExternalSystemException;
 }

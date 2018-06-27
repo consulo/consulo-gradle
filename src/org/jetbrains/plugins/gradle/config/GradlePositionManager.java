@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -67,19 +67,19 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
 
   private final GradleInstallationManager myLibraryManager;
 
-  public GradlePositionManager(@NotNull GradleInstallationManager manager) {
+  public GradlePositionManager(@Nonnull GradleInstallationManager manager) {
     myLibraryManager = manager;
   }
 
-  public boolean isAppropriateRuntimeName(@NotNull final String runtimeName) {
+  public boolean isAppropriateRuntimeName(@Nonnull final String runtimeName) {
     return runtimeName.startsWith(SCRIPT_CLOSURE_PREFIX) || GRADLE_CLASS_PATTERN.matcher(runtimeName).matches();
   }
 
-  public boolean isAppropriateScriptFile(@NotNull final GroovyFile scriptFile) {
+  public boolean isAppropriateScriptFile(@Nonnull final GroovyFile scriptFile) {
     return GroovyScriptUtil.isSpecificScriptFile((GroovyFile)scriptFile, GradleScriptType.INSTANCE);
   }
 
-  @NotNull
+  @Nonnull
   public String getRuntimeScriptName(GroovyFile groovyFile) {
     VirtualFile virtualFile = groovyFile.getVirtualFile();
     if (virtualFile == null) return "";
@@ -95,7 +95,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
     return className == null ? "" : className;
   }
 
-  public PsiFile getExtraScriptIfNotFound(ReferenceType refType, @NotNull String runtimeName, Project project, GlobalSearchScope scope) {
+  public PsiFile getExtraScriptIfNotFound(ReferenceType refType, @Nonnull String runtimeName, Project project, GlobalSearchScope scope) {
     String sourceFilePath = getScriptForClassName(refType);
     if (sourceFilePath == null) return null;
 
@@ -105,8 +105,8 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
     return PsiManager.getInstance(project).findFile(virtualFile);
   }
 
-  @Nullable
-  private static String getScriptForClassName(@NotNull ReferenceType refType) {
+  @javax.annotation.Nullable
+  private static String getScriptForClassName(@Nonnull ReferenceType refType) {
     try {
       final List<String> data = refType.sourcePaths(null);
       if (!data.isEmpty()) {
@@ -118,8 +118,8 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
     return null;
   }
 
-  @Nullable
-  private ClassLoader getGradleClassLoader(@NotNull final Module module) {
+  @javax.annotation.Nullable
+  private ClassLoader getGradleClassLoader(@Nonnull final Module module) {
     final Project project = module.getProject();
     return CachedValuesManager.getManager(project).getCachedValue(module, GRADLE_CLASS_LOADER, new CachedValueProvider<ClassLoader>() {
       public Result<ClassLoader> compute() {
@@ -129,7 +129,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
   }
 
   @Nullable
-  private ClassLoader createGradleClassLoader(@NotNull Module module) {
+  private ClassLoader createGradleClassLoader(@Nonnull Module module) {
     String rootProjectPath = ExternalSystemApiUtil.getExtensionSystemOption(module, ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
     if (StringUtil.isEmpty(rootProjectPath)) {
       return null;
@@ -168,7 +168,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
       return Result.create(result, ProjectRootManager.getInstance(myModule.getProject()));
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     private String calcClassName(File scriptFile) {
       final ClassLoader loader = getGradleClassLoader(myModule);
       if (loader != null) {

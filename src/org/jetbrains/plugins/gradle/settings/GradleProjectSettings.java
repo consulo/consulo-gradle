@@ -15,9 +15,11 @@
  */
 package org.jetbrains.plugins.gradle.settings;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.externalSystem.settings.ExternalProjectSettings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
@@ -34,7 +36,7 @@ public class GradleProjectSettings extends ExternalProjectSettings {
     return myGradleHome;
   }
 
-  public void setGradleHome(@Nullable String gradleHome) {
+  public void setGradleHome(@javax.annotation.Nullable String gradleHome) {
     myGradleHome = gradleHome;
   }
 
@@ -43,7 +45,7 @@ public class GradleProjectSettings extends ExternalProjectSettings {
     return distributionType;
   }
 
-  public void setDistributionType(@Nullable DistributionType distributionType) {
+  public void setDistributionType(@javax.annotation.Nullable DistributionType distributionType) {
     this.distributionType = distributionType;
   }
 
@@ -55,7 +57,7 @@ public class GradleProjectSettings extends ExternalProjectSettings {
     this.disableWrapperSourceDistributionNotification = disableWrapperSourceDistributionNotification;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public ExternalProjectSettings clone() {
     GradleProjectSettings result = new GradleProjectSettings();

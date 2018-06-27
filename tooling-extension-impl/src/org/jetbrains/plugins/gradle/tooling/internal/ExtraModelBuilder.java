@@ -18,7 +18,7 @@ package org.jetbrains.plugins.gradle.tooling.internal;
 import org.gradle.api.Project;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
 import org.gradle.util.GradleVersion;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.annotations.TestOnly;
 import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
@@ -36,7 +36,7 @@ public class ExtraModelBuilder implements ToolingModelBuilder {
   private static ServiceLoader<ModelBuilderService> buildersLoader =
     ServiceLoader.load(ModelBuilderService.class, ExtraModelBuilder.class.getClassLoader());
 
-  @NotNull
+  @Nonnull
   private final GradleVersion myCurrentGradleVersion;
 
   public ExtraModelBuilder() {
@@ -44,7 +44,7 @@ public class ExtraModelBuilder implements ToolingModelBuilder {
   }
 
   @TestOnly
-  public ExtraModelBuilder(@NotNull GradleVersion gradleVersion) {
+  public ExtraModelBuilder(@Nonnull GradleVersion gradleVersion) {
     this.myCurrentGradleVersion = gradleVersion;
   }
 
@@ -73,7 +73,7 @@ public class ExtraModelBuilder implements ToolingModelBuilder {
     throw new IllegalArgumentException("Unsupported model: " + modelName);
   }
 
-  private boolean isVersionMatch(@NotNull ModelBuilderService builderService) {
+  private boolean isVersionMatch(@Nonnull ModelBuilderService builderService) {
     TargetVersions targetVersions = builderService.getClass().getAnnotation(TargetVersions.class);
     if (targetVersions == null || targetVersions.value() == null || targetVersions.value().isEmpty()) return true;
 
@@ -97,11 +97,11 @@ public class ExtraModelBuilder implements ToolingModelBuilder {
     }
   }
 
-  private static int compare(@NotNull GradleVersion gradleVersion, @NotNull String otherGradleVersion, boolean checkBaseVersions) {
+  private static int compare(@Nonnull GradleVersion gradleVersion, @Nonnull String otherGradleVersion, boolean checkBaseVersions) {
     return gradleVersion.compareTo(adjust(GradleVersion.version(otherGradleVersion), checkBaseVersions));
   }
 
-  private static GradleVersion adjust(@NotNull GradleVersion version, boolean checkBaseVersions) {
+  private static GradleVersion adjust(@Nonnull GradleVersion version, boolean checkBaseVersions) {
     return checkBaseVersions ? version.getBaseVersion() : version;
   }
 }

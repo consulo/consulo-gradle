@@ -34,8 +34,8 @@ import org.gradle.plugins.ide.idea.model.IdeaModule;
 import org.gradle.plugins.ide.idea.model.ModuleLibrary;
 import org.gradle.plugins.ide.idea.model.Path;
 import org.gradle.util.GradleVersion;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.model.BuildScriptClasspathModel;
 import org.jetbrains.plugins.gradle.model.ClasspathEntryModel;
 import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
@@ -131,9 +131,9 @@ public class ModelBuildScriptClasspathBuilderImpl implements ModelBuilderService
     return buildScriptClasspath;
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+  public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
     return ErrorMessageBuilder.create(
       project, e, "Project build classpath resolve errors"
     ).withDescription("Unable to resolve additional buildscript classpath dependencies");

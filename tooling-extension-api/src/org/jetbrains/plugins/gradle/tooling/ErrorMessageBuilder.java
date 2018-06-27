@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.gradle.tooling;
 
 import org.gradle.api.Project;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.io.File;
 
@@ -30,26 +30,28 @@ public class ErrorMessageBuilder {
   public static final String NAV_TAG = "<ij_nav>";
   public static final String EOL_TAG = "<eol>";
 
-  @NotNull private final Project myProject;
+  @Nonnull
+  private final Project myProject;
   @Nullable private final Exception myException;
-  @NotNull private final String myGroup;
+  @Nonnull
+  private final String myGroup;
   @Nullable private String myDescription;
 
-  private ErrorMessageBuilder(@NotNull Project project, @Nullable Exception exception, @NotNull String group) {
+  private ErrorMessageBuilder(@Nonnull Project project, @javax.annotation.Nullable Exception exception, @Nonnull String group) {
     myProject = project;
     myException = exception;
     myGroup = group;
   }
 
-  public static ErrorMessageBuilder create(@NotNull Project project, @NotNull String group) {
+  public static ErrorMessageBuilder create(@Nonnull Project project, @Nonnull String group) {
     return new ErrorMessageBuilder(project, null, group);
   }
 
-  public static ErrorMessageBuilder create(@NotNull Project project, @Nullable Exception exception, @NotNull String group) {
+  public static ErrorMessageBuilder create(@Nonnull Project project, @javax.annotation.Nullable Exception exception, @Nonnull String group) {
     return new ErrorMessageBuilder(project, exception, group);
   }
 
-  public ErrorMessageBuilder withDescription(@NotNull String description) {
+  public ErrorMessageBuilder withDescription(@Nonnull String description) {
     myDescription = description;
     return this;
   }
@@ -70,7 +72,7 @@ public class ErrorMessageBuilder {
   }
 
 
-  private static String getErrorMessage(@NotNull Throwable e) {
+  private static String getErrorMessage(@Nonnull Throwable e) {
     StringBuilder buf = new StringBuilder();
     Throwable cause = e;
     while (cause != null) {

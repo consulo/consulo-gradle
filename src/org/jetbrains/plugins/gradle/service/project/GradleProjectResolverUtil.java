@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.gradle.service.project;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.externalSystem.model.DataNode;
 import com.intellij.openapi.externalSystem.model.ProjectKeys;
 import com.intellij.openapi.externalSystem.model.project.LibraryData;
@@ -11,7 +11,7 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 
 public class GradleProjectResolverUtil
 {
-	public static boolean linkProjectLibrary(@Nullable DataNode<ProjectData> ideProject, @NotNull final LibraryData library)
+	public static boolean linkProjectLibrary(@Nullable DataNode<ProjectData> ideProject, @Nonnull final LibraryData library)
 	{
 		if(ideProject == null)
 		{

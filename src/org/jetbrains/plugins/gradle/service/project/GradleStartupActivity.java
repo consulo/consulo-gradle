@@ -18,10 +18,10 @@ package org.jetbrains.plugins.gradle.service.project;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import javax.annotation.Nonnull;
 import javax.swing.event.HyperlinkEvent;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
@@ -52,16 +52,16 @@ public class GradleStartupActivity implements StartupActivity {
   private static final String DO_NOT_SHOW_EVENT_DESCRIPTION = "do.not.show";
 
   @Override
-  public void runActivity(@NotNull Project project) {
+  public void runActivity(@Nonnull Project project) {
     configureBuildClasspath(project);
     showNotificationForUnlinkedGradleProject(project);
   }
 
-  private static void configureBuildClasspath(@NotNull final Project project) {
+  private static void configureBuildClasspath(@Nonnull final Project project) {
     GradleBuildClasspathManager.getInstance(project).reload();
   }
 
-  private static void showNotificationForUnlinkedGradleProject(@NotNull final Project project) {
+  private static void showNotificationForUnlinkedGradleProject(@Nonnull final Project project) {
     if (!PropertiesComponent.getInstance(project).getBoolean(SHOW_UNLINKED_GRADLE_POPUP, true)
         || !GradleSettings.getInstance(project).getLinkedProjectsSettings().isEmpty()
         || project.getUserData(ExternalSystemDataKeys.NEWLY_IMPORTED_PROJECT) == Boolean.TRUE
@@ -86,7 +86,7 @@ public class GradleStartupActivity implements StartupActivity {
         GradleBundle.message("gradle.notifications.unlinked.project.found.title"),
         message, NotificationType.INFORMATION, new NotificationListener.Adapter() {
           @Override
-          protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent e) {
+          protected void hyperlinkActivated(@Nonnull Notification notification, @Nonnull HyperlinkEvent e) {
             if (IMPORT_EVENT_DESCRIPTION.equals(e.getDescription())) {
               final ProjectDataManager projectDataManager = ServiceManager.getService(ProjectDataManager.class);
               AddModuleWizard wizard = new AddModuleWizard(null, files[0].getPath(), new GradleModuleImportProvider(projectDataManager));

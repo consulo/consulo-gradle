@@ -17,7 +17,7 @@ package org.jetbrains.plugins.gradle.tooling.internal;
 
 import org.gradle.api.Project;
 import org.gradle.util.GradleVersion;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
 import org.jetbrains.plugins.gradle.tooling.annotation.TargetVersions;
@@ -78,9 +78,9 @@ public class ExtraModelBuilderTest {
       return null;
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+    public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
       return ErrorMessageBuilder.create(project, e, "");
     }
   }
@@ -97,9 +97,9 @@ public class ExtraModelBuilderTest {
       return null;
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+    public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
       return ErrorMessageBuilder.create(project, e, "");
     }
   }
@@ -116,9 +116,9 @@ public class ExtraModelBuilderTest {
       return null;
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+    public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
       return ErrorMessageBuilder.create(project, e, "");
     }
   }
@@ -135,9 +135,9 @@ public class ExtraModelBuilderTest {
       return null;
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+    public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
       return ErrorMessageBuilder.create(project, e, "");
     }
   }

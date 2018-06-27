@@ -17,7 +17,8 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -50,10 +51,10 @@ import consulo.java.module.util.JavaClassNames;
 public class GradleTaskContributor implements GradleMethodContextContributor {
 
   @Override
-  public void process(@NotNull List<String> methodCallInfo,
-                      @NotNull PsiScopeProcessor processor,
-                      @NotNull ResolveState state,
-                      @NotNull PsiElement place) {
+  public void process(@Nonnull List<String> methodCallInfo,
+                      @Nonnull PsiScopeProcessor processor,
+                      @Nonnull ResolveState state,
+                      @Nonnull PsiElement place) {
     if (methodCallInfo.isEmpty()) return;
 
     if (methodCallInfo.size() == 1) {
@@ -84,9 +85,9 @@ public class GradleTaskContributor implements GradleMethodContextContributor {
     }
   }
 
-  private static void processTaskTypeParameter(@NotNull String methodCall, @NotNull PsiScopeProcessor processor,
-                                               @NotNull ResolveState state,
-                                               @NotNull PsiElement place) {
+  private static void processTaskTypeParameter(@Nonnull String methodCall, @Nonnull PsiScopeProcessor processor,
+                                               @Nonnull ResolveState state,
+                                               @Nonnull PsiElement place) {
     final int taskTypeParameterLevel = 3;
     PsiElement psiElement = GradleResolverUtil.findParent(place, taskTypeParameterLevel);
 
@@ -119,11 +120,11 @@ public class GradleTaskContributor implements GradleMethodContextContributor {
     }
   }
 
-  private static void processTaskAddition(@NotNull String name,
-                                          @NotNull String handlerClass,
-                                          @NotNull PsiScopeProcessor processor,
-                                          @NotNull ResolveState state,
-                                          @NotNull PsiElement place) {
+  private static void processTaskAddition(@Nonnull String name,
+                                          @Nonnull String handlerClass,
+                                          @Nonnull PsiScopeProcessor processor,
+                                          @Nonnull ResolveState state,
+                                          @Nonnull PsiElement place) {
     GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
     PsiClass psiClass = psiManager.findClassWithCache(handlerClass, place.getResolveScope());
     if (psiClass == null) {

@@ -1,11 +1,12 @@
 package org.jetbrains.plugins.gradle.config;
 
-import com.intellij.openapi.externalSystem.settings.ExternalSystemSettingsListenerAdapter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.gradle.settings.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
+import com.intellij.openapi.externalSystem.settings.ExternalSystemSettingsListenerAdapter;
 
 /**
  * @author Denis Zhdanov
@@ -16,18 +17,18 @@ public abstract class GradleSettingsListenerAdapter extends ExternalSystemSettin
 {
 
   @Override
-  public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @NotNull String linkedProjectPath) {
+  public void onGradleHomeChange(@javax.annotation.Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
   }
 
   @Override
-  public void onGradleDistributionTypeChange(DistributionType currentValue, @NotNull String linkedProjectPath) {
+  public void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath) {
   }
 
   @Override
-  public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath) {
+  public void onServiceDirectoryPathChange(@javax.annotation.Nullable String oldPath, @javax.annotation.Nullable String newPath) {
   }
 
   @Override
-  public void onGradleVmOptionsChange(@Nullable String oldOptions, @Nullable String newOptions) {
+  public void onGradleVmOptionsChange(@javax.annotation.Nullable String oldOptions, @javax.annotation.Nullable String newOptions) {
   }
 }

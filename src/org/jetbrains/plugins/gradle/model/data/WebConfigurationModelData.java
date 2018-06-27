@@ -17,7 +17,8 @@ package org.jetbrains.plugins.gradle.model.data;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.externalSystem.model.Key;
 import com.intellij.openapi.externalSystem.model.ProjectKeys;
 import com.intellij.openapi.externalSystem.model.ProjectSystemId;
@@ -31,20 +32,20 @@ public class WebConfigurationModelData extends AbstractExternalEntityData
 {
 	private static final long serialVersionUID = 1L;
 
-	@NotNull
+	@Nonnull
 	public static final Key<WebConfigurationModelData> KEY = Key.create(WebConfigurationModelData.class,
 			ProjectKeys.LIBRARY_DEPENDENCY.getProcessingWeight() + 1);
 
-	@NotNull
+	@Nonnull
 	private final List<War> myWars;
 
-	public WebConfigurationModelData(@NotNull ProjectSystemId owner, @NotNull List<War> warModels)
+	public WebConfigurationModelData(@Nonnull ProjectSystemId owner, @Nonnull List<War> warModels)
 	{
 		super(owner);
 		myWars = warModels;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<War> getWars()
 	{
 		return myWars;

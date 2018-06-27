@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.tooling.BuildActionExecuter;
 import org.gradle.tooling.ModelBuilder;
 import org.gradle.tooling.ProjectConnection;
@@ -33,8 +35,8 @@ import org.gradle.tooling.model.build.BuildEnvironment;
 import org.gradle.tooling.model.idea.BasicIdeaProject;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.remote.impl.GradleLibraryNamesMixer;
 import org.jetbrains.plugins.gradle.settings.ClassHolder;
@@ -73,7 +75,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 
 	private static final Logger LOG = Logger.getInstance("#" + GradleProjectResolver.class.getName());
 
-	@NotNull
+	@Nonnull
 	private final GradleExecutionHelper myHelper;
 	private final GradleLibraryNamesMixer myLibraryNamesMixer = new GradleLibraryNamesMixer();
 
@@ -84,15 +86,15 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 		this(new GradleExecutionHelper());
 	}
 
-	public GradleProjectResolver(@NotNull GradleExecutionHelper helper)
+	public GradleProjectResolver(@Nonnull GradleExecutionHelper helper)
 	{
 		myHelper = helper;
 	}
 
 	@Nullable
 	@Override
-	public DataNode<ProjectData> resolveProjectInfo(@NotNull final ExternalSystemTaskId id, @NotNull final String projectPath,
-			final boolean isPreviewMode, @Nullable final GradleExecutionSettings settings, @NotNull final ExternalSystemTaskNotificationListener
+	public DataNode<ProjectData> resolveProjectInfo(@Nonnull final ExternalSystemTaskId id, @Nonnull final String projectPath,
+			final boolean isPreviewMode, @Nullable final GradleExecutionSettings settings, @Nonnull final ExternalSystemTaskNotificationListener
 			listener) throws ExternalSystemException, IllegalArgumentException, IllegalStateException
 	{
 		if(settings != null)
@@ -112,15 +114,15 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 	}
 
 	@Override
-	public boolean cancelTask(@NotNull ExternalSystemTaskId id, @NotNull ExternalSystemTaskNotificationListener listener)
+	public boolean cancelTask(@Nonnull ExternalSystemTaskId id, @Nonnull ExternalSystemTaskNotificationListener listener)
 	{
 		// TODO implement cancellation using gradle API invocation when it will be ready, see http://issues.gradle.org/browse/GRADLE-1539
 		return false;
 	}
 
-	@NotNull
-	private DataNode<ProjectData> doResolveProjectInfo(@NotNull final ProjectResolverContext resolverCtx,
-			@NotNull final GradleProjectResolverExtension projectResolverChain, boolean isBuildSrcProject) throws IllegalArgumentException,
+	@Nonnull
+	private DataNode<ProjectData> doResolveProjectInfo(@Nonnull final ProjectResolverContext resolverCtx,
+			@Nonnull final GradleProjectResolverExtension projectResolverChain, boolean isBuildSrcProject) throws IllegalArgumentException,
 			IllegalStateException
 	{
 
@@ -283,7 +285,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 	}
 
 	@Nullable
-	private static BuildEnvironment getBuildEnvironment(@NotNull ProjectResolverContext resolverCtx)
+	private static BuildEnvironment getBuildEnvironment(@Nonnull ProjectResolverContext resolverCtx)
 	{
 		try
 		{
@@ -295,7 +297,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 		}
 	}
 
-	private void handleBuildSrcProject(@NotNull final DataNode<ProjectData> resultProjectDataNode, @NotNull final ProjectConnectionDataNodeFunction
+	private void handleBuildSrcProject(@Nonnull final DataNode<ProjectData> resultProjectDataNode, @Nonnull final ProjectConnectionDataNodeFunction
 			projectConnectionDataNodeFunction)
 	{
 
@@ -345,22 +347,22 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 
 	private class ProjectConnectionDataNodeFunction implements Function<ProjectConnection, DataNode<ProjectData>>
 	{
-		@NotNull
+		@Nonnull
 		private final ExternalSystemTaskId myId;
-		@NotNull
+		@Nonnull
 		private final String myProjectPath;
 		@Nullable
 		private final GradleExecutionSettings mySettings;
-		@NotNull
+		@Nonnull
 		private final ExternalSystemTaskNotificationListener myListener;
 		private final boolean myIsPreviewMode;
-		@NotNull
+		@Nonnull
 		private final GradleProjectResolverExtension myProjectResolverChain;
 		private final boolean myIsBuildSrcProject;
 
-		public ProjectConnectionDataNodeFunction(@NotNull ExternalSystemTaskId id, @NotNull String projectPath,
-				@Nullable GradleExecutionSettings settings, @NotNull ExternalSystemTaskNotificationListener listener, boolean isPreviewMode,
-				@NotNull GradleProjectResolverExtension projectResolverChain, boolean isBuildSrcProject)
+		public ProjectConnectionDataNodeFunction(@Nonnull ExternalSystemTaskId id, @Nonnull String projectPath,
+				@javax.annotation.Nullable GradleExecutionSettings settings, @Nonnull ExternalSystemTaskNotificationListener listener, boolean isPreviewMode,
+				@Nonnull GradleProjectResolverExtension projectResolverChain, boolean isBuildSrcProject)
 		{
 			myId = id;
 			myProjectPath = projectPath;
@@ -388,7 +390,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 	}
 
 
-	@NotNull
+	@Nonnull
 	public static GradleProjectResolverExtension createProjectResolverChain(@Nullable final GradleExecutionSettings settings)
 	{
 		GradleProjectResolverExtension projectResolverChain;

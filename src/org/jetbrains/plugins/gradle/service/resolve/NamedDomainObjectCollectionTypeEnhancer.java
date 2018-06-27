@@ -18,7 +18,6 @@ package org.jetbrains.plugins.gradle.service.resolve;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.extensions.GroovyMapContentProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -32,7 +31,7 @@ import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrReferenceTypeEnhanc
  */
 public class NamedDomainObjectCollectionTypeEnhancer extends GrReferenceTypeEnhancer {
   @Override
-  public PsiType getReferenceType(GrReferenceExpression ref, @Nullable PsiElement resolved) {
+  public PsiType getReferenceType(GrReferenceExpression ref, @javax.annotation.Nullable PsiElement resolved) {
     if (resolved != null) return null;
 
     GrExpression qualifierExpression = ref.getQualifierExpression();

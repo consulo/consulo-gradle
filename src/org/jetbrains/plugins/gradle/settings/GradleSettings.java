@@ -17,8 +17,8 @@ package org.jetbrains.plugins.gradle.settings;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.config.DelegatingGradleSettingsListenerAdapter;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -47,26 +47,26 @@ public class GradleSettings extends AbstractExternalSystemSettings<GradleSetting
 	private String myGradleVmOptions;
 	private boolean myIsOfflineWork;
 
-	public GradleSettings(@NotNull Project project)
+	public GradleSettings(@Nonnull Project project)
 	{
 		super(GradleSettingsListener.TOPIC, project);
 	}
 
-	@NotNull
-	public static GradleSettings getInstance(@NotNull Project project)
+	@Nonnull
+	public static GradleSettings getInstance(@Nonnull Project project)
 	{
 		return ServiceManager.getService(project, GradleSettings.class);
 	}
 
 	@Override
-	public void subscribe(@NotNull ExternalSystemSettingsListener<GradleProjectSettings> listener)
+	public void subscribe(@Nonnull ExternalSystemSettingsListener<GradleProjectSettings> listener)
 	{
 		getProject().getMessageBus().connect(getProject()).subscribe(GradleSettingsListener.TOPIC, new DelegatingGradleSettingsListenerAdapter
 				(listener));
 	}
 
 	@Override
-	protected void copyExtraSettingsFrom(@NotNull GradleSettings settings)
+	protected void copyExtraSettingsFrom(@Nonnull GradleSettings settings)
 	{
 		myServiceDirectoryPath = settings.getServiceDirectoryPath();
 		myGradleVmOptions = settings.getGradleVmOptions();
@@ -144,7 +144,7 @@ public class GradleSettings extends AbstractExternalSystemSettings<GradleSetting
 	}
 
 	@Override
-	protected void checkSettings(@NotNull GradleProjectSettings old, @NotNull GradleProjectSettings current)
+	protected void checkSettings(@Nonnull GradleProjectSettings old, @Nonnull GradleProjectSettings current)
 	{
 		if(!Comparing.equal(old.getGradleHome(), current.getGradleHome()))
 		{

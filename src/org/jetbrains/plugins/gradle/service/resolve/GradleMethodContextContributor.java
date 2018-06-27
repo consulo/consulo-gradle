@@ -19,7 +19,7 @@ import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 
 import java.util.List;
@@ -57,8 +57,8 @@ public interface GradleMethodContextContributor {
    * @param state          current resolve state
    * @param place          the original element from which the tree up walk was initiated.
    */
-  void process(@NotNull List<String> methodCallInfo,
-               @NotNull PsiScopeProcessor processor,
-               @NotNull ResolveState state,
-               @NotNull PsiElement place);
+  void process(@Nonnull List<String> methodCallInfo,
+               @Nonnull PsiScopeProcessor processor,
+               @Nonnull ResolveState state,
+               @Nonnull PsiElement place);
 }

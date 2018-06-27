@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.service.project;
 
 import org.gradle.api.internal.LocationAwareException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class BaseProjectImportErrorHandlerTest {
     String locationMsg = "Build file '~/project/build.gradle' line: 86";
 
     RuntimeException locationError = new RuntimeException(locationMsg, rootCause) {
-      @NotNull
+      @Nonnull
       @Override
       public String toString() {
         return LocationAwareException.class.getName() + ": " + super.toString();

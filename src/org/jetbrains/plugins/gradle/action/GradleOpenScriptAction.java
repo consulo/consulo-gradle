@@ -1,15 +1,15 @@
 package org.jetbrains.plugins.gradle.action;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.util.ExternalSystemBundle;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 
@@ -31,11 +31,11 @@ public class GradleOpenScriptAction extends AbstractGradleLinkedProjectAction im
   }
 
   @Override
-  protected void doUpdate(@NotNull AnActionEvent event, @NotNull Project project, @NotNull String linkedProjectPath) {
+  protected void doUpdate(@Nonnull AnActionEvent event, @Nonnull Project project, @Nonnull String linkedProjectPath) {
   }
 
   @Override
-  protected void doActionPerformed(@NotNull AnActionEvent event, @NotNull Project project, @NotNull String linkedProjectPath) {
+  protected void doActionPerformed(@Nonnull AnActionEvent event, @Nonnull Project project, @Nonnull String linkedProjectPath) {
     final VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(linkedProjectPath);
     if (virtualFile == null) {
       LOG.warn(String.format("Can't obtain virtual file for the target file path: '%s'", linkedProjectPath));

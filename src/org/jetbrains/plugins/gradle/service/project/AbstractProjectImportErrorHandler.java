@@ -18,8 +18,8 @@ package org.jetbrains.plugins.gradle.service.project;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.externalSystem.model.ExternalSystemException;
 import com.intellij.openapi.externalSystem.model.LocationAwareExternalSystemException;
 import com.intellij.openapi.util.Pair;
@@ -52,12 +52,12 @@ public abstract class AbstractProjectImportErrorHandler
 
 	public static final String EMPTY_LINE = "\n\n";
 
-	@Nullable
-	public abstract ExternalSystemException getUserFriendlyError(@NotNull Throwable error, @NotNull String projectPath,
-			@Nullable String buildFilePath);
+	@javax.annotation.Nullable
+	public abstract ExternalSystemException getUserFriendlyError(@Nonnull Throwable error, @Nonnull String projectPath,
+			@javax.annotation.Nullable String buildFilePath);
 
-	@NotNull
-	public Pair<Throwable, String> getRootCauseAndLocation(@NotNull Throwable error)
+	@Nonnull
+	public Pair<Throwable, String> getRootCauseAndLocation(@Nonnull Throwable error)
 	{
 		Throwable rootCause = error;
 		String location = null;
@@ -77,8 +77,8 @@ public abstract class AbstractProjectImportErrorHandler
 		return Pair.create(rootCause, location);
 	}
 
-	@Nullable
-	public String getLocationFrom(@NotNull Throwable error)
+	@javax.annotation.Nullable
+	public String getLocationFrom(@Nonnull Throwable error)
 	{
 		String errorToString = error.toString();
 		if(errorToString.contains("LocationAwareException"))
@@ -96,8 +96,8 @@ public abstract class AbstractProjectImportErrorHandler
 		return null;
 	}
 
-	@NotNull
-	public ExternalSystemException createUserFriendlyError(@NotNull String msg, @Nullable String location, @NotNull String... quickFixes)
+	@Nonnull
+	public ExternalSystemException createUserFriendlyError(@Nonnull String msg, @Nullable String location, @Nonnull String... quickFixes)
 	{
 		String newMsg = msg;
 		if(!newMsg.isEmpty() && Character.isLowerCase(newMsg.charAt(0)))
@@ -119,7 +119,7 @@ public abstract class AbstractProjectImportErrorHandler
 
 
 	@Nullable
-	private static Pair<String, Integer> getErrorLocation(@NotNull String location)
+	private static Pair<String, Integer> getErrorLocation(@Nonnull String location)
 	{
 		Matcher matcher = ERROR_LOCATION_PATTERN.matcher(location);
 		if(matcher.matches())
@@ -147,8 +147,8 @@ public abstract class AbstractProjectImportErrorHandler
 	}
 
 
-	@Nullable
-	public String parseMissingMethod(@NotNull String rootCauseText)
+	@javax.annotation.Nullable
+	public String parseMissingMethod(@Nonnull String rootCauseText)
 	{
 		Matcher matcher = MISSING_METHOD_PATTERN.matcher(rootCauseText);
 		return matcher.find() ? matcher.group(1) : null;

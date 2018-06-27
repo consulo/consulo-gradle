@@ -19,8 +19,7 @@ import com.intellij.openapi.externalSystem.model.Key;
 import com.intellij.openapi.externalSystem.model.ProjectKeys;
 import com.intellij.openapi.externalSystem.model.ProjectSystemId;
 import com.intellij.openapi.externalSystem.model.project.AbstractExternalEntityData;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 import java.io.File;
 import java.util.Collections;
@@ -34,23 +33,23 @@ import java.util.Set;
 public class WarModelData extends AbstractExternalEntityData {
   private static final long serialVersionUID = 1L;
 
-  @NotNull
+  @Nonnull
   public static final Key<WarModelData> KEY = Key.create(WarModelData.class, ProjectKeys.LIBRARY_DEPENDENCY.getProcessingWeight() + 1);
-  @NotNull
+  @Nonnull
   private final String myWebAppDirName;
-  @NotNull
+  @Nonnull
   private final File myWebAppDir;
-  @Nullable
+  @javax.annotation.Nullable
   private File myWebXml;
-  @NotNull
+  @Nonnull
   private Map<String, Set<String>> myWebRoots;
-  @NotNull
+  @Nonnull
   private Set<File> myClasspath;
-  @Nullable
+  @javax.annotation.Nullable
   private String myManifestContent;
 
 
-  public WarModelData(@NotNull ProjectSystemId owner, @NotNull String webAppDirName, @NotNull File webAppDir) {
+  public WarModelData(@Nonnull ProjectSystemId owner, @Nonnull String webAppDirName, @Nonnull File webAppDir) {
     super(owner);
     myWebAppDirName = webAppDirName;
     myWebAppDir = webAppDir;
@@ -58,48 +57,48 @@ public class WarModelData extends AbstractExternalEntityData {
     myClasspath = Collections.emptySet();
   }
 
-  @NotNull
+  @Nonnull
   public String getWebAppDirName() {
     return myWebAppDirName;
   }
 
-  @NotNull
+  @Nonnull
   public File getWebAppDir() {
     return myWebAppDir;
   }
 
-  public void setWebXml(@Nullable File webXml) {
+  public void setWebXml(@javax.annotation.Nullable File webXml) {
     myWebXml = webXml;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public File getWebXml() {
     return myWebXml;
   }
 
-  public void setWebRoots(@Nullable Map<String, Set<String>> webRoots) {
+  public void setWebRoots(@javax.annotation.Nullable Map<String, Set<String>> webRoots) {
     myWebRoots = webRoots == null ? Collections.<String, Set<String>>emptyMap() : webRoots;
   }
 
-  @NotNull
+  @Nonnull
   public Map<String, Set<String>> getWebRoots() {
     return myWebRoots;
   }
 
-  public void setClasspath(@Nullable Set<File> classpath) {
+  public void setClasspath(@javax.annotation.Nullable Set<File> classpath) {
     myClasspath = classpath == null ? Collections.<File>emptySet() : classpath;
   }
 
-  @NotNull
+  @Nonnull
   public Set<File> getClasspath() {
     return myClasspath;
   }
 
-  public void setManifestContent(@Nullable String manifestContent) {
+  public void setManifestContent(@javax.annotation.Nullable String manifestContent) {
     myManifestContent = manifestContent;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public String getManifestContent() {
     return myManifestContent;
   }

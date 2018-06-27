@@ -1,15 +1,9 @@
 package org.jetbrains.plugins.gradle.config;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 
-import java.io.File;
+import javax.annotation.Nonnull;
 
 /**
  * Encapsulates functionality of patching problems from the previous gradle integration releases.
@@ -22,11 +16,11 @@ import java.io.File;
 public class GradlePatcher {
 
   @SuppressWarnings("MethodMayBeStatic")
-  public void patch(@NotNull Project project) {
+  public void patch(@Nonnull Project project) {
     patchGradleHomeIfNecessary(project);
   }
 
-  private static void patchGradleHomeIfNecessary(@NotNull Project project) {
+  private static void patchGradleHomeIfNecessary(@Nonnull Project project) {
     // Old gradle integration didn't save gradle home at project-local settings (only default project has that information).
     
     final Project defaultProject = ProjectManager.getInstance().getDefaultProject();

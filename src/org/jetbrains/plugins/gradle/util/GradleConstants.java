@@ -1,7 +1,8 @@
 package org.jetbrains.plugins.gradle.util;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.externalSystem.model.ProjectSystemId;
 
 /**
@@ -13,36 +14,36 @@ import com.intellij.openapi.externalSystem.model.ProjectSystemId;
 public class GradleConstants
 {
 
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final ProjectSystemId SYSTEM_ID = new ProjectSystemId("GRADLE");
 
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final String EXTENSION = "gradle";
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final String DEFAULT_SCRIPT_NAME = "build.gradle";
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final String SETTINGS_FILE_NAME = "settings.gradle";
 
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final String SYSTEM_DIRECTORY_PATH_KEY = "GRADLE_USER_HOME";
 
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final String TOOL_WINDOW_TOOLBAR_PLACE = "GRADLE_SYNC_CHANGES_TOOLBAR";
 
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final String HELP_TOPIC_TOOL_WINDOW = "reference.toolwindows.gradle";
 
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final String OFFLINE_MODE_CMD_OPTION = "--offline";
-	@NotNull
+	@Nonnull
 	@NonNls
 	public static final String INIT_SCRIPT_CMD_OPTION = "--init-script";
 

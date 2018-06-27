@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.List;
 
 import org.gradle.tooling.GradleConnector;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.openapi.externalSystem.model.ProjectSystemId;
 import com.intellij.openapi.externalSystem.service.settings.ExternalSystemConfigLocator;
@@ -26,7 +26,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class GradleConfigLocator implements ExternalSystemConfigLocator
 {
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ProjectSystemId getTargetExternalSystemId()
 	{
@@ -35,7 +35,7 @@ public class GradleConfigLocator implements ExternalSystemConfigLocator
 
 	@Nullable
 	@Override
-	public VirtualFile adjust(@NotNull VirtualFile configPath)
+	public VirtualFile adjust(@Nonnull VirtualFile configPath)
 	{
 		if(!configPath.isDirectory())
 		{
@@ -63,9 +63,9 @@ public class GradleConfigLocator implements ExternalSystemConfigLocator
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public List<VirtualFile> findAll(@NotNull ExternalProjectSettings externalProjectSettings)
+	public List<VirtualFile> findAll(@Nonnull ExternalProjectSettings externalProjectSettings)
 	{
 		List<VirtualFile> list = ContainerUtil.newArrayList();
 		for(String path : externalProjectSettings.getModules())

@@ -21,8 +21,8 @@ import com.intellij.openapi.externalSystem.model.ExternalSystemException;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import org.gradle.tooling.UnsupportedVersionException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -37,10 +37,10 @@ public class BaseProjectImportErrorHandler extends AbstractProjectImportErrorHan
 
   private static final Logger LOG = Logger.getInstance("#" + BaseProjectImportErrorHandler.class.getName());
 
-  @NotNull
+  @Nonnull
   @Override
-  public ExternalSystemException getUserFriendlyError(@NotNull Throwable error,
-                                                      @NotNull String projectPath,
+  public ExternalSystemException getUserFriendlyError(@Nonnull Throwable error,
+                                                      @Nonnull String projectPath,
                                                       @Nullable String buildFilePath) {
     if (error instanceof ExternalSystemException) {
       // This is already a user-friendly error.

@@ -23,7 +23,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -41,14 +41,14 @@ import java.util.List;
  */
 public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
 
-  @NotNull
+  @Nonnull
   @Override
   protected BaseInspectionVisitor buildVisitor() {
     return new MyVisitor();
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getGroupDisplayName() {
     return PROBABLE_BUGS;
@@ -61,7 +61,7 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getDisplayName() {
     return GradleInspectionBundle.message("multiple.repository.urls");
@@ -98,8 +98,8 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
     }
   }
 
-  @NotNull
-  static List<GrCallExpression> findUrlCallExpressions(@NotNull GrClosableBlock closure) {
+  @Nonnull
+  static List<GrCallExpression> findUrlCallExpressions(@Nonnull GrClosableBlock closure) {
     GrCallExpression[] applicationStatements = PsiTreeUtil.getChildrenOfType(closure, GrCallExpression.class);
     if (applicationStatements == null) return Collections.emptyList();
 

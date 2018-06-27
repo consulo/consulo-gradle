@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.ExternalSystemManager;
@@ -42,23 +43,23 @@ import consulo.vfs.util.ArchiveVfsUtil;
  * @since 12/27/13
  */
 public class GradleBuildClasspathManager {
-  @NotNull
+  @Nonnull
   private final Project myProject;
 
-  @NotNull
+  @Nonnull
   private volatile List<VirtualFile> allFilesCache;
 
-  @NotNull
+  @Nonnull
   private final AtomicReference<Map<String/*module path*/, List<VirtualFile> /*module build classpath*/>> myClasspathMap
     = new AtomicReference<Map<String, List<VirtualFile>>>(new HashMap<String, List<VirtualFile>>());
 
-  public GradleBuildClasspathManager(@NotNull Project project) {
+  public GradleBuildClasspathManager(@Nonnull Project project) {
     myProject = project;
     reload();
   }
 
-  @NotNull
-  public static GradleBuildClasspathManager getInstance(@NotNull Project project) {
+  @Nonnull
+  public static GradleBuildClasspathManager getInstance(@Nonnull Project project) {
     return ServiceManager.getService(project, GradleBuildClasspathManager.class);
   }
 
@@ -102,13 +103,13 @@ public class GradleBuildClasspathManager {
     allFilesCache = ContainerUtil.newArrayList(set);
   }
 
-  @NotNull
+  @Nonnull
   public List<VirtualFile> getAllClasspathEntries() {
     return allFilesCache;
   }
 
-  @NotNull
-  public List<VirtualFile> getModuleClasspathEntries(@NotNull String externalModulePath) {
+  @Nonnull
+  public List<VirtualFile> getModuleClasspathEntries(@Nonnull String externalModulePath) {
     List<VirtualFile> virtualFiles = myClasspathMap.get().get(externalModulePath);
     return virtualFiles == null ? Collections.<VirtualFile>emptyList() : virtualFiles;
   }

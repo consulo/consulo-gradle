@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.gradle.tooling.builder;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.scala.ScalaPlugin;
@@ -22,8 +24,8 @@ import org.gradle.api.tasks.scala.ScalaCompile;
 import org.gradle.api.tasks.scala.ScalaCompileOptions;
 import org.gradle.api.tasks.scala.ScalaForkOptions;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.model.scala.ScalaModel;
 import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
@@ -66,17 +68,17 @@ public class ScalaModelBuilderImpl implements ModelBuilderService {
     return scalaModel;
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+  public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
     return ErrorMessageBuilder.create(
       project, e, "Scala import errors"
     ).withDescription("Unable to build Scala project configuration");
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Contract("null -> null")
-  private static ScalaCompileOptionsImpl create(@Nullable ScalaCompileOptions options) {
+  private static ScalaCompileOptionsImpl create(@javax.annotation.Nullable ScalaCompileOptions options) {
     if (options == null) return null;
 
     ScalaCompileOptionsImpl result = new ScalaCompileOptionsImpl();
@@ -101,7 +103,7 @@ public class ScalaModelBuilderImpl implements ModelBuilderService {
     return result;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Contract("null -> null")
   private static ScalaForkOptionsImpl create(@Nullable ScalaForkOptions forkOptions) {
     if (forkOptions == null) return null;

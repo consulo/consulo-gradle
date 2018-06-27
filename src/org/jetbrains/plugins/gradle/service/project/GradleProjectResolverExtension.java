@@ -19,10 +19,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.GradleManager;
 import com.intellij.execution.configurations.SimpleJavaParameters;
 import com.intellij.externalSystem.JavaProjectData;
@@ -51,23 +53,23 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer
 
 	ExtensionPointName<GradleProjectResolverExtension> EP_NAME = ExtensionPointName.create("org.jetbrains.plugins.gradle.projectResolve");
 
-	void setProjectResolverContext(@NotNull ProjectResolverContext projectResolverContext);
+	void setProjectResolverContext(@Nonnull ProjectResolverContext projectResolverContext);
 
-	void setNext(@NotNull GradleProjectResolverExtension projectResolverExtension);
+	void setNext(@Nonnull GradleProjectResolverExtension projectResolverExtension);
 
 	@Nullable
 	GradleProjectResolverExtension getNext();
 
-	@NotNull
+	@Nonnull
 	ProjectData createProject();
 
-	@NotNull
+	@Nonnull
 	JavaProjectData createJavaProjectData();
 
-	void populateProjectExtraModels(@NotNull IdeaProject gradleProject, @NotNull DataNode<ProjectData> ideProject);
+	void populateProjectExtraModels(@Nonnull IdeaProject gradleProject, @Nonnull DataNode<ProjectData> ideProject);
 
-	@NotNull
-	ModuleData createModule(@NotNull IdeaModule gradleModule, @NotNull ProjectData projectData);
+	@Nonnull
+	ModuleData createModule(@Nonnull IdeaModule gradleModule, @Nonnull ProjectData projectData);
 
 	/**
 	 * Populates extra models of the given ide module on the basis of the information provided by {@link org.jetbrains.plugins.gradle.tooling
@@ -75,7 +77,7 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer
 	 *
 	 * @param ideModule corresponding module from intellij gradle plugin domain
 	 */
-	void populateModuleExtraModels(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule);
+	void populateModuleExtraModels(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule);
 
 	/**
 	 * Populates {@link com.intellij.openapi.externalSystem.model.ProjectKeys#CONTENT_ROOT) content roots} of the given ide module on the basis of
@@ -86,21 +88,21 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer
 	 * @param ideModule    corresponding module from intellij gradle plugin domain
 	 * @throws IllegalArgumentException if given gradle module contains invalid data
 	 */
-	void populateModuleContentRoots(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule);
+	void populateModuleContentRoots(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule);
 
-	void populateModuleCompileOutputSettings(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule);
+	void populateModuleCompileOutputSettings(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule);
 
-	void populateModuleDependencies(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule,
-			@NotNull DataNode<ProjectData> ideProject);
+	void populateModuleDependencies(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule,
+			@Nonnull DataNode<ProjectData> ideProject);
 
-	@NotNull
-	Collection<TaskData> populateModuleTasks(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule,
-			@NotNull DataNode<ProjectData> ideProject);
+	@Nonnull
+	Collection<TaskData> populateModuleTasks(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule,
+			@Nonnull DataNode<ProjectData> ideProject);
 
-	@NotNull
-	Collection<TaskData> filterRootProjectTasks(@NotNull List<TaskData> allTasks);
+	@Nonnull
+	Collection<TaskData> filterRootProjectTasks(@Nonnull List<TaskData> allTasks);
 
-	@NotNull
+	@Nonnull
 	Set<Class> getExtraProjectModelClasses();
 
 	/**
@@ -108,22 +110,22 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer
 	 *
 	 * @return classes to be available for gradle
 	 */
-	@NotNull
+	@Nonnull
 	Set<Class> getToolingExtensionsClasses();
 
-	@NotNull
+	@Nonnull
 	List<KeyValue<String, String>> getExtraJvmArgs();
 
-	@NotNull
+	@Nonnull
 	List<String> getExtraCommandLineArgs();
 
-	@NotNull
-	ExternalSystemException getUserFriendlyError(@NotNull Throwable error, @NotNull String projectPath, @Nullable String buildFilePath);
+	@Nonnull
+	ExternalSystemException getUserFriendlyError(@Nonnull Throwable error, @Nonnull String projectPath, @javax.annotation.Nullable String buildFilePath);
 
 	/**
 	 * Performs project configuration and other checks before the actual project import (before invocation of gradle tooling API).
 	 */
 	void preImportCheck();
 
-	void enhanceTaskProcessing(@NotNull List<String> taskNames, @Nullable String debuggerSetup, @NotNull Consumer<String> initScriptConsumer);
+	void enhanceTaskProcessing(@Nonnull List<String> taskNames, @Nullable String debuggerSetup, @Nonnull Consumer<String> initScriptConsumer);
 }

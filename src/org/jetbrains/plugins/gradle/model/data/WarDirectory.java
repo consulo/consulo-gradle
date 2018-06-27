@@ -17,7 +17,8 @@ package org.jetbrains.plugins.gradle.model.data;
 
 import java.io.Serializable;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.text.StringUtil;
 
 /**
@@ -61,15 +62,15 @@ public class WarDirectory implements Serializable
 			WEB_INF_CLASSES
 	};
 
-	@NotNull
+	@Nonnull
 	private final String myRelativePath;
 
-	WarDirectory(@NotNull final String relativePath)
+	WarDirectory(@Nonnull final String relativePath)
 	{
 		myRelativePath = getAdjustedPath(relativePath);
 	}
 
-	@NotNull
+	@Nonnull
 	public String getRelativePath()
 	{
 		return myRelativePath;
@@ -87,8 +88,8 @@ public class WarDirectory implements Serializable
 		return true;
 	}
 
-	@NotNull
-	public static WarDirectory fromPath(final @NotNull String path)
+	@Nonnull
+	public static WarDirectory fromPath(final @Nonnull String path)
 	{
 		if(StringUtil.isEmpty(path))
 		{
@@ -106,7 +107,7 @@ public class WarDirectory implements Serializable
 		return new WarDirectory(adjustedPath);
 	}
 
-	private static String getAdjustedPath(final @NotNull String path)
+	private static String getAdjustedPath(final @Nonnull String path)
 	{
 		return path.isEmpty() || path.charAt(0) != '/' ? '/' + path : path;
 	}

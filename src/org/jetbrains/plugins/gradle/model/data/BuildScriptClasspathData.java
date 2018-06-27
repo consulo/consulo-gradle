@@ -19,7 +19,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.externalSystem.model.Key;
 import com.intellij.openapi.externalSystem.model.ProjectKeys;
 import com.intellij.openapi.externalSystem.model.ProjectSystemId;
@@ -32,21 +33,21 @@ import com.intellij.openapi.externalSystem.model.project.AbstractExternalEntityD
 public class BuildScriptClasspathData extends AbstractExternalEntityData
 {
 	private static final long serialVersionUID = 1L;
-	@NotNull
+	@Nonnull
 	public static final Key<BuildScriptClasspathData> KEY = Key.create(BuildScriptClasspathData.class,
 			ProjectKeys.LIBRARY_DEPENDENCY.getProcessingWeight() + 1);
 
-	@NotNull
+	@Nonnull
 	private final List<ClasspathEntry> myClasspathEntries;
 
 
-	public BuildScriptClasspathData(@NotNull ProjectSystemId owner, @NotNull List<ClasspathEntry> classpathEntries)
+	public BuildScriptClasspathData(@Nonnull ProjectSystemId owner, @Nonnull List<ClasspathEntry> classpathEntries)
 	{
 		super(owner);
 		myClasspathEntries = classpathEntries;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<ClasspathEntry> getClasspathEntries()
 	{
 		return myClasspathEntries;
@@ -57,35 +58,35 @@ public class BuildScriptClasspathData extends AbstractExternalEntityData
 
 		private static final long serialVersionUID = 1L;
 
-		@NotNull
+		@Nonnull
 		private final Set<String> myClassesFile;
 
-		@NotNull
+		@Nonnull
 		private final Set<String> mySourcesFile;
 
-		@NotNull
+		@Nonnull
 		private final Set<String> myJavadocFile;
 
-		public ClasspathEntry(@NotNull Set<String> classesFile, @NotNull Set<String> sourcesFile, @NotNull Set<String> javadocFile)
+		public ClasspathEntry(@Nonnull Set<String> classesFile, @Nonnull Set<String> sourcesFile, @Nonnull Set<String> javadocFile)
 		{
 			myClassesFile = classesFile;
 			mySourcesFile = sourcesFile;
 			myJavadocFile = javadocFile;
 		}
 
-		@NotNull
+		@Nonnull
 		public Set<String> getClassesFile()
 		{
 			return myClassesFile;
 		}
 
-		@NotNull
+		@Nonnull
 		public Set<String> getSourcesFile()
 		{
 			return mySourcesFile;
 		}
 
-		@NotNull
+		@Nonnull
 		public Set<String> getJavadocFile()
 		{
 			return myJavadocFile;

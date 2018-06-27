@@ -28,8 +28,8 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
@@ -47,7 +47,8 @@ import java.io.File;
  */
 public class GradleSystemSettingsControl implements ExternalSystemSettingsControl<GradleSettings> {
 
-  @NotNull private final GradleSettings myInitialSettings;
+  @Nonnull
+  private final GradleSettings myInitialSettings;
 
   @SuppressWarnings("FieldCanBeLocal") // Used by reflection at showUi() and disposeUiResources()
   private JBLabel                   myServiceDirectoryLabel;
@@ -57,12 +58,12 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
   private JBTextField               myGradleVmOptionsField;
   private boolean                   myServiceDirectoryPathModifiedByUser;
 
-  public GradleSystemSettingsControl(@NotNull GradleSettings settings) {
+  public GradleSystemSettingsControl(@Nonnull GradleSettings settings) {
     myInitialSettings = settings;
   }
 
   @Override
-  public void fillUi(@NotNull PaintAwarePanel canvas, int indentLevel) {
+  public void fillUi(@Nonnull PaintAwarePanel canvas, int indentLevel) {
     myServiceDirectoryLabel = new JBLabel(GradleBundle.message("gradle.settings.text.service.dir.path"));
     preparePathControl();
     canvas.add(myServiceDirectoryLabel, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
@@ -139,8 +140,8 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
            || !Comparing.equal(trimIfPossible(myGradleVmOptionsField.getText()), trimIfPossible(myInitialSettings.getGradleVmOptions()));
   }
 
-  @Nullable
-  private static String trimIfPossible(@Nullable String s) {
+  @javax.annotation.Nullable
+  private static String trimIfPossible(@javax.annotation.Nullable String s) {
     if (s == null) {
       return null;
     }
@@ -149,7 +150,7 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
   }
 
   @Override
-  public void apply(@NotNull GradleSettings settings) {
+  public void apply(@Nonnull GradleSettings settings) {
     if (myServiceDirectoryPathModifiedByUser) {
       settings.setServiceDirectoryPath(ExternalSystemApiUtil.normalizePath(myServiceDirectoryPathField.getText()));
     }
@@ -157,7 +158,7 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
   }
 
   @Override
-  public boolean validate(@NotNull GradleSettings settings) throws ConfigurationException {
+  public boolean validate(@Nonnull GradleSettings settings) throws ConfigurationException {
     return true;
   }
 

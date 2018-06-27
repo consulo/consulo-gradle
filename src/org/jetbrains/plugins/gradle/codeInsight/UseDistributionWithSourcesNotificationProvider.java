@@ -22,11 +22,11 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.util.GUtil;
 import org.gradle.wrapper.WrapperConfiguration;
 import org.gradle.wrapper.WrapperExecutor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.settings.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
@@ -93,7 +93,7 @@ public class UseDistributionWithSourcesNotificationProvider extends EditorNotifi
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Key<EditorNotificationPanel> getKey()
 	{
@@ -102,7 +102,7 @@ public class UseDistributionWithSourcesNotificationProvider extends EditorNotifi
 
 	@RequiredReadAction
 	@Override
-	public EditorNotificationPanel createNotificationPanel(@NotNull VirtualFile file, @NotNull FileEditor fileEditor)
+	public EditorNotificationPanel createNotificationPanel(@Nonnull VirtualFile file, @Nonnull FileEditor fileEditor)
 	{
 		try
 		{
@@ -149,7 +149,7 @@ public class UseDistributionWithSourcesNotificationProvider extends EditorNotifi
 							ExternalProjectRefreshCallback()
 					{
 						@Override
-						public void onSuccess(@Nullable final DataNode<ProjectData> externalProject)
+						public void onSuccess(@javax.annotation.Nullable final DataNode<ProjectData> externalProject)
 						{
 							if(externalProject == null)
 							{
@@ -169,7 +169,7 @@ public class UseDistributionWithSourcesNotificationProvider extends EditorNotifi
 						}
 
 						@Override
-						public void onFailure(@NotNull String errorMessage, @Nullable String errorDetails)
+						public void onFailure(@Nonnull String errorMessage, @javax.annotation.Nullable String errorDetails)
 						{
 						}
 					}, true, ProgressExecutionMode.START_IN_FOREGROUND_ASYNC);
@@ -184,7 +184,7 @@ public class UseDistributionWithSourcesNotificationProvider extends EditorNotifi
 		return null;
 	}
 
-	private static void updateDefaultWrapperConfiguration(@NotNull String linkedProjectPath)
+	private static void updateDefaultWrapperConfiguration(@Nonnull String linkedProjectPath)
 	{
 		try
 		{
@@ -243,8 +243,8 @@ public class UseDistributionWithSourcesNotificationProvider extends EditorNotifi
 		return false;
 	}
 
-	@Nullable
-	private static String getRootProjectPath(@NotNull Module module)
+	@javax.annotation.Nullable
+	private static String getRootProjectPath(@Nonnull Module module)
 	{
 		String externalSystemId = ExternalSystemApiUtil.getExtensionSystemOption(module, ExternalSystemConstants.EXTERNAL_SYSTEM_ID_KEY);
 		if(externalSystemId == null || !GradleConstants.SYSTEM_ID.toString().equals(externalSystemId))

@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.gradle.remote.impl;
 
 import com.intellij.openapi.externalSystem.model.project.LibraryData;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.openapi.externalSystem.model.project.LibraryPathType;
+import javax.annotation.Nonnull;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,14 +59,14 @@ public class GradleLibraryNamesMixerTest {
     public String expectedName;
     public String path;
 
-    TestDataEntry(@NotNull String initialName, @NotNull String expectedName, @NotNull String path) {
+    TestDataEntry(@Nonnull String initialName, @Nonnull String expectedName, @Nonnull String path) {
       this.initialName = initialName;
       this.expectedName = expectedName;
       this.path = path;
     }
   }
 
-  public static TestDataEntry t(@NotNull String initialName, @NotNull String expectedName, @NotNull String path) {
+  public static TestDataEntry t(@Nonnull String initialName, @Nonnull String expectedName, @Nonnull String path) {
     return new TestDataEntry(initialName, expectedName, path);
   }
 }

@@ -17,7 +17,8 @@ package org.jetbrains.plugins.gradle.config;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.project.Project;
@@ -35,7 +36,7 @@ import com.intellij.psi.search.SearchScope;
 public class GradleBuildClasspathResolveScopeEnlarger extends ResolveScopeEnlarger
 {
 	@Override
-	public SearchScope getAdditionalResolveScope(@NotNull VirtualFile file, Project project)
+	public SearchScope getAdditionalResolveScope(@Nonnull VirtualFile file, Project project)
 	{
 		String fileExtension = file.getExtension();
 		if(GroovyFileType.DEFAULT_EXTENSION.equals(fileExtension))

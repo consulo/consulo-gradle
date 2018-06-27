@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.model;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Set;
 
@@ -24,12 +24,12 @@ import java.util.Set;
  * @since 12/20/13
  */
 public interface ClasspathEntryModel {
-  @NotNull
+  @Nonnull
   Set<String> getClasses();
 
-  @NotNull
+  @Nonnull
   Set<String> getSources();
 
-  @NotNull
+  @Nonnull
   Set<String> getJavadoc();
 }

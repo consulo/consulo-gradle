@@ -3,8 +3,8 @@ package consulo.gradle.importProvider;
 import java.io.File;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
@@ -32,19 +32,19 @@ import icons.GradleIcons;
  */
 public class GradleModuleImportProvider extends AbstractExternalModuleImportProvider<ImportFromGradleControl>
 {
-	public GradleModuleImportProvider(@NotNull ProjectDataManager dataManager)
+	public GradleModuleImportProvider(@Nonnull ProjectDataManager dataManager)
 	{
 		super(dataManager, new ImportFromGradleControl(), GradleConstants.SYSTEM_ID);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
 		return GradleBundle.message("gradle.name");
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public Image getIcon()
 	{
@@ -52,7 +52,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	}
 
 	@Override
-	public boolean canImport(@NotNull File fileOrDirectory)
+	public boolean canImport(@Nonnull File fileOrDirectory)
 	{
 		if(fileOrDirectory.isDirectory())
 		{
@@ -66,12 +66,12 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	}
 
 	@Override
-	public String getPathToBeImported(@NotNull VirtualFile file)
+	public String getPathToBeImported(@Nonnull VirtualFile file)
 	{
 		return file.isDirectory() ? file.findChild(GradleConstants.DEFAULT_SCRIPT_NAME).getPath() : file.getPath();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFileSample()
 	{
@@ -79,7 +79,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	}
 
 	@Override
-	protected void doPrepare(@NotNull WizardContext context)
+	protected void doPrepare(@Nonnull WizardContext context)
 	{
 		String pathToUse = context.getProjectFileDirectory();
 		VirtualFile file = LocalFileSystem.getInstance().refreshAndFindFileByPath(pathToUse);
@@ -90,20 +90,20 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	}
 
 	@Override
-	protected void beforeCommit(@NotNull DataNode<ProjectData> dataNode, @NotNull Project project)
+	protected void beforeCommit(@Nonnull DataNode<ProjectData> dataNode, @Nonnull Project project)
 	{
 
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected File getExternalProjectConfigToUse(@NotNull File file)
+	protected File getExternalProjectConfigToUse(@Nonnull File file)
 	{
 		return file.isDirectory() ? file : file.getParentFile();
 	}
 
 	@Override
-	protected void applyExtraSettings(@NotNull WizardContext context)
+	protected void applyExtraSettings(@Nonnull WizardContext context)
 	{
 		DataNode<ProjectData> node = getExternalProjectNode();
 		if(node == null)
@@ -125,8 +125,8 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 		}
 	}
 
-	@Nullable
-	private static Sdk findJdk(@NotNull JavaSdkVersion version)
+	@javax.annotation.Nullable
+	private static Sdk findJdk(@Nonnull JavaSdkVersion version)
 	{
 		JavaSdk javaSdk = JavaSdk.getInstance();
 		List<Sdk> javaSdks = SdkTable.getInstance().getSdksOfType(javaSdk);

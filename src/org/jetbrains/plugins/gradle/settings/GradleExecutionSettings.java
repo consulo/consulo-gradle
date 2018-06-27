@@ -17,8 +17,8 @@ package org.jetbrains.plugins.gradle.settings;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension;
 import com.intellij.openapi.externalSystem.model.settings.ExternalSystemExecutionSettings;
 import com.intellij.openapi.util.Comparing;
@@ -35,7 +35,7 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 
 	private static final long serialVersionUID = 1L;
 
-	@NotNull
+	@Nonnull
 	private final List<ClassHolder<? extends GradleProjectResolverExtension>> myResolverExtensions = ContainerUtilRt.newArrayList();
 	@Nullable
 	private final String myGradleHome;
@@ -46,7 +46,7 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 	private final String myDaemonVmOptions;
 	private final boolean myIsOfflineWork;
 
-	@NotNull
+	@Nonnull
 	private final DistributionType myDistributionType;
 	@Nullable
 	private String wrapperPropertyFile;
@@ -54,7 +54,7 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 	@Nullable
 	private String myJavaHome;
 
-	public GradleExecutionSettings(@Nullable String gradleHome, @Nullable String serviceDirectory, @NotNull DistributionType distributionType,
+	public GradleExecutionSettings(@Nullable String gradleHome, @Nullable String serviceDirectory, @Nonnull DistributionType distributionType,
 			@Nullable String daemonVmOptions, boolean isOfflineWork)
 	{
 		myGradleHome = gradleHome;
@@ -71,13 +71,13 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 		return myGradleHome;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public String getServiceDirectory()
 	{
 		return myServiceDirectory;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public String getJavaHome()
 	{
 		return myJavaHome;
@@ -93,13 +93,13 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 		return myIsOfflineWork;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<ClassHolder<? extends GradleProjectResolverExtension>> getResolverExtensions()
 	{
 		return myResolverExtensions;
 	}
 
-	public void addResolverExtensionClass(@NotNull ClassHolder<? extends GradleProjectResolverExtension> holder)
+	public void addResolverExtensionClass(@Nonnull ClassHolder<? extends GradleProjectResolverExtension> holder)
 	{
 		myResolverExtensions.add(holder);
 	}
@@ -113,7 +113,7 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 		return myDaemonVmOptions;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public String getWrapperPropertyFile()
 	{
 		return wrapperPropertyFile;
@@ -124,7 +124,7 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 		this.wrapperPropertyFile = wrapperPropertyFile;
 	}
 
-	@NotNull
+	@Nonnull
 	public DistributionType getDistributionType()
 	{
 		return myDistributionType;

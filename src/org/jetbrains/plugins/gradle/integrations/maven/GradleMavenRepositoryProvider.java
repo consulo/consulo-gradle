@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.integrations.maven;
 
 import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.idea.maven.indices.MavenRepositoryProvider;
 import org.jetbrains.idea.maven.model.MavenRemoteRepository;
 
@@ -28,9 +28,9 @@ import java.util.Set;
  */
 public class GradleMavenRepositoryProvider implements MavenRepositoryProvider {
 
-  @NotNull
+  @Nonnull
   @Override
-  public Set<MavenRemoteRepository> getRemoteRepositories(@NotNull Project project) {
+  public Set<MavenRemoteRepository> getRemoteRepositories(@Nonnull Project project) {
     return MavenRepositoriesHolder.getInstance(project).getRemoteRepositories();
   }
 }

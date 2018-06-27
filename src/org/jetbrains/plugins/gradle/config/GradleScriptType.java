@@ -23,10 +23,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.Icon;
+import javax.annotation.Nonnull;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.execution.GradleTaskLocation;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
@@ -75,7 +73,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.NonClasspathDirectoriesScope;
-import consulo.awt.TargetAWT;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.ui.image.Image;
 import icons.GradleIcons;
@@ -94,7 +91,7 @@ public class GradleScriptType extends GroovyRunnableScriptType
 		super(GradleConstants.EXTENSION);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Image getScriptIcon()
 	{
@@ -102,7 +99,7 @@ public class GradleScriptType extends GroovyRunnableScriptType
 	}
 
 	@Override
-	public boolean isConfigurationByLocation(@NotNull GroovyScriptRunConfiguration existing, @NotNull Location location)
+	public boolean isConfigurationByLocation(@Nonnull GroovyScriptRunConfiguration existing, @Nonnull Location location)
 	{
 		final String params = existing.getScriptParameters();
 		if(params == null)
@@ -121,7 +118,7 @@ public class GradleScriptType extends GroovyRunnableScriptType
 	}
 
 	@Override
-	public void tuneConfiguration(@NotNull GroovyFile file, @NotNull GroovyScriptRunConfiguration configuration, Location location)
+	public void tuneConfiguration(@Nonnull GroovyFile file, @Nonnull GroovyScriptRunConfiguration configuration, Location location)
 	{
 		List<String> tasks = getTasksTarget(location);
 		if(tasks != null)
@@ -133,7 +130,7 @@ public class GradleScriptType extends GroovyRunnableScriptType
 		RunManagerEx.disableTasks(file.getProject(), configuration, CompileStepBeforeRun.ID, CompileStepBeforeRunNoErrorCheck.ID);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static List<String> getTasksTarget(Location location)
 	{
 		if(location instanceof GradleTaskLocation)
@@ -196,14 +193,14 @@ public class GradleScriptType extends GroovyRunnableScriptType
 			}
 
 			@Override
-			public boolean isValidModule(@NotNull Module module)
+			public boolean isValidModule(@Nonnull Module module)
 			{
 				GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
 				return libraryManager.isGradleSdk(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
 			}
 
 			@Override
-			public boolean ensureRunnerConfigured(@Nullable Module module,
+			public boolean ensureRunnerConfigured(@javax.annotation.Nullable Module module,
 					RunProfile profile,
 					Executor executor,
 					final Project project) throws ExecutionException
@@ -246,7 +243,7 @@ public class GradleScriptType extends GroovyRunnableScriptType
 
 			@Override
 			public void configureCommandLine(OwnJavaParameters params,
-					@Nullable Module module,
+					@javax.annotation.Nullable Module module,
 					boolean tests,
 					VirtualFile script,
 					GroovyScriptRunConfiguration configuration) throws CantRunException
@@ -320,7 +317,7 @@ public class GradleScriptType extends GroovyRunnableScriptType
 		};
 	}
 
-	@NotNull
+	@Nonnull
 	private static String findMainClass(VirtualFile gradleHome, VirtualFile script, Project project)
 	{
 		final String userDefined = System.getProperty("gradle.launcher.class");
@@ -364,7 +361,7 @@ public class GradleScriptType extends GroovyRunnableScriptType
 	}
 
 	@Override
-	public GlobalSearchScope patchResolveScope(@NotNull GroovyFile file, @NotNull GlobalSearchScope baseScope)
+	public GlobalSearchScope patchResolveScope(@Nonnull GroovyFile file, @Nonnull GlobalSearchScope baseScope)
 	{
 		if(!FileUtilRt.extensionEquals(file.getName(), GradleConstants.EXTENSION))
 		{

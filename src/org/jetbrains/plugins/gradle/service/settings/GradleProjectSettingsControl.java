@@ -33,8 +33,8 @@ import com.intellij.util.Alarm;
 import com.intellij.util.Consumer;
 import com.intellij.util.ui.UIUtil;
 import org.gradle.util.GradleVersion;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.settings.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
@@ -61,11 +61,14 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 
   private static final long BALLOON_DELAY_MILLIS = TimeUnit.SECONDS.toMillis(1);
 
-  @NotNull private final Alarm myAlarm = new Alarm(Alarm.ThreadToUse.SWING_THREAD);
+  @Nonnull
+  private final Alarm myAlarm = new Alarm(Alarm.ThreadToUse.SWING_THREAD);
 
-  @NotNull private LocationSettingType myGradleHomeSettingType = LocationSettingType.UNKNOWN;
+  @Nonnull
+  private LocationSettingType myGradleHomeSettingType = LocationSettingType.UNKNOWN;
 
-  @NotNull private final GradleInstallationManager myInstallationManager;
+  @Nonnull
+  private final GradleInstallationManager myInstallationManager;
 
   @SuppressWarnings("FieldCanBeLocal") // Used implicitly by reflection at disposeUIResources() and showUi()
   private JLabel                    myGradleHomeLabel;
@@ -78,13 +81,13 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 
   private boolean myShowBalloonIfNecessary;
 
-  public GradleProjectSettingsControl(@NotNull GradleProjectSettings initialSettings) {
+  public GradleProjectSettingsControl(@Nonnull GradleProjectSettings initialSettings) {
     super(initialSettings);
     myInstallationManager = ServiceManager.getService(GradleInstallationManager.class);
   }
 
   @Override
-  protected void fillExtraControls(@NotNull PaintAwarePanel content, int indentLevel) {
+  protected void fillExtraControls(@Nonnull PaintAwarePanel content, int indentLevel) {
     content.setPaintCallback(new Consumer<Graphics>() {
       @Override
       public void consume(Graphics graphics) {
@@ -204,7 +207,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
   }
 
   @Override
-  public boolean validate(@NotNull GradleProjectSettings settings) throws ConfigurationException {
+  public boolean validate(@Nonnull GradleProjectSettings settings) throws ConfigurationException {
     String gradleHomePath = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
     if (myUseLocalDistributionButton.isSelected()) {
       if (StringUtil.isEmpty(gradleHomePath)) {
@@ -221,7 +224,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
   }
 
   @Override
-  protected void applyExtraSettings(@NotNull GradleProjectSettings settings) {
+  protected void applyExtraSettings(@Nonnull GradleProjectSettings settings) {
     String gradleHomePath = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
     if (StringUtil.isEmpty(gradleHomePath)) {
       settings.setGradleHome(null);
@@ -395,7 +398,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
     private final String      myText;
     private final long        myTriggerTime;
 
-    DelayedBalloonInfo(@NotNull MessageType messageType, @NotNull LocationSettingType settingType, long delayMillis) {
+    DelayedBalloonInfo(@Nonnull MessageType messageType, @Nonnull LocationSettingType settingType, long delayMillis) {
       myMessageType = messageType;
       myText = settingType.getDescription(GradleConstants.SYSTEM_ID);
       myTriggerTime = System.currentTimeMillis() + delayMillis;

@@ -18,7 +18,7 @@ package org.jetbrains.plugins.gradle.model.data;
 import java.io.File;
 import java.io.Serializable;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Vladislav.Soroka
@@ -28,39 +28,39 @@ public class WebResource implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	@NotNull
+	@Nonnull
 	private final WarDirectory myWarDirectory;
-	@NotNull
+	@Nonnull
 	private final String warRelativePath;
-	@NotNull
+	@Nonnull
 	private final File file;
 
-	public WebResource(@NotNull WarDirectory warDirectory, @NotNull String warRelativePath, @NotNull File file)
+	public WebResource(@Nonnull WarDirectory warDirectory, @Nonnull String warRelativePath, @Nonnull File file)
 	{
 		myWarDirectory = warDirectory;
 		this.warRelativePath = getAdjustedPath(warRelativePath);
 		this.file = file;
 	}
 
-	@NotNull
+	@Nonnull
 	public WarDirectory getWarDirectory()
 	{
 		return myWarDirectory;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getWarRelativePath()
 	{
 		return warRelativePath;
 	}
 
-	@NotNull
+	@Nonnull
 	public File getFile()
 	{
 		return file;
 	}
 
-	private static String getAdjustedPath(final @NotNull String path)
+	private static String getAdjustedPath(final @Nonnull String path)
 	{
 		return path.isEmpty() || path.charAt(0) != '/' ? '/' + path : path;
 	}

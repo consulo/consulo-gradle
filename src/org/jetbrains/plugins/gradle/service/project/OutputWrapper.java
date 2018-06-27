@@ -2,8 +2,8 @@ package org.jetbrains.plugins.gradle.service.project;
 
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,14 +14,16 @@ import java.io.OutputStream;
  */
 public class OutputWrapper extends OutputStream {
 
-  @NotNull private final ExternalSystemTaskNotificationListener myListener;
-  @NotNull private final ExternalSystemTaskId                   myTaskId;
+  @Nonnull
+  private final ExternalSystemTaskNotificationListener myListener;
+  @Nonnull
+  private final ExternalSystemTaskId                   myTaskId;
 
   @Nullable private StringBuilder myBuffer;
 
   private final boolean myStdOut;
 
-  public OutputWrapper(@NotNull ExternalSystemTaskNotificationListener listener, @NotNull ExternalSystemTaskId taskId, boolean stdOut) {
+  public OutputWrapper(@Nonnull ExternalSystemTaskNotificationListener listener, @Nonnull ExternalSystemTaskId taskId, boolean stdOut) {
     myListener = listener;
     myTaskId = taskId;
     myStdOut = stdOut;

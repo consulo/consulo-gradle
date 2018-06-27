@@ -18,7 +18,7 @@ package org.jetbrains.plugins.gradle.service.resolve;
 import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
@@ -35,10 +35,10 @@ import java.util.List;
 public class GradleArtifactsContributor implements GradleMethodContextContributor {
 
   @Override
-  public void process(@NotNull List<String> methodCallInfo,
-                      @NotNull PsiScopeProcessor processor,
-                      @NotNull ResolveState state,
-                      @NotNull PsiElement place) {
+  public void process(@Nonnull List<String> methodCallInfo,
+                      @Nonnull PsiScopeProcessor processor,
+                      @Nonnull ResolveState state,
+                      @Nonnull PsiElement place) {
     if (methodCallInfo.isEmpty() || methodCallInfo.size() < 2 || !"artifacts".equals(methodCallInfo.get(1))) {
       return;
     }
@@ -57,11 +57,11 @@ public class GradleArtifactsContributor implements GradleMethodContextContributo
     }
   }
 
-  private static void processAtrifactAddition(@NotNull String gradleConfigurationName,
-                                              @NotNull PsiClass artifactHandlerClass,
-                                              @NotNull PsiScopeProcessor processor,
-                                              @NotNull ResolveState state,
-                                              @NotNull PsiElement place) {
+  private static void processAtrifactAddition(@Nonnull String gradleConfigurationName,
+                                              @Nonnull PsiClass artifactHandlerClass,
+                                              @Nonnull PsiScopeProcessor processor,
+                                              @Nonnull ResolveState state,
+                                              @Nonnull PsiElement place) {
     GrLightMethodBuilder builder = new GrLightMethodBuilder(place.getManager(), gradleConfigurationName);
     PsiClassType type = PsiType.getJavaLangObject(place.getManager(), place.getResolveScope());
     builder.addParameter(new GrLightParameter("artifactInfo", type, builder));

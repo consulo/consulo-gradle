@@ -26,8 +26,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.settings.GradleLocalSettings;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -80,10 +80,10 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
   );
 
   @Override
-  public void process(@NotNull List<String> methodCallInfo,
-                      @NotNull PsiScopeProcessor processor,
-                      @NotNull ResolveState state,
-                      @NotNull PsiElement place) {
+  public void process(@Nonnull List<String> methodCallInfo,
+                      @Nonnull PsiScopeProcessor processor,
+                      @Nonnull ResolveState state,
+                      @Nonnull PsiElement place) {
     if (methodCallInfo.isEmpty()) {
       checkForAvailableTasks(0, place.getText(), processor, state, place);
       return;
@@ -129,9 +129,9 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
     }
   }
 
-  public static void processImplicitDeclarations(@NotNull PsiScopeProcessor processor,
-                                                 @NotNull ResolveState state,
-                                                 @NotNull PsiElement place) {
+  public static void processImplicitDeclarations(@Nonnull PsiScopeProcessor processor,
+                                                 @Nonnull ResolveState state,
+                                                 @Nonnull PsiElement place) {
     if (!place.getText().equals("resources")) {
       GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
       GradleResolverUtil.processDeclarations(psiManager, processor, state, place, GRADLE_API_PROJECT);
@@ -139,10 +139,10 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
   }
 
   private static void checkForAvailableTasks(int level,
-                                             @Nullable String taskName,
-                                             @NotNull PsiScopeProcessor processor,
-                                             @NotNull ResolveState state,
-                                             @NotNull PsiElement place) {
+                                             @javax.annotation.Nullable String taskName,
+                                             @Nonnull PsiScopeProcessor processor,
+                                             @Nonnull ResolveState state,
+                                             @Nonnull PsiElement place) {
     if (taskName == null) return;
     final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
     PsiClass gradleApiProjectClass = psiManager.findClassWithCache(GRADLE_API_PROJECT, place.getResolveScope());
@@ -173,12 +173,12 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
     }
   }
 
-  private static void processTask(@NotNull String taskName,
-                                  @NotNull String fqName,
-                                  @NotNull GroovyPsiManager psiManager,
-                                  @NotNull PsiScopeProcessor processor,
-                                  @NotNull ResolveState state,
-                                  @NotNull PsiElement place) {
+  private static void processTask(@Nonnull String taskName,
+                                  @Nonnull String fqName,
+                                  @Nonnull GroovyPsiManager psiManager,
+                                  @Nonnull PsiScopeProcessor processor,
+                                  @Nonnull ResolveState state,
+                                  @Nonnull PsiElement place) {
     if (taskName.equals(place.getText())) {
       if (!(place instanceof GrClosableBlock)) {
         GrLightMethodBuilder methodBuilder = GradleResolverUtil.createMethodWithClosure(taskName, fqName, null, place, psiManager);
@@ -195,10 +195,10 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
     }
   }
 
-  private static void processAvailableTasks(List<String> methodCallInfo, @NotNull String taskName,
-                                            @NotNull PsiScopeProcessor processor,
-                                            @NotNull ResolveState state,
-                                            @NotNull PsiElement place) {
+  private static void processAvailableTasks(List<String> methodCallInfo, @Nonnull String taskName,
+                                            @Nonnull PsiScopeProcessor processor,
+                                            @Nonnull ResolveState state,
+                                            @Nonnull PsiElement place) {
     final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
     PsiClass gradleApiProjectClass = psiManager.findClassWithCache(GRADLE_API_PROJECT, place.getResolveScope());
     if (canBeMethodOf(taskName, gradleApiProjectClass)) return;

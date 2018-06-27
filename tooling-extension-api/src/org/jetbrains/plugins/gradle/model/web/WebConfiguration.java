@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.model.web;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.File;
 import java.io.Serializable;
@@ -31,7 +31,7 @@ public interface WebConfiguration extends Serializable {
   List<? extends WarModel> getWarModels();
 
   interface WarModel extends Serializable {
-    @NotNull
+    @Nonnull
     String getWarName();
 
     String getWebAppDirName();
@@ -49,13 +49,13 @@ public interface WebConfiguration extends Serializable {
 
   interface WebResource extends Serializable {
 
-    @NotNull
+    @Nonnull
     String getWarDirectory();
 
-    @NotNull
+    @Nonnull
     String getRelativePath();
 
-    @NotNull
+    @Nonnull
     File getFile();
   }
 }

@@ -19,8 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.tooling.model.idea.IdeaModule;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.gradle.model.data.War;
 import org.jetbrains.plugins.gradle.model.data.WarDirectory;
 import org.jetbrains.plugins.gradle.model.data.WebConfigurationModelData;
@@ -48,7 +49,7 @@ public class JavaEEGradleProjectResolverExtension extends AbstractProjectResolve
 	private static final Logger LOG = Logger.getInstance(JavaEEGradleProjectResolverExtension.class);
 
 	@Override
-	public void populateModuleExtraModels(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule)
+	public void populateModuleExtraModels(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule)
 	{
 		final WebConfiguration webConfiguration = resolverCtx.getExtraProject(gradleModule, WebConfiguration.class);
 		if(webConfiguration != null)
@@ -73,7 +74,7 @@ public class JavaEEGradleProjectResolverExtension extends AbstractProjectResolve
 		nextResolver.populateModuleExtraModels(gradleModule, ideModule);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Set<Class> getExtraProjectModelClasses()
 	{

@@ -1,9 +1,11 @@
 package org.jetbrains.plugins.gradle.settings;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.externalSystem.settings.ExternalSystemSettingsListener;
 import com.intellij.util.messages.Topic;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * Defines callback for the gradle config structure change.
@@ -26,7 +28,7 @@ public interface GradleSettingsListener extends ExternalSystemSettingsListener<G
    * @param newPath            new path (if any)
    * @param linkedProjectPath  target linked gradle project path
    */
-  void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @NotNull String linkedProjectPath);
+  void onGradleHomeChange(@javax.annotation.Nullable String oldPath, @javax.annotation.Nullable String newPath, @Nonnull String linkedProjectPath);
 
   /**
    * Is expected to be invoked when 'gradle distribution type' setting is changed (generally this
@@ -37,7 +39,7 @@ public interface GradleSettingsListener extends ExternalSystemSettingsListener<G
    * @param currentValue       current value
    * @param linkedProjectPath  target linked gradle project path
    */
-  void onGradleDistributionTypeChange(DistributionType currentValue, @NotNull String linkedProjectPath);
+  void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath);
 
   /**
    * Is expected to be invoked when service directory path is changed.
@@ -56,5 +58,5 @@ public interface GradleSettingsListener extends ExternalSystemSettingsListener<G
    * @param oldOptions  old options (if any)
    * @param newOptions  new option (if any)
    */
-  void onGradleVmOptionsChange(@Nullable String oldOptions, @Nullable String newOptions);
+  void onGradleVmOptionsChange(@Nullable String oldOptions, @javax.annotation.Nullable String newOptions);
 }

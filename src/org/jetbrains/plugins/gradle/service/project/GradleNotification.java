@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AppUIUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Vladislav.Soroka
@@ -31,20 +33,21 @@ import org.jetbrains.annotations.Nullable;
 public class GradleNotification {
   private static final NotificationGroup NOTIFICATION_GROUP = NotificationGroup.balloonGroup("Gradle Notification Group");
 
-  @NotNull private final Project myProject;
+  @Nonnull
+  private final Project myProject;
 
-  @NotNull
-  public static GradleNotification getInstance(@NotNull Project project) {
+  @Nonnull
+  public static GradleNotification getInstance(@Nonnull Project project) {
     return ServiceManager.getService(project, GradleNotification.class);
   }
 
-  public GradleNotification(@NotNull Project project) {
+  public GradleNotification(@Nonnull Project project) {
     myProject = project;
   }
 
-  public void showBalloon(@NotNull final String title,
-                          @NotNull final String message,
-                          @NotNull final NotificationType type,
+  public void showBalloon(@Nonnull final String title,
+                          @Nonnull final String message,
+                          @Nonnull final NotificationType type,
                           @Nullable final NotificationListener listener) {
     AppUIUtil.invokeLaterIfProjectAlive(myProject, new Runnable() {
       @Override

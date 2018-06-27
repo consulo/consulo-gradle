@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.gradle.settings;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -20,12 +20,12 @@ public class GradleLocalSettings extends AbstractExternalSystemLocalSettings
   implements PersistentStateComponent<AbstractExternalSystemLocalSettings.State>
 {
 
-  public GradleLocalSettings(@NotNull Project project) {
+  public GradleLocalSettings(@Nonnull Project project) {
     super(GradleConstants.SYSTEM_ID, project);
   }
 
-  @NotNull
-  public static GradleLocalSettings getInstance(@NotNull Project project) {
+  @Nonnull
+  public static GradleLocalSettings getInstance(@Nonnull Project project) {
     return ServiceManager.getService(project, GradleLocalSettings.class);
   }
 
@@ -38,7 +38,7 @@ public class GradleLocalSettings extends AbstractExternalSystemLocalSettings
   }
 
   @Override
-  public void loadState(@NotNull State state) {
+  public void loadState(@Nonnull State state) {
     super.loadState(state); 
   }
 }

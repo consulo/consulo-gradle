@@ -32,8 +32,8 @@ import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.plugins.ide.idea.IdeaPlugin;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.model.ExtIdeaContentRoot;
 import org.jetbrains.plugins.gradle.model.ModuleExtendedModel;
 import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
@@ -58,7 +58,7 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
     return ModuleExtendedModel.class.getName().equals(modelName);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public Object buildAll(String modelName, Project project) {
 
@@ -189,9 +189,9 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
     return moduleVersionModel;
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+  public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
     return ErrorMessageBuilder.create(
       project, e, "Other"
     ).withDescription("Unable to resolve all content root directories");

@@ -17,8 +17,8 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import java.util.Arrays;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.util.GradleLog;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -48,7 +48,7 @@ import consulo.java.module.util.JavaClassNames;
  */
 public class GradleResolverUtil {
 
-  public static int getGrMethodArumentsCount(@NotNull GrArgumentList args) {
+  public static int getGrMethodArumentsCount(@Nonnull GrArgumentList args) {
     int argsCount = 0;
     boolean namedArgProcessed = false;
     for (GroovyPsiElement arg : args.getAllArguments()) {
@@ -65,31 +65,31 @@ public class GradleResolverUtil {
     return argsCount;
   }
 
-  public static void addImplicitVariable(@NotNull PsiScopeProcessor processor,
-                                         @NotNull ResolveState state,
-                                         @NotNull GrReferenceExpressionImpl expression,
-                                         @NotNull String type) {
+  public static void addImplicitVariable(@Nonnull PsiScopeProcessor processor,
+                                         @Nonnull ResolveState state,
+                                         @Nonnull GrReferenceExpressionImpl expression,
+                                         @Nonnull String type) {
     if (expression.getQualifier() == null) {
       PsiVariable myPsi = new GrImplicitVariableImpl(expression.getManager(), expression.getReferenceName(), type, expression);
       processor.execute(myPsi, state);
     }
   }
 
-  public static void addImplicitVariable(@NotNull PsiScopeProcessor processor,
-                                         @NotNull ResolveState state,
-                                         @NotNull PsiElement element,
-                                         @NotNull String type) {
+  public static void addImplicitVariable(@Nonnull PsiScopeProcessor processor,
+                                         @Nonnull ResolveState state,
+                                         @Nonnull PsiElement element,
+                                         @Nonnull String type) {
     PsiVariable myPsi = new GrImplicitVariableImpl(element.getManager(), element.getText(), type, element);
     processor.execute(myPsi, state);
   }
 
 
   @Nullable
-  public static GrLightMethodBuilder createMethodWithClosure(@NotNull String name,
-                                                             @Nullable String returnType,
+  public static GrLightMethodBuilder createMethodWithClosure(@Nonnull String name,
+                                                             @javax.annotation.Nullable String returnType,
                                                              @Nullable String closureTypeParameter,
-                                                             @NotNull PsiElement place,
-                                                             @NotNull GroovyPsiManager psiManager) {
+                                                             @Nonnull PsiElement place,
+                                                             @Nonnull GroovyPsiManager psiManager) {
     PsiClassType closureType;
     PsiClass closureClass =
       psiManager.findClassWithCache(GroovyCommonClassNames.GROOVY_LANG_CLOSURE, place.getResolveScope());
@@ -124,19 +124,19 @@ public class GradleResolverUtil {
     return methodWithClosure;
   }
 
-  public static void processMethod(@NotNull String methodName,
-                                   @NotNull PsiClass handlerClass,
-                                   @NotNull PsiScopeProcessor processor,
-                                   @NotNull ResolveState state,
-                                   @NotNull PsiElement place) {
+  public static void processMethod(@Nonnull String methodName,
+                                   @Nonnull PsiClass handlerClass,
+                                   @Nonnull PsiScopeProcessor processor,
+                                   @Nonnull ResolveState state,
+                                   @Nonnull PsiElement place) {
     processMethod(methodName, handlerClass, processor, state, place, null);
   }
 
-  public static void processMethod(@NotNull String methodName,
-                                   @NotNull PsiClass handlerClass,
-                                   @NotNull PsiScopeProcessor processor,
-                                   @NotNull ResolveState state,
-                                   @NotNull PsiElement place,
+  public static void processMethod(@Nonnull String methodName,
+                                   @Nonnull PsiClass handlerClass,
+                                   @Nonnull PsiScopeProcessor processor,
+                                   @Nonnull ResolveState state,
+                                   @Nonnull PsiElement place,
                                    @Nullable String defaultMethodName) {
     GrLightMethodBuilder builder = new GrLightMethodBuilder(place.getManager(), methodName);
     PsiElementFactory factory = JavaPsiFacade.getElementFactory(place.getManager().getProject());
@@ -184,20 +184,20 @@ public class GradleResolverUtil {
     }
   }
 
-  public static void processDeclarations(@NotNull GroovyPsiManager psiManager,
-                                         @NotNull PsiScopeProcessor processor,
-                                         @NotNull ResolveState state,
-                                         @NotNull PsiElement place,
-                                         @NotNull String... fqNames) {
+  public static void processDeclarations(@Nonnull GroovyPsiManager psiManager,
+                                         @Nonnull PsiScopeProcessor processor,
+                                         @Nonnull ResolveState state,
+                                         @Nonnull PsiElement place,
+                                         @Nonnull String... fqNames) {
     processDeclarations(null, psiManager, processor, state, place, fqNames);
   }
 
   public static void processDeclarations(@Nullable String methodName,
-                                         @NotNull GroovyPsiManager psiManager,
-                                         @NotNull PsiScopeProcessor processor,
-                                         @NotNull ResolveState state,
-                                         @NotNull PsiElement place,
-                                         @NotNull String... fqNames) {
+                                         @Nonnull GroovyPsiManager psiManager,
+                                         @Nonnull PsiScopeProcessor processor,
+                                         @Nonnull ResolveState state,
+                                         @Nonnull PsiElement place,
+                                         @Nonnull String... fqNames) {
     for (String fqName : fqNames) {
       PsiClass psiClass = psiManager.findClassWithCache(fqName, place.getResolveScope());
       if (psiClass != null) {
@@ -210,7 +210,7 @@ public class GradleResolverUtil {
   }
 
   @Nullable
-  public static PsiElement findParent(@NotNull PsiElement element, int level) {
+  public static PsiElement findParent(@Nonnull PsiElement element, int level) {
     PsiElement parent = element;
     do {
       parent = parent.getParent();
@@ -219,8 +219,8 @@ public class GradleResolverUtil {
     return parent;
   }
 
-  @Nullable
-  public static <T extends PsiElement> T findParent(@NotNull PsiElement element, Class<T> clazz) {
+  @javax.annotation.Nullable
+  public static <T extends PsiElement> T findParent(@Nonnull PsiElement element, Class<T> clazz) {
     PsiElement parent = element;
     do {
       parent = parent.getParent();

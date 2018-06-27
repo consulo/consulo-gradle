@@ -12,13 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.annotation.Nonnull;
 import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.ui.MultiRowFlowPanel;
 
@@ -65,7 +64,7 @@ public class RichTextControlBuilder {
    * @param text  target text to show by the resulting control
    * @throws IllegalArgumentException   if given text is malformed
    */
-  public void setText(@NotNull String text) throws IllegalArgumentException {
+  public void setText(@Nonnull String text) throws IllegalArgumentException {
     myResult.removeAll();
     myComponents.clear();
     List<JComponent> rowComponents = new ArrayList<JComponent>();
@@ -167,15 +166,15 @@ public class RichTextControlBuilder {
     }
   }
   
-  public void setForegroundColor(@NotNull Color foregroundColor) {
+  public void setForegroundColor(@Nonnull Color foregroundColor) {
     myForegroundColor = foregroundColor;
   }
 
-  public void setBackgroundColor(@NotNull Color backgroundColor) {
+  public void setBackgroundColor(@Nonnull Color backgroundColor) {
     myBackgroundColor = backgroundColor;
   }
 
-  public void setFont(@NotNull Font font) {
+  public void setFont(@Nonnull Font font) {
     myFont = font;
   }
 
@@ -186,14 +185,14 @@ public class RichTextControlBuilder {
    * 
    * @param processor  processor to register
    */
-  public void registerProcessor(@NotNull RichTextProcessor processor) {
+  public void registerProcessor(@Nonnull RichTextProcessor processor) {
     myProcessors.put(processor.getKey(), processor);
   }
   
   /**
    * @return    component built within the provided information
    */
-  @NotNull
+  @Nonnull
   public JComponent build() {
     for (JComponent component : myComponents) {
       component.setForeground(myForegroundColor);
@@ -211,7 +210,7 @@ public class RichTextControlBuilder {
     return myResult;
   }
   
-  private void addRow(@NotNull Collection<JComponent> rowComponents) {
+  private void addRow(@Nonnull Collection<JComponent> rowComponents) {
 	  JPanel row = new MultiRowFlowPanel(FlowLayout.CENTER, 0, 3);
     row.setBackground(myBackgroundColor);
     myComponents.add(row);
@@ -239,7 +238,7 @@ public class RichTextControlBuilder {
     /**
      * @return    flavor of the rich text that can be managed by the current processor
      */
-    @NotNull
+    @Nonnull
     String getKey();
     
     /**
@@ -250,7 +249,7 @@ public class RichTextControlBuilder {
      * @param text  target rich text
      * @return      UI control that represents given rich text in a way specific to the current processor (if any)
      */
-    @Nullable
-    JComponent process(@NotNull String text);
+    @javax.annotation.Nullable
+    JComponent process(@Nonnull String text);
   }
 }

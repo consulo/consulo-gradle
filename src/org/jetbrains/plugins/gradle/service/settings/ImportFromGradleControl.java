@@ -19,8 +19,8 @@ import com.intellij.openapi.externalSystem.service.settings.AbstractImportFromEx
 import com.intellij.openapi.externalSystem.util.ExternalSystemSettingsControl;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
@@ -38,7 +38,7 @@ public class ImportFromGradleControl
     super(GradleConstants.SYSTEM_ID, new GradleSettings(ProjectManager.getInstance().getDefaultProject()), getInitialProjectSettings());
   }
 
-  @NotNull
+  @Nonnull
   private static GradleProjectSettings getInitialProjectSettings() {
     GradleProjectSettings result = new GradleProjectSettings();
     String gradleHome = GradleUtil.getLastUsedGradleHome();
@@ -48,9 +48,9 @@ public class ImportFromGradleControl
     return result;
   }
   
-  @NotNull
+  @Nonnull
   @Override
-  protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@NotNull GradleProjectSettings settings) {
+  protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@Nonnull GradleProjectSettings settings) {
     GradleProjectSettingsControl settingsControl = new GradleProjectSettingsControl(settings);
     settingsControl.hideUseAutoImportBox();
     return settingsControl;
@@ -58,12 +58,12 @@ public class ImportFromGradleControl
 
   @Nullable
   @Override
-  protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@NotNull GradleSettings settings) {
+  protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@Nonnull GradleSettings settings) {
     return new GradleSystemSettingsControl(settings);
   }
 
   @Override
-  protected void onLinkedProjectPathChange(@NotNull String path) {
+  protected void onLinkedProjectPathChange(@Nonnull String path) {
     ((GradleProjectSettingsControl)getProjectSettingsControl()).updateWrapperControls(path, false);
   }
 }

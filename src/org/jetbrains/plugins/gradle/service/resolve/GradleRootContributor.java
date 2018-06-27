@@ -20,7 +20,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 
 import java.util.List;
@@ -48,10 +48,10 @@ public class GradleRootContributor implements GradleMethodContextContributor {
     SOURCE_SETS);
 
   @Override
-  public void process(@NotNull List<String> methodCallInfo,
-                      @NotNull PsiScopeProcessor processor,
-                      @NotNull ResolveState state,
-                      @NotNull PsiElement place) {
+  public void process(@Nonnull List<String> methodCallInfo,
+                      @Nonnull PsiScopeProcessor processor,
+                      @Nonnull ResolveState state,
+                      @Nonnull PsiElement place) {
     if (methodCallInfo.size() > 2) {
       return;
     }

@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -30,7 +30,7 @@ import com.intellij.util.ui.UIUtil;
 public class RichTextActionProcessor implements RichTextControlBuilder.RichTextProcessor {
 
   @Override
-  public JComponent process(@NotNull String s) {
+  public JComponent process(@Nonnull String s) {
     final ActionManager actionManager = ActionManager.getInstance();
     final AnAction action = actionManager.getAction(s);
     if (action == null) {
@@ -73,7 +73,7 @@ public class RichTextActionProcessor implements RichTextControlBuilder.RichTextP
     return result;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getKey() {
     return "action";

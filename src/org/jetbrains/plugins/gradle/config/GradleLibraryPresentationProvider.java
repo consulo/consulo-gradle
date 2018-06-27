@@ -21,8 +21,8 @@ import java.util.regex.Matcher;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
@@ -44,12 +44,12 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
 
   private final GradleInstallationManager myLibraryManager;
 
-  public GradleLibraryPresentationProvider(@NotNull GradleInstallationManager libraryManager) {
+  public GradleLibraryPresentationProvider(@Nonnull GradleInstallationManager libraryManager) {
     super(GRADLE_KIND);
     myLibraryManager = libraryManager;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Icon getIcon() {
     return TargetAWT.to(GradleIcons.Gradle);
@@ -62,7 +62,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
   }
 
   @Override
-  public boolean isSDKHome(@NotNull VirtualFile file) {
+  public boolean isSDKHome(@Nonnull VirtualFile file) {
     return myLibraryManager.isGradleSdkHome(file);
   }
 
@@ -71,7 +71,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
     return myLibraryManager.isGradleSdk(libraryFiles);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getSDKVersion(String path) {
     final VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path);
@@ -88,7 +88,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getLibraryCategoryName() {
     return "Gradle";
@@ -107,7 +107,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static String getGradleVersion(VirtualFile[] libraryFiles) {
     for (VirtualFile file : libraryFiles) {
       final String version = getGradleJarVersion(file);
@@ -118,7 +118,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static String getGradleJarVersion(VirtualFile file) {
     final Matcher matcher = GradleInstallationManager.GRADLE_JAR_FILE_PATTERN.matcher(file.getName());
     if (matcher.matches()) {

@@ -2,7 +2,7 @@ package org.jetbrains.plugins.gradle.ui;
 
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.table.JBTable;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -44,7 +44,7 @@ public class MatrixControlBuilder {
   private final int[]       myColumnWidths;
   private final FontMetrics myFontMetrics;
 
-  public MatrixControlBuilder(@NotNull String ... columns) {
+  public MatrixControlBuilder(@Nonnull String ... columns) {
     myModel.addColumn(""); // Row name
     for (String column : columns) {
       myModel.addColumn(column);
@@ -86,7 +86,7 @@ public class MatrixControlBuilder {
    * @param values  new row values
    * @throws IllegalArgumentException   if given row values imply number of columns that differs from the number of already configured one
    */
-  public void addRow(@NotNull String name, @NotNull Object... values) throws IllegalArgumentException {
+  public void addRow(@Nonnull String name, @Nonnull Object... values) throws IllegalArgumentException {
     if (values.length != myModel.getColumnCount() - 1) {
       StringBuilder columns = new StringBuilder();
       for (int i = 1, max = myModel.getColumnCount(); i < max; i++) {
@@ -110,7 +110,7 @@ public class MatrixControlBuilder {
     }
   }
   
-  @NotNull
+  @Nonnull
   public JComponent build() {
     final TableColumnModel columnModel = myTable.getColumnModel();
     for (int i = 0; i < myColumnWidths.length; i++) {

@@ -19,8 +19,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.CommonBundle;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.model.DataNode;
@@ -65,21 +65,21 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
 {
 	private static final Logger LOG = Logger.getInstance(ExternalProjectDataService.class);
 
-	@NotNull
+	@Nonnull
 	public static final Key<ExternalProject> KEY = Key.create(ExternalProject.class, ProjectKeys.TASK.getProcessingWeight() + 1);
 
-	@NotNull
+	@Nonnull
 	private final Map<Pair<ProjectSystemId, File>, ExternalProject> myExternalRootProjects;
 
-	@NotNull
+	@Nonnull
 	private ProjectDataManager myProjectDataManager;
 
-	public ExternalProjectDataService(@NotNull ProjectDataManager projectDataManager)
+	public ExternalProjectDataService(@Nonnull ProjectDataManager projectDataManager)
 	{
 		myProjectDataManager = projectDataManager;
 		myExternalRootProjects = new ConcurrentFactoryMap<Pair<ProjectSystemId, File>, ExternalProject>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			protected ExternalProject create(Pair<ProjectSystemId, File> key)
 			{
@@ -95,14 +95,14 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
 		};
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Key<ExternalProject> getTargetDataKey()
 	{
 		return KEY;
 	}
 
-	public void importData(@NotNull final Collection<DataNode<ExternalProject>> toImport, @NotNull final Project project, final boolean synchronous)
+	public void importData(@Nonnull final Collection<DataNode<ExternalProject>> toImport, @Nonnull final Project project, final boolean synchronous)
 	{
 		if(toImport.size() != 1)
 		{
@@ -112,20 +112,20 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
 	}
 
 	@Override
-	public void removeData(@NotNull final Collection<? extends Project> modules, @NotNull Project project, boolean synchronous)
+	public void removeData(@Nonnull final Collection<? extends Project> modules, @Nonnull Project project, boolean synchronous)
 	{
 	}
 
 	@Nullable
-	public ExternalProject getOrImportRootExternalProject(@NotNull Project project, @NotNull ProjectSystemId systemId, @NotNull File projectRootDir)
+	public ExternalProject getOrImportRootExternalProject(@Nonnull Project project, @Nonnull ProjectSystemId systemId, @Nonnull File projectRootDir)
 	{
 		final ExternalProject externalProject = getRootExternalProject(systemId, projectRootDir);
 		return externalProject != null ? externalProject : importExternalProject(project, systemId, projectRootDir);
 	}
 
-	@Nullable
-	private ExternalProject importExternalProject(@NotNull final Project project, @NotNull final ProjectSystemId projectSystemId,
-			@NotNull final File projectRootDir)
+	@javax.annotation.Nullable
+	private ExternalProject importExternalProject(@Nonnull final Project project, @Nonnull final ProjectSystemId projectSystemId,
+			@Nonnull final File projectRootDir)
 	{
 		final Boolean result = UIUtil.invokeAndWaitIfNeeded(new Computable<Boolean>()
 		{
@@ -187,7 +187,7 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
 				new Task.Modal(project, title, false)
 				{
 					@Override
-					public void run(@NotNull ProgressIndicator indicator)
+					public void run(@Nonnull ProgressIndicator indicator)
 					{
 						if(project.isDisposed())
 						{
@@ -245,26 +245,26 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
 	}
 
 	@Nullable
-	public ExternalProject getRootExternalProject(@NotNull ProjectSystemId systemId, @NotNull File projectRootDir)
+	public ExternalProject getRootExternalProject(@Nonnull ProjectSystemId systemId, @Nonnull File projectRootDir)
 	{
 		return myExternalRootProjects.get(Pair.create(systemId, projectRootDir));
 	}
 
-	public void saveExternalProject(@NotNull ExternalProject externalProject)
+	public void saveExternalProject(@Nonnull ExternalProject externalProject)
 	{
 		myExternalRootProjects.put(Pair.create(new ProjectSystemId(externalProject.getExternalSystemId()), externalProject.getProjectDir()),
 				new DefaultExternalProject(externalProject));
 	}
 
 	@Nullable
-	public ExternalProject findExternalProject(@NotNull ExternalProject parentProject, @NotNull Module module)
+	public ExternalProject findExternalProject(@Nonnull ExternalProject parentProject, @Nonnull Module module)
 	{
 		String externalProjectId = ExternalSystemApiUtil.getExternalProjectId(module);
 		return externalProjectId != null ? findExternalProject(parentProject, externalProjectId) : null;
 	}
 
-	@Nullable
-	private static ExternalProject findExternalProject(@NotNull ExternalProject parentProject, @NotNull String externalProjectId)
+	@javax.annotation.Nullable
+	private static ExternalProject findExternalProject(@Nonnull ExternalProject parentProject, @Nonnull String externalProjectId)
 	{
 		if(parentProject.getQName().equals(externalProjectId))
 		{

@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.gradle.service.settings;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.externalSystem.service.settings.AbstractExternalSystemConfigurable;
 import com.intellij.openapi.externalSystem.util.ExternalSystemSettingsControl;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
@@ -34,35 +34,35 @@ public class GradleConfigurable extends AbstractExternalSystemConfigurable<Gradl
 
   @NonNls public static final String HELP_TOPIC = "reference.settingsdialog.project.gradle";
 
-  public GradleConfigurable(@NotNull Project project) {
+  public GradleConfigurable(@Nonnull Project project) {
     super(project, GradleConstants.SYSTEM_ID);
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@NotNull GradleProjectSettings settings) {
+  protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@Nonnull GradleProjectSettings settings) {
     return new GradleProjectSettingsControl(settings);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
-  protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@NotNull GradleSettings settings) {
+  protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@Nonnull GradleSettings settings) {
     return new GradleSystemSettingsControl(settings);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected GradleProjectSettings newProjectSettings() {
     return new GradleProjectSettings();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getId() {
     return getHelpTopic();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getHelpTopic() {
     return HELP_TOPIC;

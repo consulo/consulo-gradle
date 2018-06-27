@@ -20,7 +20,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -38,7 +38,7 @@ public class MultipleRepositoryUrlsFix extends GroovyFix {
   private final GrClosableBlock myClosure;
   private final String myRepoType;
 
-  public MultipleRepositoryUrlsFix(@NotNull GrClosableBlock closure, @NotNull String repoType) {
+  public MultipleRepositoryUrlsFix(@Nonnull GrClosableBlock closure, @Nonnull String repoType) {
     myClosure = closure;
     myRepoType = repoType;
   }
@@ -67,7 +67,7 @@ public class MultipleRepositoryUrlsFix extends GroovyFix {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     return GradleInspectionBundle.message("multiple.repository.urls.fix.name");

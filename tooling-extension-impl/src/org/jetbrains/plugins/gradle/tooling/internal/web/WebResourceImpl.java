@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.tooling.internal.web;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.model.web.WebConfiguration;
 
 import java.io.File;
@@ -25,32 +25,32 @@ import java.io.File;
  * @since 2/10/14
  */
 public class WebResourceImpl implements WebConfiguration.WebResource {
-  @NotNull
+  @Nonnull
   private final String myWarDirectory;
-  @NotNull
+  @Nonnull
   private final String myRelativePath;
-  @NotNull
+  @Nonnull
   private final File file;
 
-  public WebResourceImpl(@NotNull String warDirectory, @NotNull String relativePath, @NotNull File file) {
+  public WebResourceImpl(@Nonnull String warDirectory, @Nonnull String relativePath, @Nonnull File file) {
     myWarDirectory = warDirectory;
     this.myRelativePath = relativePath;
     this.file = file;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getWarDirectory() {
     return myWarDirectory;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getRelativePath() {
     return myRelativePath;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public File getFile() {
     return file;

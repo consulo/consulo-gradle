@@ -19,8 +19,8 @@ package org.jetbrains.plugins.gradle.config;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.ide.highlighter.JavaFileType;
@@ -42,11 +42,11 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
  */
 public class GradleClassFinder extends NonClasspathClassFinder
 {
-	@NotNull
+	@Nonnull
 	private final GradleBuildClasspathManager myBuildClasspathManager;
 	private final Map<String, PackageDirectoryCache> myCaches = new ConcurrentFactoryMap<String, PackageDirectoryCache>()
 	{
-		@Nullable
+		@javax.annotation.Nullable
 		@Override
 		protected PackageDirectoryCache create(String path)
 		{
@@ -54,7 +54,7 @@ public class GradleClassFinder extends NonClasspathClassFinder
 		}
 	};
 
-	public GradleClassFinder(@NotNull Project project, @NotNull GradleBuildClasspathManager buildClasspathManager)
+	public GradleClassFinder(@Nonnull Project project, @Nonnull GradleBuildClasspathManager buildClasspathManager)
 	{
 		super(project, JavaFileType.DEFAULT_EXTENSION, GroovyFileType.DEFAULT_EXTENSION);
 		myBuildClasspathManager = buildClasspathManager;
@@ -66,9 +66,9 @@ public class GradleClassFinder extends NonClasspathClassFinder
 		return myBuildClasspathManager.getAllClasspathEntries();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected PackageDirectoryCache getCache(@Nullable GlobalSearchScope scope)
+	protected PackageDirectoryCache getCache(@javax.annotation.Nullable GlobalSearchScope scope)
 	{
 		if(scope instanceof ExternalModuleBuildGlobalSearchScope)
 		{
@@ -85,7 +85,7 @@ public class GradleClassFinder extends NonClasspathClassFinder
 	}
 
 	@Override
-	public PsiClass findClass(@NotNull String qualifiedName, @NotNull GlobalSearchScope scope)
+	public PsiClass findClass(@Nonnull String qualifiedName, @Nonnull GlobalSearchScope scope)
 	{
 		PsiClass aClass = super.findClass(qualifiedName, scope);
 		if(aClass == null || scope instanceof ExternalModuleBuildGlobalSearchScope || scope instanceof EverythingGlobalScope)
@@ -99,9 +99,9 @@ public class GradleClassFinder extends NonClasspathClassFinder
 				(myProject).isInLibraryClasses(file) && !ProjectFileIndex.SERVICE.getInstance(myProject).isInLibrarySource(file)) ? aClass : null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiJavaPackage[] getSubPackages(@NotNull PsiJavaPackage psiPackage, @NotNull GlobalSearchScope scope)
+	public PsiJavaPackage[] getSubPackages(@Nonnull PsiJavaPackage psiPackage, @Nonnull GlobalSearchScope scope)
 	{
 		if(scope instanceof ExternalModuleBuildGlobalSearchScope)
 		{

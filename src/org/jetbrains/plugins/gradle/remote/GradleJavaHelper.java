@@ -3,7 +3,6 @@ package org.jetbrains.plugins.gradle.remote;
 import java.io.File;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.JdkUtil;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -23,8 +22,8 @@ public class GradleJavaHelper {
   public static final String GRADLE_JAVA_HOME_KEY = "gradle.java.home";
   
   @SuppressWarnings("MethodMayBeStatic")
-  @Nullable
-  public String getJdkHome(@Nullable Project project) {
+  @javax.annotation.Nullable
+  public String getJdkHome(@javax.annotation.Nullable Project project) {
     List<String> candidates = ContainerUtilRt.newArrayList();
     candidates.add(System.getProperty(GRADLE_JAVA_HOME_KEY));
     candidates.add(System.getenv("JAVA_HOME"));

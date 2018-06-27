@@ -24,10 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.Icon;
+import javax.annotation.Nonnull;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.config.GradleSettingsListenerAdapter;
 import org.jetbrains.plugins.gradle.remote.GradleJavaHelper;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
@@ -99,17 +98,17 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 
 	private static final Logger LOG = Logger.getInstance("#" + GradleManager.class.getName());
 
-	@NotNull
+	@Nonnull
 	private final ExternalSystemAutoImportAware myAutoImportDelegate = new CachingExternalSystemAutoImportAware(new GradleAutoImportAware());
 
-	@NotNull
+	@Nonnull
 	private final GradleInstallationManager myInstallationManager;
 
-	@NotNull
+	@Nonnull
 	private static final NotNullLazyValue<List<GradleProjectResolverExtension>> RESOLVER_EXTENSIONS = new
 			AtomicNotNullLazyValue<List<GradleProjectResolverExtension>>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected List<GradleProjectResolverExtension> compute()
 		{
@@ -120,19 +119,19 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		}
 	};
 
-	public GradleManager(@NotNull GradleInstallationManager manager)
+	public GradleManager(@Nonnull GradleInstallationManager manager)
 	{
 		myInstallationManager = manager;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ProjectSystemId getSystemId()
 	{
 		return GradleConstants.SYSTEM_ID;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Function<Project, GradleSettings> getSettingsProvider()
 	{
@@ -146,7 +145,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		};
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Function<Project, GradleLocalSettings> getLocalSettingsProvider()
 	{
@@ -160,7 +159,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		};
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Function<Pair<Project, String>, GradleExecutionSettings> getExecutionSettingsProvider()
 	{
@@ -220,7 +219,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 	}
 
 	@Override
-	public void enhanceRemoteProcessing(@NotNull SimpleJavaParameters parameters) throws ExecutionException
+	public void enhanceRemoteProcessing(@Nonnull SimpleJavaParameters parameters) throws ExecutionException
 	{
 		final Set<String> additionalEntries = ContainerUtilRt.newHashSet();
 		for(GradleProjectResolverExtension extension : RESOLVER_EXTENSIONS.getValue())
@@ -243,11 +242,11 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 	}
 
 	@Override
-	public void enhanceLocalProcessing(@NotNull List<URL> urls)
+	public void enhanceLocalProcessing(@Nonnull List<URL> urls)
 	{
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Class<? extends ExternalSystemProjectResolver<GradleExecutionSettings>> getProjectResolverClass()
 	{
@@ -260,14 +259,14 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		return GradleTaskManager.class;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public Configurable getConfigurable(@NotNull Project project)
+	public Configurable getConfigurable(@Nonnull Project project)
 	{
 		return new GradleConfigurable(project);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public FileChooserDescriptor getExternalProjectConfigDescriptor()
 	{
@@ -281,28 +280,28 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		return GradleIcons.Gradle;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public Image getTaskIcon()
 	{
 		return DefaultExternalSystemUiAware.INSTANCE.getTaskIcon();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public String getProjectRepresentationName(@NotNull String targetProjectPath, @Nullable String rootProjectPath)
+	public String getProjectRepresentationName(@Nonnull String targetProjectPath, @Nullable String rootProjectPath)
 	{
 		return ExternalSystemApiUtil.getProjectRepresentationName(targetProjectPath, rootProjectPath);
 	}
 
 	@Nullable
 	@Override
-	public String getAffectedExternalProjectPath(@NotNull String changedFileOrDirPath, @NotNull Project project)
+	public String getAffectedExternalProjectPath(@Nonnull String changedFileOrDirPath, @Nonnull Project project)
 	{
 		return myAutoImportDelegate.getAffectedExternalProjectPath(changedFileOrDirPath, project);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileChooserDescriptor getExternalProjectDescriptor()
 	{
@@ -310,7 +309,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 	}
 
 	@Override
-	public void runActivity(@NotNull final Project project)
+	public void runActivity(@Nonnull final Project project)
 	{
 		// We want to automatically refresh linked projects on gradle service directory change.
 		MessageBusConnection connection = project.getMessageBus().connect(project);
@@ -318,25 +317,25 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		{
 
 			@Override
-			public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath)
+			public void onServiceDirectoryPathChange(@Nullable String oldPath, @javax.annotation.Nullable String newPath)
 			{
 				ensureProjectsRefresh();
 			}
 
 			@Override
-			public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @NotNull String linkedProjectPath)
+			public void onGradleHomeChange(@javax.annotation.Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath)
 			{
 				ensureProjectsRefresh();
 			}
 
 			@Override
-			public void onGradleDistributionTypeChange(DistributionType currentValue, @NotNull String linkedProjectPath)
+			public void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath)
 			{
 				ensureProjectsRefresh();
 			}
 
 			@Override
-			public void onProjectsLinked(@NotNull Collection<GradleProjectSettings> settings)
+			public void onProjectsLinked(@Nonnull Collection<GradleProjectSettings> settings)
 			{
 				final ProjectDataManager projectDataManager = ServiceManager.getService(ProjectDataManager.class);
 				for(GradleProjectSettings gradleProjectSettings : settings)
@@ -345,7 +344,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 							new ExternalProjectRefreshCallback()
 					{
 						@Override
-						public void onSuccess(@Nullable final DataNode<ProjectData> externalProject)
+						public void onSuccess(@javax.annotation.Nullable final DataNode<ProjectData> externalProject)
 						{
 							if(externalProject == null)
 							{
@@ -370,7 +369,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 						}
 
 						@Override
-						public void onFailure(@NotNull String errorMessage, @Nullable String errorDetails)
+						public void onFailure(@Nonnull String errorMessage, @Nullable String errorDetails)
 						{
 						}
 					}, false, ProgressExecutionMode.MODAL_SYNC);
@@ -399,8 +398,8 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		patchAvailableTasks(adjustedPaths, localSettings);
 	}
 
-	@Nullable
-	private static Map<String, String> patchLinkedProjects(@NotNull Project project)
+	@javax.annotation.Nullable
+	private static Map<String, String> patchLinkedProjects(@Nonnull Project project)
 	{
 		GradleSettings settings = GradleSettings.getInstance(project);
 		Collection<GradleProjectSettings> correctedSettings = ContainerUtilRt.newArrayList();
@@ -433,7 +432,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		return adjustedPaths;
 	}
 
-	private static void patchAvailableTasks(@NotNull Map<String, String> adjustedPaths, @NotNull GradleLocalSettings localSettings)
+	private static void patchAvailableTasks(@Nonnull Map<String, String> adjustedPaths, @Nonnull GradleLocalSettings localSettings)
 	{
 		Map<String, Collection<ExternalTaskPojo>> adjustedAvailableTasks = ContainerUtilRt.newHashMap();
 		for(Map.Entry<String, Collection<ExternalTaskPojo>> entry : localSettings.getAvailableTasks().entrySet())
@@ -459,7 +458,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		localSettings.setAvailableTasks(adjustedAvailableTasks);
 	}
 
-	private static void patchAvailableProjects(@NotNull Map<String, String> adjustedPaths, @NotNull GradleLocalSettings localSettings)
+	private static void patchAvailableProjects(@Nonnull Map<String, String> adjustedPaths, @Nonnull GradleLocalSettings localSettings)
 	{
 		Map<ExternalProjectPojo, Collection<ExternalProjectPojo>> adjustedAvailableProjects = ContainerUtilRt.newHashMap();
 		for(Map.Entry<ExternalProjectPojo, Collection<ExternalProjectPojo>> entry : localSettings.getAvailableProjects().entrySet())
@@ -477,7 +476,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 		localSettings.setAvailableProjects(adjustedAvailableProjects);
 	}
 
-	private static void patchRecentTasks(@NotNull Map<String, String> adjustedPaths, @NotNull GradleLocalSettings localSettings)
+	private static void patchRecentTasks(@Nonnull Map<String, String> adjustedPaths, @Nonnull GradleLocalSettings localSettings)
 	{
 		for(ExternalTaskExecutionInfo taskInfo : localSettings.getRecentTasks())
 		{

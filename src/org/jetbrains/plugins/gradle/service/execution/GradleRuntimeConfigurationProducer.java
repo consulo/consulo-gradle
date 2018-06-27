@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.service.execution;
 
 import com.intellij.openapi.externalSystem.service.execution.AbstractExternalSystemRuntimeConfigurationProducer;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Denis Zhdanov
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GradleRuntimeConfigurationProducer extends AbstractExternalSystemRuntimeConfigurationProducer {
 
-  public GradleRuntimeConfigurationProducer(@NotNull GradleExternalTaskConfigurationType type) {
+  public GradleRuntimeConfigurationProducer(@Nonnull GradleExternalTaskConfigurationType type) {
     super(type);
   }
 }

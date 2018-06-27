@@ -19,7 +19,7 @@ import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.idea.IdeaModule;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.model.web.WebConfiguration;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class WebConfigurationBuilderImplTest extends AbstractModelBuilderTest {
 
-  public WebConfigurationBuilderImplTest(@NotNull String gradleVersion) {
+  public WebConfigurationBuilderImplTest(@Nonnull String gradleVersion) {
     super(gradleVersion);
   }
 

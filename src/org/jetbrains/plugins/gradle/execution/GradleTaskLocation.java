@@ -18,7 +18,7 @@ package org.jetbrains.plugins.gradle.execution;
 import com.intellij.execution.PsiLocation;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.List;
 
@@ -28,14 +28,15 @@ import java.util.List;
  */
 public class GradleTaskLocation extends PsiLocation<PsiFile> {
   
-  @NotNull private final List<String> myTasks;
+  @Nonnull
+  private final List<String> myTasks;
 
-  public GradleTaskLocation(@NotNull Project p, @NotNull PsiFile file, @NotNull List<String> tasks) {
+  public GradleTaskLocation(@Nonnull Project p, @Nonnull PsiFile file, @Nonnull List<String> tasks) {
     super(p, file);
     myTasks = tasks;
   }
   
-  @NotNull
+  @Nonnull
   public List<String> getTasks() {
     return myTasks;
   }

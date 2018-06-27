@@ -24,14 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.tooling.BuildAction;
 import org.gradle.tooling.BuildController;
 import org.gradle.tooling.model.build.BuildEnvironment;
 import org.gradle.tooling.model.idea.BasicIdeaProject;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.openapi.externalSystem.model.ExternalSystemException;
 
 /**
@@ -47,7 +49,7 @@ public class ProjectImportAction implements BuildAction<ProjectImportAction.AllM
     myIsPreviewMode = isPreviewMode;
   }
 
-  public void addExtraProjectModelClasses(@NotNull Set<Class> projectModelClasses) {
+  public void addExtraProjectModelClasses(@Nonnull Set<Class> projectModelClasses) {
     myExtraProjectModelClasses.addAll(projectModelClasses);
   }
 
@@ -73,7 +75,7 @@ public class ProjectImportAction implements BuildAction<ProjectImportAction.AllM
     return allModels;
   }
 
-  private void addExtraProject(@NotNull BuildController controller, @NotNull AllModels allModels, @Nullable IdeaModule model) {
+  private void addExtraProject(@Nonnull BuildController controller, @Nonnull AllModels allModels, @Nullable IdeaModule model) {
     for (Class aClass : myExtraProjectModelClasses) {
       try {
         Object extraProject = controller.findModel(model, aClass);
@@ -90,15 +92,18 @@ public class ProjectImportAction implements BuildAction<ProjectImportAction.AllM
   }
 
   public static class AllModels implements Serializable {
-    @NotNull private final Map<String, Object> projectsByPath = new HashMap<String, Object>();
-    @NotNull private final IdeaProject myIdeaProject;
-    @Nullable private BuildEnvironment myBuildEnvironment;
+    @Nonnull
+    private final Map<String, Object> projectsByPath = new HashMap<String, Object>();
+    @Nonnull
+    private final IdeaProject myIdeaProject;
+    @javax.annotation.Nullable
+    private BuildEnvironment myBuildEnvironment;
 
-    public AllModels(@NotNull IdeaProject project) {
+    public AllModels(@Nonnull IdeaProject project) {
       myIdeaProject = project;
     }
 
-    @NotNull
+    @Nonnull
     public IdeaProject getIdeaProject() {
       return myIdeaProject;
     }
@@ -118,7 +123,7 @@ public class ProjectImportAction implements BuildAction<ProjectImportAction.AllM
     }
 
     @Nullable
-    public <T> T getExtraProject(@Nullable IdeaModule module, Class<T> modelClazz) {
+    public <T> T getExtraProject(@javax.annotation.Nullable IdeaModule module, Class<T> modelClazz) {
       Object extraProject = projectsByPath.get(extractMapKey(modelClazz, module));
       if (modelClazz.isInstance(extraProject)) {
         //noinspection unchecked
@@ -133,8 +138,8 @@ public class ProjectImportAction implements BuildAction<ProjectImportAction.AllM
      * @param modelClazz extra project model
      * @return modules path collection
      */
-    @NotNull
-    public Collection<String> findModulesWithModel(@NotNull Class modelClazz) {
+    @Nonnull
+    public Collection<String> findModulesWithModel(@Nonnull Class modelClazz) {
       List<String> modules = new ArrayList<String>();
       for (Map.Entry<String, Object> set : projectsByPath.entrySet()) {
         if (modelClazz.isInstance(set.getValue())) {
@@ -144,20 +149,20 @@ public class ProjectImportAction implements BuildAction<ProjectImportAction.AllM
       return modules;
     }
 
-    public void addExtraProject(@NotNull Object project, @NotNull Class modelClazz) {
+    public void addExtraProject(@Nonnull Object project, @Nonnull Class modelClazz) {
       projectsByPath.put(extractMapKey(modelClazz, null), project);
     }
 
-    public void addExtraProject(@NotNull Object project, @NotNull Class modelClazz, @Nullable IdeaModule module) {
+    public void addExtraProject(@Nonnull Object project, @Nonnull Class modelClazz, @javax.annotation.Nullable IdeaModule module) {
       projectsByPath.put(extractMapKey(modelClazz, module), project);
     }
 
-    @NotNull
+    @Nonnull
     private String extractMapKey(Class modelClazz, @Nullable IdeaModule module) {
       return modelClazz.getName() + '@' + (module != null ? module.getGradleProject().getPath() : "root" + myIdeaProject.getName().hashCode());
     }
 
-    @NotNull
+    @Nonnull
     private static String extractModulePath(Class modelClazz, String key) {
       return key.replaceFirst(modelClazz.getName() + '@', "");
     }

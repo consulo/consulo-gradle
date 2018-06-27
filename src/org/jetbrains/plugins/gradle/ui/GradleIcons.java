@@ -2,7 +2,7 @@ package org.jetbrains.plugins.gradle.ui;
 
 import com.intellij.openapi.application.ex.ApplicationInfoEx;
 import com.intellij.openapi.util.IconLoader;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.swing.*;
 
@@ -17,7 +17,7 @@ public class GradleIcons {
   private GradleIcons() {
   }
 
-  @NotNull
+  @Nonnull
   private static Icon getProjectIcon() {
     try {
       return IconLoader.getIcon(ApplicationInfoEx.getInstanceEx().getSmallIconUrl());

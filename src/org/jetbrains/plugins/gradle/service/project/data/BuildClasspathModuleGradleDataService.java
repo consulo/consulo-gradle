@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
@@ -57,7 +57,7 @@ import com.intellij.util.containers.FactoryMap;
 public class BuildClasspathModuleGradleDataService implements ProjectDataService<BuildScriptClasspathData, Module>
 {
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Key<BuildScriptClasspathData> getTargetDataKey()
 	{
@@ -65,7 +65,7 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
 	}
 
 	@Override
-	public void importData(@NotNull final Collection<DataNode<BuildScriptClasspathData>> toImport, @NotNull final Project project,
+	public void importData(@Nonnull final Collection<DataNode<BuildScriptClasspathData>> toImport, @Nonnull final Project project,
 			boolean synchronous)
 	{
 		if(toImport.isEmpty())
@@ -86,7 +86,7 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
 		//noinspection MismatchedQueryAndUpdateOfCollection
 		Map<String/* externalProjectPath */, Set<String>> externalProjectGradleSdkLibs = new FactoryMap<String, Set<String>>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			protected Set<String> create(String externalProjectPath)
 			{
@@ -178,7 +178,7 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
 	}
 
 	@Override
-	public void removeData(@NotNull Collection<? extends Module> toRemove, @NotNull Project project, boolean synchronous)
+	public void removeData(@Nonnull Collection<? extends Module> toRemove, @Nonnull Project project, boolean synchronous)
 	{
 	}
 }

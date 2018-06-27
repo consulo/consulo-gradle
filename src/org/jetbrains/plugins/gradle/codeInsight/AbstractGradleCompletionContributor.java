@@ -18,11 +18,10 @@ package org.jetbrains.plugins.gradle.codeInsight;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCommandArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
@@ -39,8 +38,8 @@ public abstract class AbstractGradleCompletionContributor extends CompletionCont
   protected static final ElementPattern<PsiElement> GRADLE_FILE_PATTERN = psiElement()
     .inFile(psiFile().withName(string().endsWith('.' + GradleConstants.EXTENSION)));
 
-  @Nullable
-  protected String findNamedArgumentValue(@Nullable GrNamedArgumentsOwner namedArgumentsOwner, @NotNull String label) {
+  @javax.annotation.Nullable
+  protected String findNamedArgumentValue(@javax.annotation.Nullable GrNamedArgumentsOwner namedArgumentsOwner, @Nonnull String label) {
     if (namedArgumentsOwner == null) return null;
     GrNamedArgument namedArgument = namedArgumentsOwner.findNamedArgument(label);
     if (namedArgument == null) return null;

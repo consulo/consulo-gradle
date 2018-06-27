@@ -30,8 +30,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
@@ -182,7 +182,7 @@ public class ExternalProjectSerializer {
 	}
 
 
-	public void save(@NotNull ExternalProject externalProject) {
+	public void save(@Nonnull ExternalProject externalProject) {
 		Output output = null;
 		try {
 			final String externalProjectPath = externalProject.getProjectDir().getPath();
@@ -202,7 +202,7 @@ public class ExternalProjectSerializer {
 	}
 
 	@Nullable
-	public ExternalProject load(@NotNull ProjectSystemId externalSystemId, File externalProjectPath) {
+	public ExternalProject load(@Nonnull ProjectSystemId externalSystemId, File externalProjectPath) {
 		Input input = null;
 		try {
 			final File configurationFile = getProjectConfigurationFile(externalSystemId, externalProjectPath.getPath());

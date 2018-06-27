@@ -2,7 +2,7 @@ package org.jetbrains.plugins.gradle.util;
 
 import com.intellij.util.ui.GraphicsUtil;
 import com.intellij.util.ui.UIUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,14 +13,15 @@ import java.awt.*;
  */
 public class TextIcon implements Icon {
 
-  @NotNull private final String myText;
+  @Nonnull
+  private final String myText;
 
   private final int myControlWidth;
   private final int myControlHeight;
   
   private int myTextHeight;
 
-  public TextIcon(@NotNull String text) {
+  public TextIcon(@Nonnull String text) {
     myText = text;
     JLabel label = new JLabel("");
     Font font = label.getFont();

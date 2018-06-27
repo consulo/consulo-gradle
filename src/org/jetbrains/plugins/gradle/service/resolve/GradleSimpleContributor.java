@@ -20,7 +20,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 
 import java.util.List;
@@ -35,17 +35,17 @@ public abstract class GradleSimpleContributor implements GradleMethodContextCont
   private final String fqName;
   private final List<String> myMixIns;
 
-  protected GradleSimpleContributor(@NotNull String blockName, @NotNull String fqName, String... mixIns) {
+  protected GradleSimpleContributor(@Nonnull String blockName, @Nonnull String fqName, String... mixIns) {
     this.blockName = blockName;
     this.fqName = fqName;
     myMixIns = ContainerUtil.newArrayList(mixIns);
   }
 
   @Override
-  public void process(@NotNull List<String> methodCallInfo,
-                      @NotNull PsiScopeProcessor processor,
-                      @NotNull ResolveState state,
-                      @NotNull PsiElement place) {
+  public void process(@Nonnull List<String> methodCallInfo,
+                      @Nonnull PsiScopeProcessor processor,
+                      @Nonnull ResolveState state,
+                      @Nonnull PsiElement place) {
     if (methodCallInfo.isEmpty() || methodCallInfo.size() < 2 || !blockName.equals(methodCallInfo.get(1))) {
       return;
     }

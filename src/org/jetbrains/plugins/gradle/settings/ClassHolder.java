@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.gradle.settings;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.io.Serializable;
 
@@ -30,7 +30,8 @@ public class ClassHolder<T> implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @NotNull private final String myClassName;
+  @Nonnull
+  private final String myClassName;
   
   @Nullable private transient Class<T> myTargetClass;
 
@@ -38,18 +39,18 @@ public class ClassHolder<T> implements Serializable {
    * @param targetClass  class to use
    */
   @SuppressWarnings("NullableProblems")
-  public ClassHolder(@NotNull Class<T> targetClass) {
+  public ClassHolder(@Nonnull Class<T> targetClass) {
     myTargetClass = targetClass;
     myClassName = myTargetClass.getName();
   }
 
-  @NotNull
-  public static <T> ClassHolder<T> from(@NotNull Class<T> clazz) {
+  @Nonnull
+  public static <T> ClassHolder<T> from(@Nonnull Class<T> clazz) {
     return new ClassHolder<T>(clazz);
   }
 
   @SuppressWarnings("unchecked")
-  @NotNull
+  @Nonnull
   public Class<T> getTargetClass() throws ClassNotFoundException {
     if (myTargetClass == null) {
       // We're not afraid of race condition here as the class will be loaded by the same class loader.
@@ -58,7 +59,7 @@ public class ClassHolder<T> implements Serializable {
     return myTargetClass;
   }
 
-  @NotNull
+  @Nonnull
   public String getTargetClassName() {
     return myClassName;
   }

@@ -5,8 +5,8 @@ import com.intellij.openapi.externalSystem.model.project.LibraryData;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.containers.ContainerUtilRt;
 import com.intellij.util.containers.HashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.externalSystem.model.project.LibraryPathType;
 
 import java.io.File;
@@ -61,7 +61,7 @@ public class GradleLibraryNamesMixer {
    * @param libraries  libraries to process
    */
   @SuppressWarnings("MethodMayBeStatic")
-  public void mixNames(@NotNull Collection<DataNode<LibraryData>> libraries) {
+  public void mixNames(@Nonnull Collection<DataNode<LibraryData>> libraries) {
     if (libraries.isEmpty()) {
       return;
     }
@@ -84,7 +84,7 @@ public class GradleLibraryNamesMixer {
    * @param cache      cache to use
    * @return           <code>true</code> if all of the given libraries have distinct names now; <code>false</code> otherwise
    */
-  private static boolean doMixNames(@NotNull Collection<Wrapped> libraries, @NotNull Map<String, Wrapped> cache) {
+  private static boolean doMixNames(@Nonnull Collection<Wrapped> libraries, @Nonnull Map<String, Wrapped> cache) {
     cache.clear();
     for (Wrapped current : libraries) {
       Wrapped previous = cache.remove(current.library.getExternalName());
@@ -106,7 +106,7 @@ public class GradleLibraryNamesMixer {
    * @param wrapped2  another library which name is equal to the name of the given one
    */
   @SuppressWarnings("AssignmentToForLoopParameter")
-  private static void mixNames(@NotNull Wrapped wrapped1, @NotNull Wrapped wrapped2) {
+  private static void mixNames(@Nonnull Wrapped wrapped1, @Nonnull Wrapped wrapped2) {
     if (!wrapped1.prepare() || !wrapped2.prepare()) {
       return;
     }
@@ -174,7 +174,7 @@ public class GradleLibraryNamesMixer {
   }
 
   @SuppressWarnings("ConstantConditions")
-  private static void diversifyName(@NotNull String changeText, @NotNull Wrapped wrapped, @Nullable File file) {
+  private static void diversifyName(@Nonnull String changeText, @Nonnull Wrapped wrapped, @javax.annotation.Nullable File file) {
     String name = wrapped.library.getExternalName();
     int i = file == null ? - 1 : name.indexOf(file.getName());
     final String newName;
@@ -198,7 +198,7 @@ public class GradleLibraryNamesMixer {
     /** Target library. */
     public LibraryData library;
 
-    Wrapped(@NotNull LibraryData library) {
+    Wrapped(@Nonnull LibraryData library) {
       this.library = library;
       for (LibraryPathType pathType : LibraryPathType.values()) {
         for (String path : library.getPaths(pathType)) {

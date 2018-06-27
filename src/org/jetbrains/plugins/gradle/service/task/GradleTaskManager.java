@@ -19,10 +19,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.ProjectConnection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.service.project.GradleExecutionHelper;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension;
@@ -54,9 +56,9 @@ public class GradleTaskManager extends AbstractExternalSystemTaskManager<GradleE
 	private final GradleExecutionHelper myHelper = new GradleExecutionHelper();
 
 	@Override
-	public void executeTasks(@NotNull final ExternalSystemTaskId id, @NotNull final List<String> taskNames, @NotNull String projectPath,
-			@Nullable final GradleExecutionSettings settings, @NotNull final List<String> vmOptions, @NotNull final List<String> scriptParameters,
-			@Nullable final String debuggerSetup, @NotNull final ExternalSystemTaskNotificationListener listener) throws ExternalSystemException
+	public void executeTasks(@Nonnull final ExternalSystemTaskId id, @Nonnull final List<String> taskNames, @Nonnull String projectPath,
+			@Nullable final GradleExecutionSettings settings, @Nonnull final List<String> vmOptions, @Nonnull final List<String> scriptParameters,
+			@Nullable final String debuggerSetup, @Nonnull final ExternalSystemTaskNotificationListener listener) throws ExternalSystemException
 	{
 
 		// TODO add support for external process mode
@@ -126,7 +128,7 @@ public class GradleTaskManager extends AbstractExternalSystemTaskManager<GradleE
 	}
 
 	@Override
-	public boolean cancelTask(@NotNull ExternalSystemTaskId id, @NotNull ExternalSystemTaskNotificationListener listener) throws
+	public boolean cancelTask(@Nonnull ExternalSystemTaskId id, @Nonnull ExternalSystemTaskNotificationListener listener) throws
 			ExternalSystemException
 	{
 		// extension points are available only in IDE process

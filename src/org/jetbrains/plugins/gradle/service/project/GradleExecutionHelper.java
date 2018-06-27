@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.StartParameter;
 import org.gradle.process.internal.JvmOptions;
 import org.gradle.tooling.BuildLauncher;
@@ -39,8 +41,8 @@ import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
 import org.gradle.tooling.internal.consumer.Distribution;
 import org.gradle.tooling.model.build.BuildEnvironment;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.settings.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
 import org.jetbrains.plugins.gradle.tooling.internal.init.Init;
@@ -74,10 +76,10 @@ public class GradleExecutionHelper
 	private static final Logger LOG = Logger.getInstance(GradleExecutionHelper.class);
 
 	@SuppressWarnings("MethodMayBeStatic")
-	@NotNull
-	public <T> ModelBuilder<T> getModelBuilder(@NotNull Class<T> modelType, @NotNull final ExternalSystemTaskId id,
-			@Nullable GradleExecutionSettings settings, @NotNull ProjectConnection connection, @NotNull ExternalSystemTaskNotificationListener
-			listener, @NotNull List<String> extraJvmArgs)
+	@Nonnull
+	public <T> ModelBuilder<T> getModelBuilder(@Nonnull Class<T> modelType, @Nonnull final ExternalSystemTaskId id,
+			@Nullable GradleExecutionSettings settings, @Nonnull ProjectConnection connection, @Nonnull ExternalSystemTaskNotificationListener
+			listener, @Nonnull List<String> extraJvmArgs)
 	{
 		ModelBuilder<T> result = connection.model(modelType);
 		prepare(result, id, settings, listener, extraJvmArgs, ContainerUtil.<String>newArrayList(), connection);
@@ -85,10 +87,10 @@ public class GradleExecutionHelper
 	}
 
 	@SuppressWarnings("MethodMayBeStatic")
-	@NotNull
-	public BuildLauncher getBuildLauncher(@NotNull final ExternalSystemTaskId id, @NotNull ProjectConnection connection,
-			@Nullable GradleExecutionSettings settings, @NotNull ExternalSystemTaskNotificationListener listener,
-			@NotNull final List<String> vmOptions, @NotNull final List<String> commandLineArgs)
+	@Nonnull
+	public BuildLauncher getBuildLauncher(@Nonnull final ExternalSystemTaskId id, @Nonnull ProjectConnection connection,
+			@Nullable GradleExecutionSettings settings, @Nonnull ExternalSystemTaskNotificationListener listener,
+			@Nonnull final List<String> vmOptions, @Nonnull final List<String> commandLineArgs)
 	{
 		BuildLauncher result = connection.newBuild();
 		prepare(result, id, settings, listener, vmOptions, commandLineArgs, connection);
@@ -96,9 +98,9 @@ public class GradleExecutionHelper
 	}
 
 	@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-	public static void prepare(@NotNull LongRunningOperation operation, @NotNull final ExternalSystemTaskId id,
-			@Nullable GradleExecutionSettings settings, @NotNull final ExternalSystemTaskNotificationListener listener,
-			@NotNull List<String> extraJvmArgs, @NotNull List<String> commandLineArgs, @NotNull ProjectConnection connection)
+	public static void prepare(@Nonnull LongRunningOperation operation, @Nonnull final ExternalSystemTaskId id,
+			@Nullable GradleExecutionSettings settings, @Nonnull final ExternalSystemTaskNotificationListener listener,
+			@Nonnull List<String> extraJvmArgs, @Nonnull List<String> commandLineArgs, @Nonnull ProjectConnection connection)
 	{
 		prepare(operation, id, settings, listener, extraJvmArgs, commandLineArgs, connection, new OutputWrapper(listener, id, true),
 				new OutputWrapper(listener, id, false));
@@ -106,10 +108,10 @@ public class GradleExecutionHelper
 
 
 	@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-	public static void prepare(@NotNull LongRunningOperation operation, @NotNull final ExternalSystemTaskId id,
-			@Nullable GradleExecutionSettings settings, @NotNull final ExternalSystemTaskNotificationListener listener,
-			@NotNull List<String> extraJvmArgs, @NotNull List<String> commandLineArgs, @NotNull ProjectConnection connection,
-			@NotNull final OutputStream standardOutput, @NotNull final OutputStream standardError)
+	public static void prepare(@Nonnull LongRunningOperation operation, @Nonnull final ExternalSystemTaskId id,
+			@javax.annotation.Nullable GradleExecutionSettings settings, @Nonnull final ExternalSystemTaskNotificationListener listener,
+			@Nonnull List<String> extraJvmArgs, @Nonnull List<String> commandLineArgs, @Nonnull ProjectConnection connection,
+			@Nonnull final OutputStream standardOutput, @Nonnull final OutputStream standardError)
 	{
 		if(settings == null)
 		{
@@ -193,7 +195,7 @@ public class GradleExecutionHelper
 		operation.setStandardError(standardError);
 	}
 
-	public <T> T execute(@NotNull String projectPath, @Nullable GradleExecutionSettings settings, @NotNull Function<ProjectConnection, T> f)
+	public <T> T execute(@Nonnull String projectPath, @Nullable GradleExecutionSettings settings, @Nonnull Function<ProjectConnection, T> f)
 	{
 
 		final String projectDir;
@@ -255,8 +257,8 @@ public class GradleExecutionHelper
 		}
 	}
 
-	public void ensureInstalledWrapper(@NotNull ExternalSystemTaskId id, @NotNull String projectPath, @NotNull GradleExecutionSettings settings,
-			@NotNull ExternalSystemTaskNotificationListener listener)
+	public void ensureInstalledWrapper(@Nonnull ExternalSystemTaskId id, @Nonnull String projectPath, @Nonnull GradleExecutionSettings settings,
+			@Nonnull ExternalSystemTaskNotificationListener listener)
 	{
 
 		if(!settings.getDistributionType().isWrapped())
@@ -333,8 +335,8 @@ public class GradleExecutionHelper
 	 * @return connection to use
 	 * @throws IllegalStateException if it's not possible to create the connection
 	 */
-	@NotNull
-	private static ProjectConnection getConnection(@NotNull String projectPath, @Nullable GradleExecutionSettings settings) throws
+	@Nonnull
+	private static ProjectConnection getConnection(@Nonnull String projectPath, @Nullable GradleExecutionSettings settings) throws
 			IllegalStateException
 	{
 		File projectDir = new File(projectPath);
@@ -435,7 +437,7 @@ public class GradleExecutionHelper
 	}
 
 	@Nullable
-	public static File generateInitScript(boolean isBuildSrcProject, @NotNull Set<Class> toolingExtensionClasses)
+	public static File generateInitScript(boolean isBuildSrcProject, @Nonnull Set<Class> toolingExtensionClasses)
 	{
 		InputStream stream = Init.class.getResourceAsStream("/org/jetbrains/plugins/gradle/tooling/internal/init/init.gradle_");
 		try
@@ -496,7 +498,7 @@ public class GradleExecutionHelper
 	}
 
 	@Nullable
-	private static BuildEnvironment getBuildEnvironment(@NotNull ProjectConnection connection)
+	private static BuildEnvironment getBuildEnvironment(@Nonnull ProjectConnection connection)
 	{
 		try
 		{
@@ -509,7 +511,7 @@ public class GradleExecutionHelper
 		}
 	}
 
-	private static void replaceTestCommandOptionWithInitScript(@NotNull List<String> args)
+	private static void replaceTestCommandOptionWithInitScript(@Nonnull List<String> args)
 	{
 		Set<String> testIncludePatterns = ContainerUtil.newLinkedHashSet();
 		Iterator<String> it = args.iterator();
@@ -565,8 +567,8 @@ public class GradleExecutionHelper
 		}
 	}
 
-	@NotNull
-	private static String getToolingExtensionsJarPaths(@NotNull Set<Class> toolingExtensionClasses)
+	@Nonnull
+	private static String getToolingExtensionsJarPaths(@Nonnull Set<Class> toolingExtensionClasses)
 	{
 		StringBuilder buf = new StringBuilder();
 		buf.append('[');

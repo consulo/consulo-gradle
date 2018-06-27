@@ -19,8 +19,8 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.idea.maven.indices.MavenArtifactSearchResult;
 import org.jetbrains.idea.maven.indices.MavenArtifactSearcher;
 import org.jetbrains.idea.maven.indices.MavenProjectIndicesManager;
@@ -60,7 +60,7 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
   private static final ElementPattern<PsiElement> DEPENDENCIES_CALL_PATTERN = psiElement()
     .inside(true, psiElement(GrMethodCallExpression.class).with(new PatternCondition<GrMethodCallExpression>("withInvokedExpressionText") {
       @Override
-      public boolean accepts(@NotNull GrMethodCallExpression expression, ProcessingContext context) {
+      public boolean accepts(@Nonnull GrMethodCallExpression expression, ProcessingContext context) {
         if (checkExpression(expression)) return true;
         return checkExpression(PsiTreeUtil.getParentOfType(expression, GrMethodCallExpression.class));
       }
@@ -90,9 +90,9 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
     //    compile(group:'junit', name:'junit-dep', version:'4.7')
     extend(CompletionType.BASIC, IN_MAP_DEPENDENCY_NOTATION, new CompletionProvider() {
       @Override
-	  public void addCompletions(@NotNull CompletionParameters params,
+	  public void addCompletions(@Nonnull CompletionParameters params,
                                     ProcessingContext context,
-                                    @NotNull final CompletionResultSet result) {
+                                    @Nonnull final CompletionResultSet result) {
         result.stopHere();
 
         final PsiElement parent = params.getPosition().getParent().getParent();
@@ -142,9 +142,9 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
     //    compile('junit:junit:4.11')
     extend(CompletionType.BASIC, IN_METHOD_DEPENDENCY_NOTATION, new CompletionProvider() {
       @Override
-	  public void addCompletions(@NotNull CompletionParameters params,
+	  public void addCompletions(@Nonnull CompletionParameters params,
                                     ProcessingContext context,
-                                    @NotNull final CompletionResultSet result) {
+                                    @Nonnull final CompletionResultSet result) {
         result.stopHere();
 
         final PsiElement parent = params.getPosition().getParent();

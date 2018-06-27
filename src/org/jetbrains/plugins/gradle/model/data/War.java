@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Vladislav.Soroka
@@ -32,24 +32,24 @@ public class War implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	@NotNull
+	@Nonnull
 	private final String myName;
 
-	@NotNull
+	@Nonnull
 	private final String myWebAppDirName;
-	@NotNull
+	@Nonnull
 	private final File myWebAppDir;
 	@Nullable
 	private File myWebXml;
-	@NotNull
+	@Nonnull
 	private List<WebResource> myWebResources;
-	@NotNull
+	@Nonnull
 	private Set<File> myClasspath;
 	@Nullable
 	private String myManifestContent;
 
 
-	public War(@NotNull String name, @NotNull String webAppDirName, @NotNull File webAppDir)
+	public War(@Nonnull String name, @Nonnull String webAppDirName, @Nonnull File webAppDir)
 	{
 		myName = name;
 		myWebAppDirName = webAppDirName;
@@ -58,19 +58,19 @@ public class War implements Serializable
 		myClasspath = Collections.emptySet();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return myName;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getWebAppDirName()
 	{
 		return myWebAppDirName;
 	}
 
-	@NotNull
+	@Nonnull
 	public File getWebAppDir()
 	{
 		return myWebAppDir;
@@ -92,7 +92,7 @@ public class War implements Serializable
 		myWebResources = webResources == null ? Collections.<WebResource>emptyList() : webResources;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<WebResource> getWebResources()
 	{
 		return myWebResources;
@@ -103,7 +103,7 @@ public class War implements Serializable
 		myClasspath = classpath == null ? Collections.<File>emptySet() : classpath;
 	}
 
-	@NotNull
+	@Nonnull
 	public Set<File> getClasspath()
 	{
 		return myClasspath;

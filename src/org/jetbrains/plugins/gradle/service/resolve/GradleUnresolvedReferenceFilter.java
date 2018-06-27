@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.extensions.GroovyUnresolvedHighlightFilter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
@@ -36,7 +36,7 @@ public class GradleUnresolvedReferenceFilter extends GroovyUnresolvedHighlightFi
     GradleCommonClassNames.GRADLE_API_CONFIGURATION);
 
   @Override
-  public boolean isReject(@NotNull GrReferenceExpression expression) {
+  public boolean isReject(@Nonnull GrReferenceExpression expression) {
     final PsiType psiType = GradleResolverUtil.getTypeOf(expression);
     return psiType != null && IGNORE_SET.contains(psiType.getCanonicalText());
   }

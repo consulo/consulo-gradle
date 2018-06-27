@@ -26,7 +26,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.idea.maven.dom.model.MavenDomDependency;
 import org.jetbrains.idea.maven.indices.MavenArtifactSearchDialog;
 import org.jetbrains.idea.maven.model.MavenId;
@@ -47,7 +47,7 @@ import java.util.List;
 class AddGradleDslDependencyActionHandler implements CodeInsightActionHandler {
 
   @Override
-  public void invoke(@NotNull final Project project, @NotNull final Editor editor, @NotNull final PsiFile file) {
+  public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return;
 
     final List<MavenId> ids;
@@ -100,7 +100,7 @@ class AddGradleDslDependencyActionHandler implements CodeInsightActionHandler {
   }
 
 
-  @NotNull
+  @Nonnull
   private static String getMavenArtifactKey(MavenId mavenId) {
     StringBuilder builder = new StringBuilder();
     append(builder, mavenId.getGroupId());

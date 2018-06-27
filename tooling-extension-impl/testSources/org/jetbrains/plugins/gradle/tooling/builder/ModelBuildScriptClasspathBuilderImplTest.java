@@ -19,7 +19,7 @@ import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.idea.IdeaModule;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.junit.Test;
 
 import java.io.File;
@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
  */
 public class ModelBuildScriptClasspathBuilderImplTest extends AbstractModelBuilderTest {
 
-  public ModelBuildScriptClasspathBuilderImplTest(@NotNull String gradleVersion) {
+  public ModelBuildScriptClasspathBuilderImplTest(@Nonnull String gradleVersion) {
     super(gradleVersion);
   }
 

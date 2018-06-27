@@ -22,7 +22,7 @@ import org.gradle.tooling.model.idea.IdeaDependency;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaModuleDependency;
 import org.gradle.tooling.model.idea.IdeaSingleEntryLibraryDependency;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
  */
 public class ModelDependenciesBuilderImplTest extends AbstractModelBuilderTest {
 
-  public ModelDependenciesBuilderImplTest(@NotNull String gradleVersion) {
+  public ModelDependenciesBuilderImplTest(@Nonnull String gradleVersion) {
     super(gradleVersion);
   }
 
@@ -138,9 +138,9 @@ public class ModelDependenciesBuilderImplTest extends AbstractModelBuilderTest {
     }
   }
 
-  @NotNull
+  @Nonnull
   private static List<IdeaSingleEntryLibraryDependency> findLocalLibraries(
-    @NotNull final DomainObjectSet<? extends IdeaDependency> dependencies, @NotNull final String scope) {
+    @Nonnull final DomainObjectSet<? extends IdeaDependency> dependencies, @Nonnull final String scope) {
     return ContainerUtil.mapNotNull(
       dependencies,
       new Function<IdeaDependency, IdeaSingleEntryLibraryDependency>() {

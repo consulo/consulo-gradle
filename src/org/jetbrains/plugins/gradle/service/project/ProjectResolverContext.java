@@ -17,10 +17,10 @@ package org.jetbrains.plugins.gradle.service.project;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+
 import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.model.idea.IdeaModule;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
@@ -32,23 +32,23 @@ import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotifica
  */
 public class ProjectResolverContext
 {
-	@NotNull
+	@Nonnull
 	private final ExternalSystemTaskId myExternalSystemTaskId;
-	@NotNull
+	@Nonnull
 	private final String myProjectPath;
-	@Nullable
+	@javax.annotation.Nullable
 	private final GradleExecutionSettings mySettings;
-	@NotNull
+	@Nonnull
 	private final ProjectConnection myConnection;
-	@NotNull
+	@Nonnull
 	private final ExternalSystemTaskNotificationListener myListener;
 	private final boolean myIsPreviewMode;
-	@NotNull
+	@Nonnull
 	private ProjectImportAction.AllModels myModels;
 
-	public ProjectResolverContext(@NotNull final ExternalSystemTaskId externalSystemTaskId, @NotNull final String projectPath,
-			@Nullable final GradleExecutionSettings settings, @NotNull final ProjectConnection connection,
-			@NotNull final ExternalSystemTaskNotificationListener listener, final boolean isPreviewMode)
+	public ProjectResolverContext(@Nonnull final ExternalSystemTaskId externalSystemTaskId, @Nonnull final String projectPath,
+			@javax.annotation.Nullable final GradleExecutionSettings settings, @Nonnull final ProjectConnection connection,
+			@Nonnull final ExternalSystemTaskNotificationListener listener, final boolean isPreviewMode)
 	{
 		myExternalSystemTaskId = externalSystemTaskId;
 		myProjectPath = projectPath;
@@ -58,31 +58,31 @@ public class ProjectResolverContext
 		myIsPreviewMode = isPreviewMode;
 	}
 
-	@NotNull
+	@Nonnull
 	public ExternalSystemTaskId getExternalSystemTaskId()
 	{
 		return myExternalSystemTaskId;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getProjectPath()
 	{
 		return myProjectPath;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public GradleExecutionSettings getSettings()
 	{
 		return mySettings;
 	}
 
-	@NotNull
+	@Nonnull
 	public ProjectConnection getConnection()
 	{
 		return myConnection;
 	}
 
-	@NotNull
+	@Nonnull
 	public ExternalSystemTaskNotificationListener getListener()
 	{
 		return myListener;
@@ -93,31 +93,31 @@ public class ProjectResolverContext
 		return myIsPreviewMode;
 	}
 
-	@NotNull
+	@Nonnull
 	public ProjectImportAction.AllModels getModels()
 	{
 		return myModels;
 	}
 
-	public void setModels(@NotNull ProjectImportAction.AllModels models)
+	public void setModels(@Nonnull ProjectImportAction.AllModels models)
 	{
 		myModels = models;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public <T> T getExtraProject(Class<T> modelClazz)
 	{
 		return myModels.getExtraProject(null, modelClazz);
 	}
 
-	@Nullable
-	public <T> T getExtraProject(@Nullable IdeaModule module, Class<T> modelClazz)
+	@javax.annotation.Nullable
+	public <T> T getExtraProject(@javax.annotation.Nullable IdeaModule module, Class<T> modelClazz)
 	{
 		return myModels.getExtraProject(module, modelClazz);
 	}
 
-	@NotNull
-	public Collection<String> findModulesWithModel(@NotNull Class modelClazz)
+	@Nonnull
+	public Collection<String> findModulesWithModel(@Nonnull Class modelClazz)
 	{
 		return myModels.findModulesWithModel(modelClazz);
 	}

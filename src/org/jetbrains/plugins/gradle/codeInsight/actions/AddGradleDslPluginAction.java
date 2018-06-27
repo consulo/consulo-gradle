@@ -19,7 +19,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleDocumentationBundle;
@@ -68,21 +69,21 @@ public class AddGradleDslPluginAction extends CodeInsightAction {
     });
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected CodeInsightActionHandler getHandler() {
     return new AddGradleDslPluginActionHandler(myPlugins);
   }
 
   @Override
-  protected boolean isValidForFile(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
+  protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
     if (file instanceof PsiCompiledElement) return false;
     if (!GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) return false;
     return !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName()) && file.getName().endsWith(GradleConstants.EXTENSION);
   }
 
-  @NotNull
-  private static KeyValue<String, String> createPluginKey(@NotNull String pluginName) {
+  @Nonnull
+  private static KeyValue<String, String> createPluginKey(@Nonnull String pluginName) {
     String description = GradleDocumentationBundle.messageOrDefault(
       String.format("gradle.documentation.org.gradle.api.Project.apply.plugin.%s.non-html", pluginName), "");
     return KeyValue.create(pluginName, description);

@@ -19,7 +19,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrReferenceExpressionImpl;
@@ -41,7 +41,7 @@ public class GradleConfigurationsNonCodeMembersContributor extends NonCodeMember
   private static final String METHOD_GET_BY_NAME = "getByName";
 
   @Override
-  public void processDynamicElements(@NotNull PsiType qualifierType,
+  public void processDynamicElements(@Nonnull PsiType qualifierType,
                                      PsiClass aClass,
                                      PsiScopeProcessor processor,
                                      PsiElement place,
@@ -59,10 +59,10 @@ public class GradleConfigurationsNonCodeMembersContributor extends NonCodeMember
   }
 
   @SuppressWarnings("MethodMayBeStatic")
-  private void processConfigurationAddition(@NotNull PsiClass dependencyHandlerClass,
-                                            @NotNull PsiScopeProcessor processor,
-                                            @NotNull ResolveState state,
-                                            @NotNull PsiElement place) {
+  private void processConfigurationAddition(@Nonnull PsiClass dependencyHandlerClass,
+                                            @Nonnull PsiScopeProcessor processor,
+                                            @Nonnull ResolveState state,
+                                            @Nonnull PsiElement place) {
 
     GrMethodCall call = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
     if (call == null) {
