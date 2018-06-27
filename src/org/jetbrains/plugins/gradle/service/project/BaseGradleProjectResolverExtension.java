@@ -88,7 +88,6 @@ import com.intellij.openapi.util.KeyValue;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.pom.java.LanguageLevel;
-import com.intellij.util.BooleanFunction;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
 import com.intellij.util.PathUtil;
@@ -194,8 +193,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 
 		String gradlePath = gradleModule.getGradleProject().getPath();
 		String moduleId = StringUtil.isEmpty(gradlePath) || ":".equals(gradlePath) ? moduleName : gradlePath;
-		ModuleData moduleData = new ModuleData(moduleId, GradleConstants.SYSTEM_ID, moduleName, moduleConfigPath,
-				moduleConfigPath);
+		ModuleData moduleData = new ModuleData(moduleId, GradleConstants.SYSTEM_ID, moduleName, moduleConfigPath, moduleConfigPath);
 
 		final ModuleExtendedModel moduleExtendedModel = resolverCtx.getExtraProject(gradleModule, ModuleExtendedModel.class);
 		if(moduleExtendedModel != null)
@@ -214,7 +212,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 		final List<BuildScriptClasspathData.ClasspathEntry> classpathEntries;
 		if(buildScriptClasspathModel != null)
 		{
-			classpathEntries = ContainerUtil.map(buildScriptClasspathModel.getClasspath(), new Function<ClasspathEntryModel, BuildScriptClasspathData.ClasspathEntry>()
+			classpathEntries = ContainerUtil.map(buildScriptClasspathModel.getClasspath(), new Function<ClasspathEntryModel,
+					BuildScriptClasspathData.ClasspathEntry>()
 			{
 				@Override
 				public BuildScriptClasspathData.ClasspathEntry fun(ClasspathEntryModel model)
@@ -373,7 +372,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 	}
 
 	@Nullable
-	private static File getCompileOutputPath(@Nullable ExternalProject externalProject, @NotNull String sourceSetName,
+	private static File getCompileOutputPath(@Nullable ExternalProject externalProject,
+			@NotNull String sourceSetName,
 			@NotNull ExternalSystemSourceType sourceType)
 	{
 		if(externalProject == null)
@@ -391,7 +391,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 	}
 
 	@Override
-	public void populateModuleDependencies(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule,
+	public void populateModuleDependencies(@NotNull IdeaModule gradleModule,
+			@NotNull DataNode<ModuleData> ideModule,
 			@NotNull DataNode<ProjectData> ideProject)
 	{
 		final List<? extends IdeaDependency> dependencies = gradleModule.getDependencies().getAll();
@@ -434,7 +435,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 
 	@NotNull
 	@Override
-	public Collection<TaskData> populateModuleTasks(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ideModule,
+	public Collection<TaskData> populateModuleTasks(@NotNull IdeaModule gradleModule,
+			@NotNull DataNode<ModuleData> ideModule,
 			@NotNull DataNode<ProjectData> ideProject) throws IllegalArgumentException, IllegalStateException
 	{
 
@@ -656,7 +658,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 	 * @param dirs        directories which paths should be stored at the given content root
 	 * @throws IllegalArgumentException if specified by {@link ContentRootData#storePath(ExternalSystemSourceType, String)}
 	 */
-	private static void populateContentRoot(@NotNull ContentRootData contentRoot, @NotNull ExternalSystemSourceType type,
+	private static void populateContentRoot(@NotNull ContentRootData contentRoot,
+			@NotNull ExternalSystemSourceType type,
 			@Nullable Iterable<? extends IdeaSourceDirectory> dirs) throws IllegalArgumentException
 	{
 		if(dirs == null)
@@ -692,7 +695,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 	}
 
 	@NotNull
-	private static ModuleDependencyData buildDependency(@NotNull DataNode<ModuleData> ownerModule, @NotNull IdeaModuleDependency dependency,
+	private static ModuleDependencyData buildDependency(@NotNull DataNode<ModuleData> ownerModule,
+			@NotNull IdeaModuleDependency dependency,
 			@NotNull DataNode<ProjectData> ideProject) throws IllegalStateException
 	{
 		IdeaModule module = dependency.getDependencyModule();
@@ -705,8 +709,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 		String moduleName = module.getName();
 		if(moduleName == null)
 		{
-			throw new IllegalStateException(String.format("Can't parse gradle module dependency '%s'. Reason: referenced module name is undefined " +
-					"(module: '%s') ", dependency, module));
+			throw new IllegalStateException(String.format("Can't parse gradle module dependency '%s'. Reason: referenced module name is undefined "
+					+ "(module: '%s') ", dependency, module));
 		}
 
 		Set<String> registeredModuleNames = ContainerUtilRt.newHashSet();
@@ -720,13 +724,15 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 				return new ModuleDependencyData(ownerModule.getData(), moduleDataNode.getData());
 			}
 		}
-		throw new IllegalStateException(String.format("Can't parse gradle module dependency '%s'. Reason: no module with such name (%s) is found. " +
-				"Registered modules: %s", dependency, moduleName, registeredModuleNames));
+		throw new IllegalStateException(String.format("Can't parse gradle module dependency '%s'. Reason: no module with such name (%s) is found. "
+				+ "Registered modules: %s", dependency, moduleName, registeredModuleNames));
 	}
 
 	@NotNull
-	private LibraryDependencyData buildDependency(@NotNull IdeaModule gradleModule, @NotNull DataNode<ModuleData> ownerModule,
-			@NotNull IdeaSingleEntryLibraryDependency dependency, @NotNull DataNode<ProjectData> ideProject) throws IllegalStateException
+	private LibraryDependencyData buildDependency(@NotNull IdeaModule gradleModule,
+			@NotNull DataNode<ModuleData> ownerModule,
+			@NotNull IdeaSingleEntryLibraryDependency dependency,
+			@NotNull DataNode<ProjectData> ideProject) throws IllegalStateException
 	{
 		File binaryPath = dependency.getFile();
 		if(binaryPath == null)
@@ -737,7 +743,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 
 		String libraryName;
 		final GradleModuleVersion moduleVersion = dependency.getGradleModuleVersion();
-		final LibraryLevel level;
+		LibraryLevel level;
 
 		// Gradle API doesn't explicitly provide information about unresolved libraries (http://issues.gradle.org/browse/GRADLE-1995).
 		// That's why we use this dirty hack here.
@@ -807,27 +813,17 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 			library.addPath(LibraryPathType.DOC, javadocPath.getAbsolutePath());
 		}
 
-		if(level == LibraryLevel.PROJECT)
+		if(level == LibraryLevel.PROJECT && !GradleProjectResolverUtil.linkProjectLibrary(ideProject, library))
 		{
-			DataNode<LibraryData> libraryData = ExternalSystemApiUtil.find(ideProject, ProjectKeys.LIBRARY,
-					new BooleanFunction<DataNode<LibraryData>>()
-			{
-				@Override
-				public boolean fun(DataNode<LibraryData> node)
-				{
-					return library.equals(node.getData());
-				}
-			});
-			if(libraryData == null)
-			{
-				ideProject.createChild(ProjectKeys.LIBRARY, library);
-			}
+			level = LibraryLevel.MODULE;
 		}
 
 		return new LibraryDependencyData(ownerModule.getData(), library, level);
 	}
 
-	private void attachGradleSdkSources(@NotNull IdeaModule gradleModule, @NotNull final String libName, @Nullable final File libFile,
+	private void attachGradleSdkSources(@NotNull IdeaModule gradleModule,
+			@NotNull final String libName,
+			@Nullable final File libFile,
 			LibraryData library)
 	{
 		if(libFile == null || !libName.startsWith("gradle-"))
