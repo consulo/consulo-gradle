@@ -15,8 +15,18 @@
  */
 package org.jetbrains.plugins.gradle.codeInsight.actions;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.gradle.util.GradleBundle;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
+import org.jetbrains.plugins.gradle.util.GradleDocumentationBundle;
+import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.codeInsight.actions.CodeInsightAction;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.KeyValue;
@@ -25,16 +35,6 @@ import com.intellij.psi.PsiCompiledElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import icons.GradleIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.jetbrains.plugins.gradle.util.GradleDocumentationBundle;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * @author Vladislav.Soroka
@@ -47,7 +47,7 @@ public class AddGradleDslPluginAction extends CodeInsightAction {
   public AddGradleDslPluginAction() {
     getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.apply_plugin.description"));
     getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"));
-    getTemplatePresentation().setIcon(GradleIcons.GradlePlugin);
+    getTemplatePresentation().setIcon(AllIcons.Nodes.Plugin);
 
     final List<String> plugins = StringUtil.split(
       "java,groovy,idea,eclipse,scala,antlr,application,ear,jetty,maven,osgi,war,announce," +
