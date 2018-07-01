@@ -18,8 +18,6 @@ package org.jetbrains.plugins.gradle.config;
 import java.io.File;
 import java.util.regex.Matcher;
 
-import javax.swing.Icon;
-
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +30,7 @@ import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.GradleIcons;
 
 /**
@@ -51,8 +49,8 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
 
   @NotNull
   @Override
-  public Icon getIcon() {
-    return TargetAWT.to(GradleIcons.Gradle);
+  public Image getIcon() {
+    return GradleIcons.Gradle;
   }
 
   @Nls
