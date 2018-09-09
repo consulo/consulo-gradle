@@ -15,16 +15,25 @@
  */
 package org.jetbrains.plugins.gradle.service.execution;
 
-import com.intellij.openapi.externalSystem.service.execution.AbstractExternalSystemTaskConfigurationType;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.gradle.util.GradleConstants;
+import com.intellij.openapi.externalSystem.service.execution.AbstractExternalSystemTaskConfigurationType;
 
 /**
  * @author Denis Zhdanov
  * @since 23.05.13 17:56
  */
-public class GradleExternalTaskConfigurationType extends AbstractExternalSystemTaskConfigurationType {
-  
-  public GradleExternalTaskConfigurationType() {
-    super(GradleConstants.SYSTEM_ID);
-  }
+public class GradleExternalTaskConfigurationType extends AbstractExternalSystemTaskConfigurationType
+{
+	@Nonnull
+	public static GradleExternalTaskConfigurationType getInstance()
+	{
+		return CONFIGURATION_TYPE_EP.findExtension(GradleExternalTaskConfigurationType.class);
+	}
+
+	public GradleExternalTaskConfigurationType()
+	{
+		super(GradleConstants.SYSTEM_ID);
+	}
 }
