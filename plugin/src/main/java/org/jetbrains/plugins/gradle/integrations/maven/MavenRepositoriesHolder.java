@@ -15,16 +15,20 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven;
 
+import java.util.Set;
+
+import javax.inject.Singleton;
+
+import org.jetbrains.idea.maven.model.MavenRemoteRepository;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.idea.maven.model.MavenRemoteRepository;
-
-import java.util.Set;
 
 /**
  * @author Vladislav.Soroka
  * @since 10/28/13
  */
+@Singleton
 public class MavenRepositoriesHolder {
   private volatile Set<MavenRemoteRepository> myRemoteRepositories;
 
@@ -32,8 +36,8 @@ public class MavenRepositoriesHolder {
     myRemoteRepositories = ContainerUtil.newHashSet();
   }
 
-  public static MavenRepositoriesHolder getInstance(Project p) {
-    return p.getComponent(MavenRepositoriesHolder.class);
+  public static MavenRepositoriesHolder getInstance(Project project) {
+    return ServiceManager.getService(project, MavenRepositoriesHolder.class);
   }
 
   public void update(Set<MavenRemoteRepository> remoteRepositories) {
