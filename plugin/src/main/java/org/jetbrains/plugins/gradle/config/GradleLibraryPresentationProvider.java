@@ -18,9 +18,10 @@ package org.jetbrains.plugins.gradle.config;
 import java.io.File;
 import java.util.regex.Matcher;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
@@ -42,12 +43,12 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
 
   private final GradleInstallationManager myLibraryManager;
 
-  public GradleLibraryPresentationProvider(@NotNull GradleInstallationManager libraryManager) {
+  public GradleLibraryPresentationProvider(@Nonnull GradleInstallationManager libraryManager) {
     super(GRADLE_KIND);
     myLibraryManager = libraryManager;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Image getIcon() {
     return GradleIcons.Gradle;
@@ -60,7 +61,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
   }
 
   @Override
-  public boolean isSDKHome(@NotNull VirtualFile file) {
+  public boolean isSDKHome(@Nonnull VirtualFile file) {
     return myLibraryManager.isGradleSdkHome(file);
   }
 
@@ -69,7 +70,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
     return myLibraryManager.isGradleSdk(libraryFiles);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getSDKVersion(String path) {
     final VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path);
@@ -86,7 +87,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getLibraryCategoryName() {
     return "Gradle";
