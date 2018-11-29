@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.openapi.components.ServiceManager;
@@ -42,75 +44,88 @@ import consulo.vfs.util.ArchiveVfsUtil;
  * @author Vladislav.Soroka
  * @since 12/27/13
  */
-public class GradleBuildClasspathManager {
-  @Nonnull
-  private final Project myProject;
+@Singleton
+public class GradleBuildClasspathManager
+{
+	@Nonnull
+	private final Project myProject;
 
-  @Nonnull
-  private volatile List<VirtualFile> allFilesCache;
+	@Nonnull
+	private volatile List<VirtualFile> allFilesCache;
 
-  @Nonnull
-  private final AtomicReference<Map<String/*module path*/, List<VirtualFile> /*module build classpath*/>> myClasspathMap
-    = new AtomicReference<Map<String, List<VirtualFile>>>(new HashMap<String, List<VirtualFile>>());
+	@Nonnull
+	private final AtomicReference<Map<String/*module path*/, List<VirtualFile> /*module build classpath*/>> myClasspathMap = new AtomicReference<>(new HashMap<>());
 
-  public GradleBuildClasspathManager(@Nonnull Project project) {
-    myProject = project;
-    reload();
-  }
+	@Inject
+	public GradleBuildClasspathManager(@Nonnull Project project)
+	{
+		myProject = project;
+		reload();
+	}
 
-  @Nonnull
-  public static GradleBuildClasspathManager getInstance(@Nonnull Project project) {
-    return ServiceManager.getService(project, GradleBuildClasspathManager.class);
-  }
+	@Nonnull
+	public static GradleBuildClasspathManager getInstance(@Nonnull Project project)
+	{
+		return ServiceManager.getService(project, GradleBuildClasspathManager.class);
+	}
 
-  public void reload() {
-    ExternalSystemManager<?, ?, ?, ?, ?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
-    assert manager != null;
-    AbstractExternalSystemLocalSettings localSettings = manager.getLocalSettingsProvider().fun(myProject);
+	public void reload()
+	{
+		ExternalSystemManager<?, ?, ?, ?, ?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
+		assert manager != null;
+		AbstractExternalSystemLocalSettings localSettings = manager.getLocalSettingsProvider().fun(myProject);
 
-    Map<String/*module path*/, List<VirtualFile> /*module build classpath*/> map = ContainerUtil.newHashMap();
+		Map<String/*module path*/, List<VirtualFile> /*module build classpath*/> map = ContainerUtil.newHashMap();
 
-    final LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
-    for (ExternalProjectBuildClasspathPojo projectBuildClasspathPojo : localSettings.getProjectBuildClasspath().values()) {
-      List<VirtualFile> projectBuildClasspath = ContainerUtil.newArrayList();
-      for (String path : projectBuildClasspathPojo.getProjectBuildClasspath()) {
-        final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByPath(path);
-        if (virtualFile != null) {
-          ContainerUtil.addIfNotNull(
-            projectBuildClasspath, virtualFile.isDirectory() ? virtualFile : ArchiveVfsUtil.getArchiveRootForLocalFile(virtualFile));
-        }
-      }
+		final LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
+		for(ExternalProjectBuildClasspathPojo projectBuildClasspathPojo : localSettings.getProjectBuildClasspath().values())
+		{
+			List<VirtualFile> projectBuildClasspath = ContainerUtil.newArrayList();
+			for(String path : projectBuildClasspathPojo.getProjectBuildClasspath())
+			{
+				final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByPath(path);
+				if(virtualFile != null)
+				{
+					ContainerUtil.addIfNotNull(projectBuildClasspath, virtualFile.isDirectory() ? virtualFile : ArchiveVfsUtil.getArchiveRootForLocalFile(virtualFile));
+				}
+			}
 
-      for (ExternalModuleBuildClasspathPojo moduleBuildClasspathPojo : projectBuildClasspathPojo.getModulesBuildClasspath().values()) {
-        List<VirtualFile> moduleBuildClasspath = ContainerUtil.newArrayList(projectBuildClasspath);
-        for (String path : moduleBuildClasspathPojo.getEntries()) {
-          final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByPath(path);
-          if (virtualFile != null) {
-            ContainerUtil.addIfNotNull(moduleBuildClasspath, ArchiveVfsUtil.getArchiveRootForLocalFile(virtualFile));
-          }
-        }
+			for(ExternalModuleBuildClasspathPojo moduleBuildClasspathPojo : projectBuildClasspathPojo.getModulesBuildClasspath().values())
+			{
+				List<VirtualFile> moduleBuildClasspath = ContainerUtil.newArrayList(projectBuildClasspath);
+				for(String path : moduleBuildClasspathPojo.getEntries())
+				{
+					final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByPath(path);
+					if(virtualFile != null)
+					{
+						ContainerUtil.addIfNotNull(moduleBuildClasspath, ArchiveVfsUtil.getArchiveRootForLocalFile(virtualFile));
+					}
+				}
 
-        map.put(moduleBuildClasspathPojo.getPath(), moduleBuildClasspath);
-      }
-    }
+				map.put(moduleBuildClasspathPojo.getPath(), moduleBuildClasspath);
+			}
+		}
 
-    myClasspathMap.set(map);
+		myClasspathMap.set(map);
 
-    Set<VirtualFile> set = new LinkedHashSet<VirtualFile>();
-    for (List<VirtualFile> virtualFiles : myClasspathMap.get().values()) {
-      set.addAll(virtualFiles);
-    }
-    allFilesCache = ContainerUtil.newArrayList(set);
-  }
+		Set<VirtualFile> set = new LinkedHashSet<>();
+		for(List<VirtualFile> virtualFiles : myClasspathMap.get().values())
+		{
+			set.addAll(virtualFiles);
+		}
+		allFilesCache = ContainerUtil.newArrayList(set);
+	}
 
-  @Nonnull
-  public List<VirtualFile> getAllClasspathEntries() {
-    return allFilesCache;
-  }
+	@Nonnull
+	public List<VirtualFile> getAllClasspathEntries()
+	{
+		return allFilesCache;
+	}
 
-  @Nonnull
-  public List<VirtualFile> getModuleClasspathEntries(@Nonnull String externalModulePath) {
-    List<VirtualFile> virtualFiles = myClasspathMap.get().get(externalModulePath);
-    return virtualFiles == null ? Collections.<VirtualFile>emptyList() : virtualFiles;
-  }
+	@Nonnull
+	public List<VirtualFile> getModuleClasspathEntries(@Nonnull String externalModulePath)
+	{
+		List<VirtualFile> virtualFiles = myClasspathMap.get().get(externalModulePath);
+		return virtualFiles == null ? Collections.<VirtualFile>emptyList() : virtualFiles;
+	}
 }
