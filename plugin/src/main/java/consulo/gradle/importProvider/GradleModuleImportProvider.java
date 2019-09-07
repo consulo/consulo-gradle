@@ -1,15 +1,6 @@
 package consulo.gradle.importProvider;
 
-import java.io.File;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.externalSystem.JavaProjectData;
-import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.externalSystem.model.DataNode;
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataManager;
@@ -23,8 +14,17 @@ import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import consulo.externalSystem.service.module.wizard.AbstractExternalModuleImportProvider;
+import consulo.externalSystem.service.module.wizard.ExternalModuleImportContext;
 import consulo.ui.image.Image;
 import icons.GradleIcons;
+import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
+import org.jetbrains.plugins.gradle.util.GradleBundle;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.List;
 
 /**
  * @author VISTALL
@@ -32,6 +32,12 @@ import icons.GradleIcons;
  */
 public class GradleModuleImportProvider extends AbstractExternalModuleImportProvider<ImportFromGradleControl>
 {
+	@Nonnull
+	public static GradleModuleImportProvider getInstance()
+	{
+		return EP_NAME.findExtensionOrFail(GradleModuleImportProvider.class);
+	}
+
 	public GradleModuleImportProvider(@Nonnull ProjectDataManager dataManager)
 	{
 		super(dataManager, new ImportFromGradleControl(), GradleConstants.SYSTEM_ID);
@@ -44,7 +50,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 		return GradleBundle.message("gradle.name");
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	@Override
 	public Image getIcon()
 	{
@@ -65,12 +71,6 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 		}
 	}
 
-	@Override
-	public String getPathToBeImported(@Nonnull VirtualFile file)
-	{
-		return file.isDirectory() ? file.findChild(GradleConstants.DEFAULT_SCRIPT_NAME).getPath() : file.getPath();
-	}
-
 	@Nonnull
 	@Override
 	public String getFileSample()
@@ -79,10 +79,10 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	}
 
 	@Override
-	protected void doPrepare(@Nonnull WizardContext context)
+	protected void doPrepare(@Nonnull ExternalModuleImportContext<ImportFromGradleControl> context)
 	{
-		String pathToUse = context.getProjectFileDirectory();
-		VirtualFile file = LocalFileSystem.getInstance().refreshAndFindFileByPath(pathToUse);
+		String importFile = context.getFileToImport();
+		VirtualFile file = LocalFileSystem.getInstance().refreshAndFindFileByPath(importFile);
 		if(file != null && !file.isDirectory())
 		{
 			getControl(null).setLinkedProjectPath(file.getParent().getPath());
@@ -103,7 +103,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	}
 
 	@Override
-	protected void applyExtraSettings(@Nonnull WizardContext context)
+	protected void applyExtraSettings(@Nonnull ExternalModuleImportContext<ImportFromGradleControl> context)
 	{
 		DataNode<ProjectData> node = getExternalProjectNode();
 		if(node == null)
@@ -115,7 +115,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 		if(javaProjectNode != null)
 		{
 			JavaProjectData data = javaProjectNode.getData();
-			context.setCompilerOutputDirectory(data.getCompileOutputPath());
+			// todo context.setCompilerOutputDirectory(data.getCompileOutputPath());
 			JavaSdkVersion version = data.getJdkVersion();
 			Sdk jdk = findJdk(version);
 			if(jdk != null)
@@ -125,7 +125,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 		}
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	private static Sdk findJdk(@Nonnull JavaSdkVersion version)
 	{
 		JavaSdk javaSdk = JavaSdk.getInstance();
