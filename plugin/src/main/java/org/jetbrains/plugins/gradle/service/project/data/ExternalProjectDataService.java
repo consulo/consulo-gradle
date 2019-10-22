@@ -15,20 +15,9 @@
  */
 package org.jetbrains.plugins.gradle.service.project.data;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.intellij.CommonBundle;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.model.DataNode;
-import com.intellij.openapi.externalSystem.model.DefaultExternalProject;
-import com.intellij.openapi.externalSystem.model.ExternalProject;
-import com.intellij.openapi.externalSystem.model.Key;
-import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.ProjectSystemId;
+import com.intellij.openapi.externalSystem.model.*;
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import com.intellij.openapi.externalSystem.service.internal.ExternalSystemResolveProjectTask;
@@ -56,6 +45,12 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.UIUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * @author Vladislav.Soroka
  * @since 7/17/2014
@@ -77,22 +72,7 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
 	public ExternalProjectDataService(@Nonnull ProjectDataManager projectDataManager)
 	{
 		myProjectDataManager = projectDataManager;
-		myExternalRootProjects = new ConcurrentFactoryMap<Pair<ProjectSystemId, File>, ExternalProject>()
-		{
-			@javax.annotation.Nullable
-			@Override
-			protected ExternalProject create(Pair<ProjectSystemId, File> key)
-			{
-				return new ExternalProjectSerializer().load(key.first, key.second);
-			}
-
-			@Override
-			public ExternalProject put(Pair<ProjectSystemId, File> key, ExternalProject value)
-			{
-				new ExternalProjectSerializer().save(value);
-				return super.put(key, value);
-			}
-		};
+		myExternalRootProjects = ConcurrentFactoryMap.createMap(key -> new ExternalProjectSerializer().load(key.first, key.second));
 	}
 
 	@Nonnull
@@ -125,7 +105,7 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
 
 	@javax.annotation.Nullable
 	private ExternalProject importExternalProject(@Nonnull final Project project, @Nonnull final ProjectSystemId projectSystemId,
-			@Nonnull final File projectRootDir)
+												  @Nonnull final File projectRootDir)
 	{
 		final Boolean result = UIUtil.invokeAndWaitIfNeeded(new Computable<Boolean>()
 		{
@@ -252,8 +232,11 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
 
 	public void saveExternalProject(@Nonnull ExternalProject externalProject)
 	{
-		myExternalRootProjects.put(Pair.create(new ProjectSystemId(externalProject.getExternalSystemId()), externalProject.getProjectDir()),
-				new DefaultExternalProject(externalProject));
+		DefaultExternalProject value = new DefaultExternalProject(externalProject);
+
+		myExternalRootProjects.put(Pair.create(new ProjectSystemId(externalProject.getExternalSystemId()), externalProject.getProjectDir()), value);
+
+		new ExternalProjectSerializer().save(value);
 	}
 
 	@Nullable

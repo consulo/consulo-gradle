@@ -16,13 +16,6 @@
 
 package org.jetbrains.plugins.gradle.config;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
-import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.externalSystem.psi.search.ExternalModuleBuildGlobalSearchScope;
 import com.intellij.openapi.project.Project;
@@ -36,6 +29,12 @@ import com.intellij.psi.PsiJavaPackage;
 import com.intellij.psi.search.EverythingGlobalScope;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.containers.ConcurrentFactoryMap;
+import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author peter
@@ -44,20 +43,14 @@ public class GradleClassFinder extends NonClasspathClassFinder
 {
 	@Nonnull
 	private final GradleBuildClasspathManager myBuildClasspathManager;
-	private final Map<String, PackageDirectoryCache> myCaches = new ConcurrentFactoryMap<String, PackageDirectoryCache>()
-	{
-		@javax.annotation.Nullable
-		@Override
-		protected PackageDirectoryCache create(String path)
-		{
-			return createCache(myBuildClasspathManager.getModuleClasspathEntries(path));
-		}
-	};
+	private final Map<String, PackageDirectoryCache> myCaches;
 
 	public GradleClassFinder(@Nonnull Project project, @Nonnull GradleBuildClasspathManager buildClasspathManager)
 	{
 		super(project, JavaFileType.DEFAULT_EXTENSION, GroovyFileType.DEFAULT_EXTENSION);
 		myBuildClasspathManager = buildClasspathManager;
+
+		myCaches = ConcurrentFactoryMap.createMap(path -> createCache(myBuildClasspathManager.getModuleClasspathEntries(path)));
 	}
 
 	@Override

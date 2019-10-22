@@ -15,19 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
@@ -52,6 +39,19 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
 import com.intellij.util.lang.UrlClassLoader;
 import consulo.internal.com.sun.jdi.AbsentInformationException;
 import consulo.internal.com.sun.jdi.ReferenceType;
+import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
+import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author John Murph
@@ -159,12 +159,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
     }
 
     public Result<Map<File, String>> compute() {
-      final Map<File, String> result = new ConcurrentFactoryMap<File, String>() {
-        @Override
-        protected String create(File scriptFile) {
-          return calcClassName(scriptFile);
-        }
-      };
+      final Map<File, String> result = ConcurrentFactoryMap.createMap(this::calcClassName);
       return Result.create(result, ProjectRootManager.getInstance(myModule.getProject()));
     }
 
