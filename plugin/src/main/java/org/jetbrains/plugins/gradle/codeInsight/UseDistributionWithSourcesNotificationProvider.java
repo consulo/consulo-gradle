@@ -36,13 +36,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootAdapter;
 import com.intellij.openapi.roots.ModuleRootEvent;
 import com.intellij.openapi.roots.ex.ProjectRootManagerEx;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.EditorNotificationPanel;
 import com.intellij.ui.EditorNotifications;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.editor.notifications.EditorNotificationProvider;
 import consulo.ui.annotation.RequiredUIAccess;
 import org.gradle.util.GUtil;
 import org.gradle.wrapper.WrapperConfiguration;
@@ -66,11 +66,10 @@ import java.util.regex.Pattern;
  * @author Vladislav.Soroka
  * @since 9/13/13
  */
-public class UseDistributionWithSourcesNotificationProvider extends EditorNotifications.Provider<EditorNotificationPanel>
+public class UseDistributionWithSourcesNotificationProvider implements EditorNotificationProvider<EditorNotificationPanel>
 {
 	public static final Pattern GRADLE_SRC_DISTRIBUTION_PATTERN;
 	private static final Logger LOG = Logger.getInstance("#" + UseDistributionWithSourcesNotificationProvider.class.getName());
-	private static final Key<EditorNotificationPanel> KEY = Key.create("gradle.notifications.use.distribution.with.sources");
 	private static final String ALL_ZIP_DISTRIBUTION_URI_SUFFIX = "-all.zip";
 	private final Project myProject;
 
@@ -90,13 +89,6 @@ public class UseDistributionWithSourcesNotificationProvider extends EditorNotifi
 				notifications.updateAllNotifications();
 			}
 		});
-	}
-
-	@Nonnull
-	@Override
-	public Key<EditorNotificationPanel> getKey()
-	{
-		return KEY;
 	}
 
 	@RequiredReadAction
