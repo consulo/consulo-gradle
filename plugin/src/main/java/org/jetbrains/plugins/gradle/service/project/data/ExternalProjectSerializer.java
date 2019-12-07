@@ -15,24 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.service.project.data;
 
-import gnu.trove.THashMap;
-import gnu.trove.THashSet;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.objenesis.strategy.StdInstantiatorStrategy;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
@@ -42,19 +24,23 @@ import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.kryo.serializers.MapSerializer;
 import com.esotericsoftware.minlog.Log;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.model.DefaultExternalFilter;
-import com.intellij.openapi.externalSystem.model.DefaultExternalPlugin;
-import com.intellij.openapi.externalSystem.model.DefaultExternalProject;
-import com.intellij.openapi.externalSystem.model.DefaultExternalSourceDirectorySet;
-import com.intellij.openapi.externalSystem.model.DefaultExternalSourceSet;
-import com.intellij.openapi.externalSystem.model.DefaultExternalTask;
-import com.intellij.openapi.externalSystem.model.ExternalProject;
-import com.intellij.openapi.externalSystem.model.ProjectSystemId;
+import com.intellij.openapi.externalSystem.model.*;
 import com.intellij.openapi.externalSystem.model.project.ExternalSystemSourceType;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.io.StreamUtil;
+import consulo.container.boot.ContainerPathManager;
+import gnu.trove.THashMap;
+import gnu.trove.THashSet;
+import org.objenesis.strategy.StdInstantiatorStrategy;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.*;
 
 /**
  * @author Vladislav.Soroka
@@ -230,7 +216,7 @@ public class ExternalProjectSerializer {
 	}
 
 	private static File getPluginSystemDir(ProjectSystemId externalSystemId, String folder) {
-		return new File(PathManager.getSystemPath(), externalSystemId.getId().toLowerCase() + "/" + folder).getAbsoluteFile();
+		return new File(ContainerPathManager.get().getSystemPath(), externalSystemId.getId().toLowerCase() + "/" + folder).getAbsoluteFile();
 	}
 
 	private static class FileSerializer extends Serializer<File> {
