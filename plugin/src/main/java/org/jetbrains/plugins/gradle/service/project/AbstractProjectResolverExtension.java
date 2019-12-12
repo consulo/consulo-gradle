@@ -15,16 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.gradle.tooling.model.idea.IdeaModule;
-import org.gradle.tooling.model.idea.IdeaProject;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.SimpleJavaParameters;
 import com.intellij.externalSystem.JavaProjectData;
@@ -35,8 +25,17 @@ import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.externalSystem.model.task.TaskData;
 import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
 import com.intellij.openapi.externalSystem.util.Order;
-import com.intellij.openapi.util.KeyValue;
 import com.intellij.util.Consumer;
+import consulo.util.lang.Pair;
+import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaProject;
+
+import javax.annotation.Nonnull;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link org.jetbrains.plugins.gradle.service.project.AbstractProjectResolverExtension} provides dummy implementation of Gradle project resolver.
@@ -159,7 +158,7 @@ public abstract class AbstractProjectResolverExtension implements GradleProjectR
 
 	@Nonnull
 	@Override
-	public List<KeyValue<String, String>> getExtraJvmArgs()
+	public List<Pair<String, String>> getExtraJvmArgs()
 	{
 		return Collections.emptyList();
 	}

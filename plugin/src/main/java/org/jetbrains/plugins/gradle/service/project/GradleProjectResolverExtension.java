@@ -15,16 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.gradle.tooling.model.idea.IdeaModule;
-import org.gradle.tooling.model.idea.IdeaProject;
-import org.jetbrains.plugins.gradle.GradleManager;
 import com.intellij.execution.configurations.SimpleJavaParameters;
 import com.intellij.externalSystem.JavaProjectData;
 import com.intellij.openapi.extensions.ExtensionPointName;
@@ -34,8 +24,17 @@ import com.intellij.openapi.externalSystem.model.project.ModuleData;
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.externalSystem.model.task.TaskData;
 import com.intellij.openapi.externalSystem.service.ParametersEnhancer;
-import com.intellij.openapi.util.KeyValue;
 import com.intellij.util.Consumer;
+import consulo.util.lang.Pair;
+import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaProject;
+import org.jetbrains.plugins.gradle.GradleManager;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Allows to enhance {@link GradleProjectResolver} processing.
@@ -113,7 +112,7 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer
 	Set<Class> getToolingExtensionsClasses();
 
 	@Nonnull
-	List<KeyValue<String, String>> getExtraJvmArgs();
+	List<Pair<String, String>> getExtraJvmArgs();
 
 	@Nonnull
 	List<String> getExtraCommandLineArgs();

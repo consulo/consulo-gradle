@@ -28,7 +28,6 @@ import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.KeyValue;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -36,13 +35,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 
@@ -51,8 +51,8 @@ import java.awt.*;
 * @since 10/24/13
 */
 class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
-  private final KeyValue[] myPlugins;
-  public AddGradleDslPluginActionHandler(KeyValue[] plugins) {
+  private final Pair[] myPlugins;
+  public AddGradleDslPluginActionHandler(Pair[] plugins) {
     myPlugins = plugins;
   }
 
@@ -66,14 +66,14 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
     Runnable runnable = new Runnable() {
       @Override
       public void run() {
-        final KeyValue selected = (KeyValue)list.getSelectedValue();
+        final Pair selected = (Pair)list.getSelectedValue();
         new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"), file) {
           @Override
           protected void run() {
             if (selected == null) return;
             GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
             GrStatement grStatement = factory.createStatementFromText(
-              String.format("apply plugin: '%s'", selected.getKey()), null);
+              String.format("apply plugin: '%s'", selected.getFirst()), null);
 
             PsiElement anchor = file.findElementAt(editor.getCaretModel().getOffset());
             PsiElement currentElement = PsiTreeUtil.getParentOfType(anchor, GrClosableBlock.class, GroovyFile.class);
@@ -94,10 +94,10 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
     };
 
     if (ApplicationManager.getApplication().isUnitTestMode()) {
-      KeyValue descriptor = ContainerUtil.find(myPlugins, new Condition<KeyValue>() {
+		Pair descriptor = ContainerUtil.find(myPlugins, new Condition<Pair>() {
         @Override
-        public boolean value(KeyValue value) {
-          return value.getKey().equals(AddGradleDslPluginAction.TEST_THREAD_LOCAL.get());
+        public boolean value(Pair value) {
+          return value.getFirst().equals(AddGradleDslPluginAction.TEST_THREAD_LOCAL.get());
         }
       });
       list.setSelectedValue(descriptor, false);
@@ -110,7 +110,7 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
         .setFilteringEnabled(new Function<Object, String>() {
           @Override
           public String fun(Object o) {
-            return String.valueOf(((KeyValue)o).getKey());
+            return String.valueOf(((Pair)o).getFirst());
           }
         })
         .createPopup()
@@ -147,14 +147,14 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-      KeyValue descriptor = (KeyValue)value;
+		Pair descriptor = (Pair)value;
       Color backgroundColor = isSelected ? list.getSelectionBackground() : list.getBackground();
 
-      myNameLabel.setText(String.valueOf(descriptor.getKey()));
+      myNameLabel.setText(String.valueOf(descriptor.getFirst()));
       myNameLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
       myPanel.setBackground(backgroundColor);
 
-      String description = String.format("<html><div WIDTH=%d>%s</div><html>", 400, String.valueOf(descriptor.getValue()));
+      String description = String.format("<html><div WIDTH=%d>%s</div><html>", 400, String.valueOf(descriptor.getSecond()));
       myDescLabel.setText(description);
       myDescLabel.setForeground(LookupCellRenderer.getGrayedForeground(isSelected));
       myDescLabel.setBackground(backgroundColor);

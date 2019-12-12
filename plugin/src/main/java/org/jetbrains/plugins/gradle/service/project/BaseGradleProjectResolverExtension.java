@@ -15,41 +15,39 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.google.gson.GsonBuilder;
+import com.intellij.execution.ExecutionException;
+import com.intellij.execution.configurations.SimpleJavaParameters;
+import com.intellij.externalSystem.JavaProjectData;
+import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.externalSystem.model.*;
+import com.intellij.openapi.externalSystem.model.project.*;
+import com.intellij.openapi.externalSystem.model.task.TaskData;
+import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
+import com.intellij.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
+import com.intellij.openapi.externalSystem.util.Order;
+import com.intellij.openapi.roots.DependencyScope;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.pom.java.LanguageLevel;
+import com.intellij.util.*;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.ContainerUtilRt;
+import com.intellij.util.net.HttpConfigurable;
+import com.intellij.util.text.CharArrayUtil;
+import consulo.util.lang.Pair;
+import groovy.lang.GroovyObject;
 import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.GradleModuleVersion;
 import org.gradle.tooling.model.GradleTask;
 import org.gradle.tooling.model.gradle.BasicGradleProject;
 import org.gradle.tooling.model.gradle.GradleBuild;
-import org.gradle.tooling.model.idea.IdeaCompilerOutput;
-import org.gradle.tooling.model.idea.IdeaContentRoot;
-import org.gradle.tooling.model.idea.IdeaDependency;
-import org.gradle.tooling.model.idea.IdeaDependencyScope;
-import org.gradle.tooling.model.idea.IdeaModule;
-import org.gradle.tooling.model.idea.IdeaModuleDependency;
-import org.gradle.tooling.model.idea.IdeaProject;
-import org.gradle.tooling.model.idea.IdeaSingleEntryLibraryDependency;
-import org.gradle.tooling.model.idea.IdeaSourceDirectory;
+import org.gradle.tooling.model.idea.*;
 import org.gradle.util.GradleVersion;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.gradle.model.BuildScriptClasspathModel;
-import org.jetbrains.plugins.gradle.model.ClasspathEntryModel;
-import org.jetbrains.plugins.gradle.model.ExtIdeaContentRoot;
-import org.jetbrains.plugins.gradle.model.ModuleExtendedModel;
-import org.jetbrains.plugins.gradle.model.ProjectImportAction;
+import org.jetbrains.plugins.gradle.model.*;
 import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
 import org.jetbrains.plugins.gradle.service.project.data.ExternalProjectDataService;
 import org.jetbrains.plugins.gradle.tooling.builder.ModelBuildScriptClasspathBuilderImpl;
@@ -57,48 +55,14 @@ import org.jetbrains.plugins.gradle.tooling.internal.init.Init;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
-import com.google.gson.GsonBuilder;
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.SimpleJavaParameters;
-import com.intellij.externalSystem.JavaProjectData;
-import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.model.DataNode;
-import com.intellij.openapi.externalSystem.model.DefaultExternalProject;
-import com.intellij.openapi.externalSystem.model.DefaultExternalSourceDirectorySet;
-import com.intellij.openapi.externalSystem.model.ExternalProject;
-import com.intellij.openapi.externalSystem.model.ExternalSourceDirectorySet;
-import com.intellij.openapi.externalSystem.model.ExternalSourceSet;
-import com.intellij.openapi.externalSystem.model.ExternalSystemException;
-import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.project.ContentRootData;
-import com.intellij.openapi.externalSystem.model.project.ExternalSystemSourceType;
-import com.intellij.openapi.externalSystem.model.project.LibraryData;
-import com.intellij.openapi.externalSystem.model.project.LibraryDependencyData;
-import com.intellij.openapi.externalSystem.model.project.LibraryLevel;
-import com.intellij.openapi.externalSystem.model.project.LibraryPathType;
-import com.intellij.openapi.externalSystem.model.project.ModuleData;
-import com.intellij.openapi.externalSystem.model.project.ModuleDependencyData;
-import com.intellij.openapi.externalSystem.model.project.ProjectData;
-import com.intellij.openapi.externalSystem.model.task.TaskData;
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
-import com.intellij.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
-import com.intellij.openapi.externalSystem.util.Order;
-import com.intellij.openapi.roots.DependencyScope;
-import com.intellij.openapi.util.KeyValue;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import com.intellij.util.PathUtil;
-import com.intellij.util.PathsList;
-import com.intellij.util.SystemProperties;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.ContainerUtilRt;
-import com.intellij.util.net.HttpConfigurable;
-import com.intellij.util.text.CharArrayUtil;
-import groovy.lang.GroovyObject;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * {@link BaseGradleProjectResolverExtension} provides base implementation of Gradle project resolver.
@@ -495,21 +459,25 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 
 	@Nonnull
 	@Override
-	public List<KeyValue<String, String>> getExtraJvmArgs()
+	public List<Pair<String, String>> getExtraJvmArgs()
 	{
 		if(ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID))
 		{
-			final List<KeyValue<String, String>> extraJvmArgs = ContainerUtil.newArrayList();
+			final List<Pair<String, String>> extraJvmArgs = ContainerUtil.newArrayList();
 			final HttpConfigurable httpConfigurable = HttpConfigurable.getInstance();
 			if(!StringUtil.isEmpty(httpConfigurable.PROXY_EXCEPTIONS))
 			{
 				List<String> hosts = StringUtil.split(httpConfigurable.PROXY_EXCEPTIONS, ",");
 				if(!hosts.isEmpty())
 				{
-					extraJvmArgs.add(KeyValue.create("http.nonProxyHosts", StringUtil.join(hosts, StringUtil.TRIMMER, "|")));
+					extraJvmArgs.add(Pair.create("http.nonProxyHosts", StringUtil.join(hosts, StringUtil.TRIMMER, "|")));
 				}
 			}
-			extraJvmArgs.addAll(HttpConfigurable.getJvmPropertiesList(false, null));
+			for(com.intellij.openapi.util.Pair<String, String> pair : HttpConfigurable.getJvmPropertiesList(false, null))
+			{
+				extraJvmArgs.add(Pair.create(pair.getFirst(), pair.getSecond()));
+			}
+
 			return extraJvmArgs;
 		}
 		return Collections.emptyList();

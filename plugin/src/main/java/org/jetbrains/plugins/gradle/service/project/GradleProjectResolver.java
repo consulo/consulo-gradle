@@ -15,34 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import java.io.File;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.gradle.tooling.BuildActionExecuter;
-import org.gradle.tooling.ModelBuilder;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.UnsupportedVersionException;
-import org.gradle.tooling.model.DomainObjectSet;
-import org.gradle.tooling.model.build.BuildEnvironment;
-import org.gradle.tooling.model.idea.BasicIdeaProject;
-import org.gradle.tooling.model.idea.IdeaModule;
-import org.gradle.tooling.model.idea.IdeaProject;
-
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.gradle.model.ProjectImportAction;
-import org.jetbrains.plugins.gradle.remote.impl.GradleLibraryNamesMixer;
-import org.jetbrains.plugins.gradle.settings.ClassHolder;
-import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.jetbrains.plugins.gradle.util.GradleEnvironment;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.externalSystem.JavaProjectData;
 import com.intellij.openapi.diagnostic.Logger;
@@ -59,12 +31,31 @@ import com.intellij.openapi.externalSystem.service.project.ExternalSystemProject
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
 import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.KeyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.util.BooleanFunction;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.ContainerUtilRt;
+import org.gradle.tooling.BuildActionExecuter;
+import org.gradle.tooling.ModelBuilder;
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.UnsupportedVersionException;
+import org.gradle.tooling.model.DomainObjectSet;
+import org.gradle.tooling.model.build.BuildEnvironment;
+import org.gradle.tooling.model.idea.BasicIdeaProject;
+import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaProject;
+import org.jetbrains.plugins.gradle.model.ProjectImportAction;
+import org.jetbrains.plugins.gradle.remote.impl.GradleLibraryNamesMixer;
+import org.jetbrains.plugins.gradle.settings.ClassHolder;
+import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
+import org.jetbrains.plugins.gradle.util.GradleEnvironment;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.*;
 
 /**
  * @author Denis Zhdanov, Vladislav Soroka
@@ -128,7 +119,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 
 		final ProjectImportAction projectImportAction = new ProjectImportAction(resolverCtx.isPreviewMode());
 
-		final List<KeyValue<String, String>> extraJvmArgs = new ArrayList<KeyValue<String, String>>();
+		final List<consulo.util.lang.Pair<String, String>> extraJvmArgs = new ArrayList<>();
 		final List<String> commandLineArgs = ContainerUtil.newArrayList();
 		final Set<Class> toolingExtensionClasses = ContainerUtil.newHashSet();
 
@@ -150,9 +141,9 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 		}
 
 		final ParametersList parametersList = new ParametersList();
-		for(KeyValue<String, String> jvmArg : extraJvmArgs)
+		for(consulo.util.lang.Pair<String, String> jvmArg : extraJvmArgs)
 		{
-			parametersList.addProperty(jvmArg.getKey(), jvmArg.getValue());
+			parametersList.addProperty(jvmArg.getFirst(), jvmArg.getSecond());
 		}
 
 
