@@ -14,7 +14,7 @@
   ~
   -->
 
-<idea-plugin>
+<consulo-plugin>
 	<id>org.jetbrains.plugins.gradle</id>
 	<name>Gradle</name>
 	<vendor>JetBrains</vendor>
@@ -87,7 +87,7 @@
 
 		<configurationProducer implementation="org.jetbrains.plugins.gradle.service.execution.GradleRuntimeConfigurationProducer"/>
 
-		<toolWindow id="Gradle" anchor="right" icon="GradleIcons.ToolWindowGradle"
+		<toolWindow id="Gradle" anchor="right" icon="consulo.gradle.GradleIconGroup@toolwindowgradle"
 					factoryClass="org.jetbrains.plugins.gradle.ui.GradleToolWindowFactory"
 					conditionClass="org.jetbrains.plugins.gradle.ui.GradleToolWindowFactoryCondition"/>
 		<lang.documentationProvider language="Groovy"
@@ -125,4 +125,4 @@
 			<add-to-group group-id="GenerateGroup" anchor="first"/>
 		</group>
 	</actions>
-</idea-plugin>
+</consulo-plugin>

@@ -15,8 +15,8 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import consulo.externalSystem.service.module.wizard.AbstractExternalModuleImportProvider;
 import consulo.externalSystem.service.module.wizard.ExternalModuleImportContext;
+import consulo.gradle.icon.GradleIconGroup;
 import consulo.ui.image.Image;
-import icons.GradleIcons;
 import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
@@ -54,7 +54,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 	@Override
 	public Image getIcon()
 	{
-		return GradleIcons.Gradle;
+		return GradleIconGroup.gradle();
 	}
 
 	@Override

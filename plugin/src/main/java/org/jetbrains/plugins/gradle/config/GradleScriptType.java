@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
+import consulo.gradle.icon.GradleIconGroup;
 import org.jetbrains.plugins.gradle.execution.GradleTaskLocation;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
@@ -75,7 +76,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.NonClasspathDirectoriesScope;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.ui.image.Image;
-import icons.GradleIcons;
 
 /**
  * @author peter
@@ -95,7 +95,7 @@ public class GradleScriptType extends GroovyRunnableScriptType
 	@Override
 	public Image getScriptIcon()
 	{
-		return GradleIcons.Gradle;
+		return GradleIconGroup.gradle();
 	}
 
 	@Override

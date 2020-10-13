@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import consulo.gradle.icon.GradleIconGroup;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
@@ -32,7 +33,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import consulo.ui.image.Image;
-import icons.GradleIcons;
 
 /**
  * @author nik
@@ -51,7 +51,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
   @Nonnull
   @Override
   public Image getIcon() {
-    return GradleIcons.Gradle;
+    return GradleIconGroup.gradle();
   }
 
   @Nls

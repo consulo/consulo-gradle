@@ -27,6 +27,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import javax.annotation.Nullable;
+
+import consulo.gradle.icon.GradleIconGroup;
 import org.jetbrains.plugins.gradle.config.GradleSettingsListenerAdapter;
 import org.jetbrains.plugins.gradle.remote.GradleJavaHelper;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
@@ -86,7 +88,6 @@ import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtilRt;
 import com.intellij.util.messages.MessageBusConnection;
 import consulo.ui.image.Image;
-import icons.GradleIcons;
 
 /**
  * @author Denis Zhdanov
@@ -277,7 +278,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 	@Override
 	public Image getProjectIcon()
 	{
-		return GradleIcons.Gradle;
+		return GradleIconGroup.gradle();
 	}
 
 	@javax.annotation.Nullable

@@ -12,6 +12,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.ContainerUtilRt;
 import com.intellij.util.containers.Stack;
+import consulo.gradle.icon.GradleIconGroup;
 import org.gradle.tooling.model.GradleProject;
 import org.gradle.tooling.model.gradle.GradleScript;
 import org.gradle.wrapper.WrapperConfiguration;
@@ -44,7 +45,7 @@ public class GradleUtil {
    * <p/>
    * <b>Note:</b> we want to fall back to the standard {@link FileTypeDescriptor} when dedicated gradle file type
    * is introduced (it's processed as groovy file at the moment). We use open project descriptor here in order to show
-   * custom gradle icon at the file chooser ({@link icons.GradleIcons#Gradle}, is used at the file chooser dialog via
+   * custom gradle icon at the file chooser ({@link GradleIconGroup#gradle()}, is used at the file chooser dialog via
    * the dedicated gradle project open processor).
    */
   @Nonnull
