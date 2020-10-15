@@ -71,7 +71,7 @@
 		<moduleExtensionProvider key="GRADLE"
 								 name="Gradle"
 								 parentKey="java"
-								 icon="/icons/gradle.png"
+								 icon="consulo.gradle.GradleIconGroup@gradle"
 								 systemOnly="true"
 								 immutableClass="consulo.externalSystem.module.extension.impl.ExternalSystemModuleExtensionImpl"
 								 mutableClass="consulo.externalSystem.module.extension.impl.ExternalSystemMutableModuleExtensionImpl"/>
