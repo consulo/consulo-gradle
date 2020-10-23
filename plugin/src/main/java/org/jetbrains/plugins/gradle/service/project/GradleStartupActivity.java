@@ -25,8 +25,6 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
-import com.intellij.openapi.util.AsyncResult;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -37,7 +35,8 @@ import consulo.moduleImport.ModuleImportProvider;
 import consulo.moduleImport.ui.ModuleImportProcessor;
 import consulo.ui.UIAccess;
 import consulo.ui.annotation.RequiredUIAccess;
-import org.jetbrains.annotations.NonNls;
+import consulo.util.concurrent.AsyncResult;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
@@ -55,7 +54,6 @@ import java.util.Collections;
  */
 public class GradleStartupActivity implements StartupActivity
 {
-	@NonNls
 	private static final String SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup";
 	private static final String IMPORT_EVENT_DESCRIPTION = "import";
 	private static final String DO_NOT_SHOW_EVENT_DESCRIPTION = "do.not.show";
