@@ -15,20 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.service.project.data;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
-import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
-import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
-import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.ExternalSystemManager;
 import com.intellij.openapi.externalSystem.model.DataNode;
@@ -48,6 +34,19 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.FactoryMap;
+import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
+import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
+import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
+import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
+import org.jetbrains.plugins.gradle.settings.GradleSettings;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
+
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Vladislav.Soroka
@@ -56,7 +55,6 @@ import com.intellij.util.containers.FactoryMap;
 @Order(ExternalSystemConstants.UNORDERED)
 public class BuildClasspathModuleGradleDataService implements ProjectDataService<BuildScriptClasspathData, Module>
 {
-
 	@Nonnull
 	@Override
 	public Key<BuildScriptClasspathData> getTargetDataKey()
@@ -66,7 +64,7 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
 
 	@Override
 	public void importData(@Nonnull final Collection<DataNode<BuildScriptClasspathData>> toImport, @Nonnull final Project project,
-			boolean synchronous)
+						   boolean synchronous)
 	{
 		if(toImport.isEmpty())
 		{
@@ -83,37 +81,31 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
 		assert manager != null;
 		AbstractExternalSystemLocalSettings localSettings = manager.getLocalSettingsProvider().fun(project);
 
-		//noinspection MismatchedQueryAndUpdateOfCollection
-		Map<String/* externalProjectPath */, Set<String>> externalProjectGradleSdkLibs = new FactoryMap<String, Set<String>>()
+		Map<String/* externalProjectPath */, Set<String>> externalProjectGradleSdkLibs = FactoryMap.create(externalProjectPath ->
 		{
-			@javax.annotation.Nullable
-			@Override
-			protected Set<String> create(String externalProjectPath)
+			GradleProjectSettings settings = GradleSettings.getInstance(project).getLinkedProjectSettings(externalProjectPath);
+			if(settings == null || settings.getDistributionType() == null)
 			{
-				GradleProjectSettings settings = GradleSettings.getInstance(project).getLinkedProjectSettings(externalProjectPath);
-				if(settings == null || settings.getDistributionType() == null)
-				{
-					return null;
-				}
+				return null;
+			}
 
-				final Set<String> gradleSdkLibraries = ContainerUtil.newLinkedHashSet();
-				File gradleHome = gradleInstallationManager.getGradleHome(settings.getDistributionType(), externalProjectPath,
-						settings.getGradleHome());
-				if(gradleHome != null && gradleHome.isDirectory())
-				{
+			final Set<String> gradleSdkLibraries = ContainerUtil.newLinkedHashSet();
+			File gradleHome = gradleInstallationManager.getGradleHome(settings.getDistributionType(), externalProjectPath,
+					settings.getGradleHome());
+			if(gradleHome != null && gradleHome.isDirectory())
+			{
 
-					final Collection<File> libraries = gradleInstallationManager.getClassRoots(project, externalProjectPath);
-					if(libraries != null)
+				final Collection<File> libraries = gradleInstallationManager.getClassRoots(project, externalProjectPath);
+				if(libraries != null)
+				{
+					for(File library : libraries)
 					{
-						for(File library : libraries)
-						{
-							gradleSdkLibraries.add(FileUtil.toCanonicalPath(library.getPath()));
-						}
+						gradleSdkLibraries.add(FileUtil.toCanonicalPath(library.getPath()));
 					}
 				}
-				return gradleSdkLibraries;
 			}
-		};
+			return gradleSdkLibraries;
+		});
 
 		for(final DataNode<BuildScriptClasspathData> node : toImport)
 		{

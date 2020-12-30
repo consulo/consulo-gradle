@@ -23,6 +23,7 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemUiUtil;
 import com.intellij.openapi.externalSystem.util.PaintAwarePanel;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.projectRoots.JavaSdk;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -31,9 +32,16 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBRadioButton;
 import com.intellij.util.Alarm;
-import com.intellij.util.Consumer;
 import com.intellij.util.ui.UIUtil;
+import consulo.awt.TargetAWT;
+import consulo.bundle.ui.BundleBox;
+import consulo.bundle.ui.BundleBoxBuilder;
+import consulo.disposer.Disposable;
+import consulo.disposer.Disposer;
+import consulo.localize.LocalizeValue;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
+import consulo.ui.util.LabeledBuilder;
 import org.gradle.util.GradleVersion;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.settings.DistributionType;
@@ -47,378 +55,467 @@ import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Denis Zhdanov
  * @since 4/24/13 1:45 PM
  */
-public class GradleProjectSettingsControl extends AbstractExternalProjectSettingsControl<GradleProjectSettings> {
+public class GradleProjectSettingsControl extends AbstractExternalProjectSettingsControl<GradleProjectSettings>
+{
 
-  private static final long BALLOON_DELAY_MILLIS = TimeUnit.SECONDS.toMillis(1);
+	private static final long BALLOON_DELAY_MILLIS = TimeUnit.SECONDS.toMillis(1);
 
-  @Nonnull
-  private final Alarm myAlarm = new Alarm(Alarm.ThreadToUse.SWING_THREAD);
+	@Nonnull
+	private final Alarm myAlarm = new Alarm(Alarm.ThreadToUse.SWING_THREAD);
 
-  @Nonnull
-  private LocationSettingType myGradleHomeSettingType = LocationSettingType.UNKNOWN;
+	@Nonnull
+	private LocationSettingType myGradleHomeSettingType = LocationSettingType.UNKNOWN;
 
-  @Nonnull
-  private final GradleInstallationManager myInstallationManager;
+	@Nonnull
+	private final GradleInstallationManager myInstallationManager;
 
-  @SuppressWarnings("FieldCanBeLocal") // Used implicitly by reflection at disposeUIResources() and showUi()
-  private JLabel                    myGradleHomeLabel;
-  private TextFieldWithBrowseButton myGradleHomePathField;
-  private JBRadioButton             myUseWrapperButton;
-  private JBRadioButton             myUseWrapperWithVerificationButton;
-  private JBLabel                   myUseWrapperVerificationLabel;
-  private JBRadioButton             myUseLocalDistributionButton;
-  private JBRadioButton             myUseBundledDistributionButton;
+	@SuppressWarnings("FieldCanBeLocal") // Used implicitly by reflection at disposeUIResources() and showUi()
+	private JLabel myGradleHomeLabel;
+	private TextFieldWithBrowseButton myGradleHomePathField;
+	private JBRadioButton myUseWrapperButton;
+	private JBRadioButton myUseWrapperWithVerificationButton;
+	private JBLabel myUseWrapperVerificationLabel;
+	private JBRadioButton myUseLocalDistributionButton;
+	private JBRadioButton myUseBundledDistributionButton;
 
-  private boolean myShowBalloonIfNecessary;
+	private boolean myShowBalloonIfNecessary;
 
-  public GradleProjectSettingsControl(@Nonnull GradleProjectSettings initialSettings) {
-    super(initialSettings);
-    myInstallationManager = ServiceManager.getService(GradleInstallationManager.class);
-  }
+	private Disposable myUiDisposable;
+	private BundleBox myBundleBox;
 
-  @Override
-  protected void fillExtraControls(@Nonnull PaintAwarePanel content, int indentLevel) {
-    content.setPaintCallback(new Consumer<Graphics>() {
-      @Override
-      public void consume(Graphics graphics) {
-        showBalloonIfNecessary();
-      }
-    });
+	public GradleProjectSettingsControl(@Nonnull GradleProjectSettings initialSettings)
+	{
+		super(initialSettings);
+		myInstallationManager = ServiceManager.getService(GradleInstallationManager.class);
+	}
 
-    content.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (!"ancestor".equals(evt.getPropertyName())) {
-          return;
-        }
+	@Override
+	protected void fillExtraControls(@Nonnull PaintAwarePanel content, int indentLevel)
+	{
+		myUiDisposable = Disposable.newDisposable();
 
-        // Configure the balloon to show on initial configurable drawing.
-        myShowBalloonIfNecessary = evt.getNewValue() != null && evt.getOldValue() == null;
+		content.setPaintCallback(graphics -> showBalloonIfNecessary());
 
-        if (evt.getNewValue() == null && evt.getOldValue() != null) {
-          // Cancel delayed balloons when the configurable is hidden.
-          myAlarm.cancelAllRequests();
-        }
-      }
-    });
+		content.addPropertyChangeListener(new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(PropertyChangeEvent evt)
+			{
+				if(!"ancestor".equals(evt.getPropertyName()))
+				{
+					return;
+				}
 
-    myGradleHomeLabel = new JBLabel(GradleBundle.message("gradle.settings.text.home.path"));
-    initGradleHome();
+				// Configure the balloon to show on initial configurable drawing.
+				myShowBalloonIfNecessary = evt.getNewValue() != null && evt.getOldValue() == null;
 
-    initControls();
-    content.add(myUseWrapperButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
-    content.add(myUseWrapperWithVerificationButton, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
-    content.add(myUseWrapperVerificationLabel,  ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
-    //content.add(Box.createGlue(), ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
-    // Hide bundled distribution option for a while
-    // content.add(myUseBundledDistributionButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
-    content.add(myUseLocalDistributionButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
+				if(evt.getNewValue() == null && evt.getOldValue() != null)
+				{
+					// Cancel delayed balloons when the configurable is hidden.
+					myAlarm.cancelAllRequests();
+				}
+			}
+		});
 
-    content.add(myGradleHomeLabel, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
-    content.add(myGradleHomePathField, ExternalSystemUiUtil.getFillLineConstraints(0));
-  }
+		myGradleHomeLabel = new JBLabel(GradleBundle.message("gradle.settings.text.home.path"));
+		initGradleHome();
 
-  private void initControls() {
-    ActionListener listener = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        boolean localDistributionEnabled = myUseLocalDistributionButton.isSelected();
-        myGradleHomePathField.setEnabled(localDistributionEnabled);
-        if (localDistributionEnabled) {
-          if(myGradleHomePathField.getText().isEmpty()){
-            deduceGradleHomeIfPossible();
-          } else {
-            if(myInstallationManager.isGradleSdkHome(myGradleHomePathField.getText())){
-              myGradleHomeSettingType = LocationSettingType.EXPLICIT_CORRECT;
-            } else {
-              myGradleHomeSettingType = LocationSettingType.EXPLICIT_INCORRECT;
-              myShowBalloonIfNecessary = true;
-            }
-          }
-          showBalloonIfNecessary();
-        }
-        else {
-          myAlarm.cancelAllRequests();
-        }
-      }
-    };
+		initControls();
+		content.add(myUseWrapperButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
+		content.add(myUseWrapperWithVerificationButton, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
+		content.add(myUseWrapperVerificationLabel, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
+		//content.add(Box.createGlue(), ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
+		// Hide bundled distribution option for a while
+		// content.add(myUseBundledDistributionButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
+		content.add(myUseLocalDistributionButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
 
-    myUseWrapperButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.default_wrapper.configured"));
-    myUseWrapperButton.addActionListener(listener);
-    myUseWrapperWithVerificationButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.customizable_wrapper"));
-    myUseWrapperWithVerificationButton.addActionListener(listener);
-    myUseWrapperVerificationLabel = new JBLabel(GradleBundle.message("gradle.settings.text.wrapper.customization.compatibility"));
-    myUseWrapperVerificationLabel.setFont(UIUtil.getLabelFont(UIUtil.FontSize.MINI));
-    myUseWrapperVerificationLabel.setIcon((Image) AllIcons.General.BalloonInformation);
+		content.add(myGradleHomeLabel, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
+		content.add(myGradleHomePathField, ExternalSystemUiUtil.getFillLineConstraints(0));
 
-    myUseLocalDistributionButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.local.distribution"));
-    myUseLocalDistributionButton.addActionListener(listener);
+		BundleBoxBuilder builder = BundleBoxBuilder.create(myUiDisposable);
+		builder.withNoneItem("Auto Select", AllIcons.Actions.FindPlain);
+		builder.withSdkTypeFilterByType(JavaSdk.getInstance());
 
-    myUseBundledDistributionButton = new JBRadioButton(
-      GradleBundle.message("gradle.settings.text.use.bundled.distribution", GradleVersion.current().getVersion()));
-    myUseBundledDistributionButton.addActionListener(listener);
-    myUseBundledDistributionButton.setEnabled(false);
+		myBundleBox = builder.build();
 
-    ButtonGroup buttonGroup = new ButtonGroup();
-    buttonGroup.add(myUseWrapperButton);
-    buttonGroup.add(myUseWrapperWithVerificationButton);
-    buttonGroup.add(myUseBundledDistributionButton);
-    buttonGroup.add(myUseLocalDistributionButton);
-  }
+		content.add(TargetAWT.to(LabeledBuilder.sided(LocalizeValue.localizeTODO("JRE"), myBundleBox)), ExternalSystemUiUtil.getFillLineConstraints(0));
+	}
 
-  private void initGradleHome() {
-    myGradleHomePathField = new TextFieldWithBrowseButton();
+	@Override
+	public void disposeUIResources()
+	{
+		super.disposeUIResources();
 
-    FileChooserDescriptor fileChooserDescriptor = GradleUtil.getGradleHomeFileChooserDescriptor();
+		if(myUiDisposable != null)
+		{
+			Disposer.dispose(myUiDisposable);
+		}
+	}
 
-    myGradleHomePathField.addBrowseFolderListener(
-      "",
-      GradleBundle.message("gradle.settings.text.home.path"),
-      null,
-      fileChooserDescriptor,
-      TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT,
-      false
-    );
-    myGradleHomePathField.getTextField().getDocument().addDocumentListener(new DocumentListener() {
-      @Override
-      public void insertUpdate(DocumentEvent e) {
-        myGradleHomePathField.getTextField().setForeground(LocationSettingType.EXPLICIT_CORRECT.getColor());
-      }
+	private void initControls()
+	{
+		ActionListener listener = new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				boolean localDistributionEnabled = myUseLocalDistributionButton.isSelected();
+				myGradleHomePathField.setEnabled(localDistributionEnabled);
+				if(localDistributionEnabled)
+				{
+					if(myGradleHomePathField.getText().isEmpty())
+					{
+						deduceGradleHomeIfPossible();
+					}
+					else
+					{
+						if(myInstallationManager.isGradleSdkHome(myGradleHomePathField.getText()))
+						{
+							myGradleHomeSettingType = LocationSettingType.EXPLICIT_CORRECT;
+						}
+						else
+						{
+							myGradleHomeSettingType = LocationSettingType.EXPLICIT_INCORRECT;
+							myShowBalloonIfNecessary = true;
+						}
+					}
+					showBalloonIfNecessary();
+				}
+				else
+				{
+					myAlarm.cancelAllRequests();
+				}
+			}
+		};
 
-      @Override
-      public void removeUpdate(DocumentEvent e) {
-        myGradleHomePathField.getTextField().setForeground(LocationSettingType.EXPLICIT_CORRECT.getColor());
-      }
+		myUseWrapperButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.default_wrapper.configured"));
+		myUseWrapperButton.addActionListener(listener);
+		myUseWrapperWithVerificationButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.customizable_wrapper"));
+		myUseWrapperWithVerificationButton.addActionListener(listener);
+		myUseWrapperVerificationLabel = new JBLabel(GradleBundle.message("gradle.settings.text.wrapper.customization.compatibility"));
+		myUseWrapperVerificationLabel.setFont(UIUtil.getLabelFont(UIUtil.FontSize.MINI));
+		myUseWrapperVerificationLabel.setIcon((Image) AllIcons.General.BalloonInformation);
 
-      @Override
-      public void changedUpdate(DocumentEvent e) {
-      }
-    });
-  }
+		myUseLocalDistributionButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.local.distribution"));
+		myUseLocalDistributionButton.addActionListener(listener);
 
-  @Override
-  public boolean validate(@Nonnull GradleProjectSettings settings) throws ConfigurationException {
-    String gradleHomePath = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
-    if (myUseLocalDistributionButton.isSelected()) {
-      if (StringUtil.isEmpty(gradleHomePath)) {
-        myGradleHomeSettingType = LocationSettingType.UNKNOWN;
-        throw new ConfigurationException(GradleBundle.message("gradle.home.setting.type.explicit.empty", gradleHomePath));
-      }
-      else if (!myInstallationManager.isGradleSdkHome(new File(gradleHomePath))) {
-        myGradleHomeSettingType = LocationSettingType.EXPLICIT_INCORRECT;
-        new DelayedBalloonInfo(MessageType.ERROR, myGradleHomeSettingType, 0).run();
-        throw new ConfigurationException(GradleBundle.message("gradle.home.setting.type.explicit.incorrect", gradleHomePath));
-      }
-    }
-    return true;
-  }
+		myUseBundledDistributionButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.bundled.distribution", GradleVersion.current().getVersion()));
+		myUseBundledDistributionButton.addActionListener(listener);
+		myUseBundledDistributionButton.setEnabled(false);
 
-  @Override
-  protected void applyExtraSettings(@Nonnull GradleProjectSettings settings) {
-    String gradleHomePath = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
-    if (StringUtil.isEmpty(gradleHomePath)) {
-      settings.setGradleHome(null);
-    }
-    else {
-      settings.setGradleHome(gradleHomePath);
-      GradleUtil.storeLastUsedGradleHome(gradleHomePath);
-    }
+		ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(myUseWrapperButton);
+		buttonGroup.add(myUseWrapperWithVerificationButton);
+		buttonGroup.add(myUseBundledDistributionButton);
+		buttonGroup.add(myUseLocalDistributionButton);
+	}
 
-    if (myUseLocalDistributionButton.isSelected()) {
-      settings.setDistributionType(DistributionType.LOCAL);
-    } else if(myUseWrapperButton.isSelected()) {
-      settings.setDistributionType(DistributionType.DEFAULT_WRAPPED);
-    } else if(myUseWrapperWithVerificationButton.isSelected() || myUseBundledDistributionButton.isSelected()) {
-      settings.setDistributionType(DistributionType.WRAPPED);
-    }
-  }
+	private void initGradleHome()
+	{
+		myGradleHomePathField = new TextFieldWithBrowseButton();
 
-  @Override
-  protected void updateInitialExtraSettings() {
-    String gradleHomePath = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
-    getInitialSettings().setGradleHome(StringUtil.isEmpty(gradleHomePath) ? null : gradleHomePath);
-    if (myUseLocalDistributionButton.isSelected()) {
-      getInitialSettings().setDistributionType(DistributionType.LOCAL);
-    } else if(myUseWrapperButton.isSelected()) {
-      getInitialSettings().setDistributionType(DistributionType.DEFAULT_WRAPPED);
-    } else if(myUseWrapperWithVerificationButton.isSelected() || myUseBundledDistributionButton.isSelected()) {
-      getInitialSettings().setDistributionType(DistributionType.WRAPPED);
-    }
-  }
+		FileChooserDescriptor fileChooserDescriptor = GradleUtil.getGradleHomeFileChooserDescriptor();
 
-  @Override
-  protected boolean isExtraSettingModified() {
-    DistributionType distributionType = getInitialSettings().getDistributionType();
-    if (myUseBundledDistributionButton.isSelected() && distributionType != DistributionType.BUNDLED) {
-      return true;
-    }
+		myGradleHomePathField.addBrowseFolderListener("", GradleBundle.message("gradle.settings.text.home.path"), null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT, false);
+		myGradleHomePathField.getTextField().getDocument().addDocumentListener(new DocumentListener()
+		{
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				myGradleHomePathField.getTextField().setForeground(LocationSettingType.EXPLICIT_CORRECT.getColor());
+			}
 
-    if (myUseWrapperButton.isSelected() && distributionType != DistributionType.DEFAULT_WRAPPED) {
-        return true;
-    }
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				myGradleHomePathField.getTextField().setForeground(LocationSettingType.EXPLICIT_CORRECT.getColor());
+			}
 
-    if (myUseWrapperWithVerificationButton.isSelected() && distributionType != DistributionType.WRAPPED) {
-        return true;
-    }
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+			}
+		});
+	}
 
-    if (myUseLocalDistributionButton.isSelected() && distributionType != DistributionType.LOCAL) {
-      return true;
-    }
+	@Override
+	public boolean validate(@Nonnull GradleProjectSettings settings) throws ConfigurationException
+	{
+		String gradleHomePath = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
+		if(myUseLocalDistributionButton.isSelected())
+		{
+			if(StringUtil.isEmpty(gradleHomePath))
+			{
+				myGradleHomeSettingType = LocationSettingType.UNKNOWN;
+				throw new ConfigurationException(GradleBundle.message("gradle.home.setting.type.explicit.empty", gradleHomePath));
+			}
+			else if(!myInstallationManager.isGradleSdkHome(new File(gradleHomePath)))
+			{
+				myGradleHomeSettingType = LocationSettingType.EXPLICIT_INCORRECT;
+				new DelayedBalloonInfo(MessageType.ERROR, myGradleHomeSettingType, 0).run();
+				throw new ConfigurationException(GradleBundle.message("gradle.home.setting.type.explicit.incorrect", gradleHomePath));
+			}
+		}
+		return true;
+	}
 
-    String gradleHome = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
-    if (StringUtil.isEmpty(gradleHome)) {
-      return !StringUtil.isEmpty(getInitialSettings().getGradleHome());
-    }
-    else {
-      return !gradleHome.equals(getInitialSettings().getGradleHome());
-    }
-  }
+	@Override
+	protected void applyExtraSettings(@Nonnull GradleProjectSettings settings)
+	{
+		String gradleHomePath = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
+		if(StringUtil.isEmpty(gradleHomePath))
+		{
+			settings.setGradleHome(null);
+		}
+		else
+		{
+			settings.setGradleHome(gradleHomePath);
+			GradleUtil.storeLastUsedGradleHome(gradleHomePath);
+		}
 
-  @Override
-  protected void resetExtraSettings(boolean isDefaultModuleCreation) {
-    String gradleHome = getInitialSettings().getGradleHome();
-    myGradleHomePathField.setText(gradleHome == null ? "" : gradleHome);
-    myGradleHomePathField.getTextField().setForeground(LocationSettingType.EXPLICIT_CORRECT.getColor());
-    
-    updateWrapperControls(getInitialSettings().getExternalProjectPath(), isDefaultModuleCreation);
-    if (!myUseLocalDistributionButton.isSelected()) {
-      myGradleHomePathField.setEnabled(false);
-      return;
-    }
+		if(myUseLocalDistributionButton.isSelected())
+		{
+			settings.setDistributionType(DistributionType.LOCAL);
+		}
+		else if(myUseWrapperButton.isSelected())
+		{
+			settings.setDistributionType(DistributionType.DEFAULT_WRAPPED);
+		}
+		else if(myUseWrapperWithVerificationButton.isSelected() || myUseBundledDistributionButton.isSelected())
+		{
+			settings.setDistributionType(DistributionType.WRAPPED);
+		}
 
-    if (StringUtil.isEmpty(gradleHome)) {
-      myGradleHomeSettingType = LocationSettingType.UNKNOWN;
-      deduceGradleHomeIfPossible();
-    }
-    else {
-      myGradleHomeSettingType = myInstallationManager.isGradleSdkHome(new File(gradleHome)) ?
-                                LocationSettingType.EXPLICIT_CORRECT :
-                                LocationSettingType.EXPLICIT_INCORRECT;
-      myAlarm.cancelAllRequests();
-      if (myGradleHomeSettingType == LocationSettingType.EXPLICIT_INCORRECT &&
-          getInitialSettings().getDistributionType() == DistributionType.LOCAL) {
-        new DelayedBalloonInfo(MessageType.ERROR, myGradleHomeSettingType, 0).run();
-      }
-    }
-  }
+		settings.setJreName(myBundleBox.getSelectedBundleName());
+	}
 
-  public void updateWrapperControls(@Nullable String linkedProjectPath, boolean isDefaultModuleCreation) {
-    if(StringUtil.isEmpty(linkedProjectPath) && !isDefaultModuleCreation) {
-        myUseLocalDistributionButton.setSelected(true);
-        myGradleHomePathField.setEnabled(true);
-        return;
-    }
+	@Override
+	protected void updateInitialExtraSettings()
+	{
+		String gradleHomePath = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
+		getInitialSettings().setGradleHome(StringUtil.isEmpty(gradleHomePath) ? null : gradleHomePath);
+		if(myUseLocalDistributionButton.isSelected())
+		{
+			getInitialSettings().setDistributionType(DistributionType.LOCAL);
+		}
+		else if(myUseWrapperButton.isSelected())
+		{
+			getInitialSettings().setDistributionType(DistributionType.DEFAULT_WRAPPED);
+		}
+		else if(myUseWrapperWithVerificationButton.isSelected() || myUseBundledDistributionButton.isSelected())
+		{
+			getInitialSettings().setDistributionType(DistributionType.WRAPPED);
+		}
+	}
 
-    final boolean isGradleDefaultWrapperFilesExist = GradleUtil.isGradleDefaultWrapperFilesExist(linkedProjectPath);
-    if (isGradleDefaultWrapperFilesExist || isDefaultModuleCreation) {
-      myUseWrapperButton.setEnabled(true);
-      myUseWrapperButton.setSelected(true);
-      myGradleHomePathField.setEnabled(false);
-      myUseWrapperButton.setText(GradleBundle.message("gradle.settings.text.use.default_wrapper.configured"));
-    } else {
-      myUseWrapperButton.setEnabled(false);
-      myUseLocalDistributionButton.setSelected(true);
-      myGradleHomePathField.setEnabled(true);
-      myUseWrapperButton.setText(GradleBundle.message("gradle.settings.text.use.default_wrapper.not_configured"));
-    }
+	@Override
+	protected boolean isExtraSettingModified()
+	{
+		DistributionType distributionType = getInitialSettings().getDistributionType();
+		if(myUseBundledDistributionButton.isSelected() && distributionType != DistributionType.BUNDLED)
+		{
+			return true;
+		}
 
-    if(getInitialSettings().getDistributionType() == null) {
-      return;
-    }
+		if(myUseWrapperButton.isSelected() && distributionType != DistributionType.DEFAULT_WRAPPED)
+		{
+			return true;
+		}
 
-    switch (getInitialSettings().getDistributionType()) {
-      case LOCAL:
-        myGradleHomePathField.setEnabled(true);
-        myUseLocalDistributionButton.setSelected(true);
-        break;
-      case DEFAULT_WRAPPED:
-        myGradleHomePathField.setEnabled(false);
-        myUseWrapperButton.setSelected(true);
-        myUseWrapperButton.setEnabled(true);
-        break;
-      case WRAPPED:
-        myGradleHomePathField.setEnabled(false);
-        myUseWrapperWithVerificationButton.setSelected(true);
-        break;
-      case BUNDLED:
-        myGradleHomePathField.setEnabled(false);
-        myUseBundledDistributionButton.setSelected(true);
-        break;
-    }
-  }
+		if(myUseWrapperWithVerificationButton.isSelected() && distributionType != DistributionType.WRAPPED)
+		{
+			return true;
+		}
 
-  /**
-   * Updates GUI of the gradle configurable in order to show deduced path to gradle (if possible).
-   */
-  private void deduceGradleHomeIfPossible() {
-    File gradleHome = myInstallationManager.getAutodetectedGradleHome();
-    if (gradleHome == null) {
-      new DelayedBalloonInfo(MessageType.WARNING, LocationSettingType.UNKNOWN, BALLOON_DELAY_MILLIS).run();
-      return;
-    }
-    myGradleHomeSettingType = LocationSettingType.DEDUCED;
-    new DelayedBalloonInfo(MessageType.INFO, LocationSettingType.DEDUCED, BALLOON_DELAY_MILLIS).run();
-    myGradleHomePathField.setText(gradleHome.getPath());
-    myGradleHomePathField.getTextField().setForeground(LocationSettingType.DEDUCED.getColor());
-  }
-  
-  void showBalloonIfNecessary() {
-    if (!myShowBalloonIfNecessary || !myGradleHomePathField.isEnabled()) {
-      return;
-    }
-    myShowBalloonIfNecessary = false;
-    MessageType messageType = null;
-    switch (myGradleHomeSettingType) {
-      case DEDUCED:
-        messageType = MessageType.INFO;
-        break;
-      case EXPLICIT_INCORRECT:
-      case UNKNOWN:
-        messageType = MessageType.ERROR;
-        break;
-      default:
-    }
-    if (messageType != null) {
-      new DelayedBalloonInfo(messageType, myGradleHomeSettingType, BALLOON_DELAY_MILLIS).run();
-    }
-  }
+		if(myUseLocalDistributionButton.isSelected() && distributionType != DistributionType.LOCAL)
+		{
+			return true;
+		}
 
-  private class DelayedBalloonInfo implements Runnable {
-    private final MessageType myMessageType;
-    private final String      myText;
-    private final long        myTriggerTime;
+		if(!Objects.equals(myBundleBox.getSelectedBundleName(), getInitialSettings().getJreName()))
+		{
+			return true;
+		}
 
-    DelayedBalloonInfo(@Nonnull MessageType messageType, @Nonnull LocationSettingType settingType, long delayMillis) {
-      myMessageType = messageType;
-      myText = settingType.getDescription(GradleConstants.SYSTEM_ID);
-      myTriggerTime = System.currentTimeMillis() + delayMillis;
-    }
+		String gradleHome = FileUtil.toCanonicalPath(myGradleHomePathField.getText());
+		if(StringUtil.isEmpty(gradleHome))
+		{
+			return !StringUtil.isEmpty(getInitialSettings().getGradleHome());
+		}
+		else
+		{
+			return !gradleHome.equals(getInitialSettings().getGradleHome());
+		}
+	}
 
-    @Override
-    public void run() {
-      long diff = myTriggerTime - System.currentTimeMillis();
-      if (diff > 0) {
-        myAlarm.cancelAllRequests();
-        myAlarm.addRequest(this, diff);
-        return;
-      }
-      if (myGradleHomePathField == null || !myGradleHomePathField.isShowing()) {
-        // Don't schedule the balloon if the configurable is hidden.
-        return;
-      }
-      ExternalSystemUiUtil.showBalloon(myGradleHomePathField, myMessageType, myText);
-    }
-  }
+	@Override
+	@RequiredUIAccess
+	protected void resetExtraSettings(boolean isDefaultModuleCreation)
+	{
+		String gradleHome = getInitialSettings().getGradleHome();
+		myGradleHomePathField.setText(gradleHome == null ? "" : gradleHome);
+		myGradleHomePathField.getTextField().setForeground(LocationSettingType.EXPLICIT_CORRECT.getColor());
+
+		myBundleBox.setSelectedBundle(getInitialSettings().getJreName());
+		
+		updateWrapperControls(getInitialSettings().getExternalProjectPath(), isDefaultModuleCreation);
+		if(!myUseLocalDistributionButton.isSelected())
+		{
+			myGradleHomePathField.setEnabled(false);
+			return;
+		}
+
+		if(StringUtil.isEmpty(gradleHome))
+		{
+			myGradleHomeSettingType = LocationSettingType.UNKNOWN;
+			deduceGradleHomeIfPossible();
+		}
+		else
+		{
+			myGradleHomeSettingType = myInstallationManager.isGradleSdkHome(new File(gradleHome)) ? LocationSettingType.EXPLICIT_CORRECT : LocationSettingType.EXPLICIT_INCORRECT;
+			myAlarm.cancelAllRequests();
+			if(myGradleHomeSettingType == LocationSettingType.EXPLICIT_INCORRECT && getInitialSettings().getDistributionType() == DistributionType.LOCAL)
+			{
+				new DelayedBalloonInfo(MessageType.ERROR, myGradleHomeSettingType, 0).run();
+			}
+		}
+	}
+
+	public void updateWrapperControls(@Nullable String linkedProjectPath, boolean isDefaultModuleCreation)
+	{
+		if(StringUtil.isEmpty(linkedProjectPath) && !isDefaultModuleCreation)
+		{
+			myUseLocalDistributionButton.setSelected(true);
+			myGradleHomePathField.setEnabled(true);
+			return;
+		}
+
+		final boolean isGradleDefaultWrapperFilesExist = GradleUtil.isGradleDefaultWrapperFilesExist(linkedProjectPath);
+		if(isGradleDefaultWrapperFilesExist || isDefaultModuleCreation)
+		{
+			myUseWrapperButton.setEnabled(true);
+			myUseWrapperButton.setSelected(true);
+			myGradleHomePathField.setEnabled(false);
+			myUseWrapperButton.setText(GradleBundle.message("gradle.settings.text.use.default_wrapper.configured"));
+		}
+		else
+		{
+			myUseWrapperButton.setEnabled(false);
+			myUseLocalDistributionButton.setSelected(true);
+			myGradleHomePathField.setEnabled(true);
+			myUseWrapperButton.setText(GradleBundle.message("gradle.settings.text.use.default_wrapper.not_configured"));
+		}
+
+		if(getInitialSettings().getDistributionType() == null)
+		{
+			return;
+		}
+
+		switch(getInitialSettings().getDistributionType())
+		{
+			case LOCAL:
+				myGradleHomePathField.setEnabled(true);
+				myUseLocalDistributionButton.setSelected(true);
+				break;
+			case DEFAULT_WRAPPED:
+				myGradleHomePathField.setEnabled(false);
+				myUseWrapperButton.setSelected(true);
+				myUseWrapperButton.setEnabled(true);
+				break;
+			case WRAPPED:
+				myGradleHomePathField.setEnabled(false);
+				myUseWrapperWithVerificationButton.setSelected(true);
+				break;
+			case BUNDLED:
+				myGradleHomePathField.setEnabled(false);
+				myUseBundledDistributionButton.setSelected(true);
+				break;
+		}
+	}
+
+	/**
+	 * Updates GUI of the gradle configurable in order to show deduced path to gradle (if possible).
+	 */
+	private void deduceGradleHomeIfPossible()
+	{
+		File gradleHome = myInstallationManager.getAutodetectedGradleHome();
+		if(gradleHome == null)
+		{
+			new DelayedBalloonInfo(MessageType.WARNING, LocationSettingType.UNKNOWN, BALLOON_DELAY_MILLIS).run();
+			return;
+		}
+		myGradleHomeSettingType = LocationSettingType.DEDUCED;
+		new DelayedBalloonInfo(MessageType.INFO, LocationSettingType.DEDUCED, BALLOON_DELAY_MILLIS).run();
+		myGradleHomePathField.setText(gradleHome.getPath());
+		myGradleHomePathField.getTextField().setForeground(LocationSettingType.DEDUCED.getColor());
+	}
+
+	void showBalloonIfNecessary()
+	{
+		if(!myShowBalloonIfNecessary || !myGradleHomePathField.isEnabled())
+		{
+			return;
+		}
+		myShowBalloonIfNecessary = false;
+		MessageType messageType = null;
+		switch(myGradleHomeSettingType)
+		{
+			case DEDUCED:
+				messageType = MessageType.INFO;
+				break;
+			case EXPLICIT_INCORRECT:
+			case UNKNOWN:
+				messageType = MessageType.ERROR;
+				break;
+			default:
+		}
+		if(messageType != null)
+		{
+			new DelayedBalloonInfo(messageType, myGradleHomeSettingType, BALLOON_DELAY_MILLIS).run();
+		}
+	}
+
+	private class DelayedBalloonInfo implements Runnable
+	{
+		private final MessageType myMessageType;
+		private final String myText;
+		private final long myTriggerTime;
+
+		DelayedBalloonInfo(@Nonnull MessageType messageType, @Nonnull LocationSettingType settingType, long delayMillis)
+		{
+			myMessageType = messageType;
+			myText = settingType.getDescription(GradleConstants.SYSTEM_ID);
+			myTriggerTime = System.currentTimeMillis() + delayMillis;
+		}
+
+		@Override
+		public void run()
+		{
+			long diff = myTriggerTime - System.currentTimeMillis();
+			if(diff > 0)
+			{
+				myAlarm.cancelAllRequests();
+				myAlarm.addRequest(this, diff);
+				return;
+			}
+			if(myGradleHomePathField == null || !myGradleHomePathField.isShowing())
+			{
+				// Don't schedule the balloon if the configurable is hidden.
+				return;
+			}
+			ExternalSystemUiUtil.showBalloon(myGradleHomePathField, myMessageType, myText);
+		}
+	}
 }

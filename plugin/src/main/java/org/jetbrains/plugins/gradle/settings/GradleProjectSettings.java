@@ -15,56 +15,78 @@
  */
 package org.jetbrains.plugins.gradle.settings;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.externalSystem.settings.ExternalProjectSettings;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
  * @since 4/24/13 11:57 AM
  */
-public class GradleProjectSettings extends ExternalProjectSettings {
+public class GradleProjectSettings extends ExternalProjectSettings
+{
+	@Nullable
+	private String myGradleHome;
+	@Nullable
+	private DistributionType distributionType;
+	private boolean disableWrapperSourceDistributionNotification;
+	@Nullable
+	private String myJreName;
 
-  @Nullable private String myGradleHome;
-  @Nullable private DistributionType distributionType;
-  private boolean disableWrapperSourceDistributionNotification;
+	@Nullable
+	public String getGradleHome()
+	{
+		return myGradleHome;
+	}
 
-  @Nullable
-  public String getGradleHome() {
-    return myGradleHome;
-  }
+	public void setGradleHome(@Nullable String gradleHome)
+	{
+		myGradleHome = gradleHome;
+	}
 
-  public void setGradleHome(@javax.annotation.Nullable String gradleHome) {
-    myGradleHome = gradleHome;
-  }
+	@Nullable
+	public DistributionType getDistributionType()
+	{
+		return distributionType;
+	}
 
-  @Nullable
-  public DistributionType getDistributionType() {
-    return distributionType;
-  }
+	public void setDistributionType(@Nullable DistributionType distributionType)
+	{
+		this.distributionType = distributionType;
+	}
 
-  public void setDistributionType(@javax.annotation.Nullable DistributionType distributionType) {
-    this.distributionType = distributionType;
-  }
+	public boolean isDisableWrapperSourceDistributionNotification()
+	{
+		return disableWrapperSourceDistributionNotification;
+	}
 
-  public boolean isDisableWrapperSourceDistributionNotification() {
-    return disableWrapperSourceDistributionNotification;
-  }
+	public void setDisableWrapperSourceDistributionNotification(boolean disableWrapperSourceDistributionNotification)
+	{
+		this.disableWrapperSourceDistributionNotification = disableWrapperSourceDistributionNotification;
+	}
 
-  public void setDisableWrapperSourceDistributionNotification(boolean disableWrapperSourceDistributionNotification) {
-    this.disableWrapperSourceDistributionNotification = disableWrapperSourceDistributionNotification;
-  }
+	@Nullable
+	public String getJreName()
+	{
+		return myJreName;
+	}
 
-  @Nonnull
-  @Override
-  public ExternalProjectSettings clone() {
-    GradleProjectSettings result = new GradleProjectSettings();
-    copyTo(result);
-    result.myGradleHome = myGradleHome;
-    result.distributionType = distributionType;
-    result.disableWrapperSourceDistributionNotification = disableWrapperSourceDistributionNotification;
-    return result;
-  }
+	public void setJreName(@Nullable String jreName)
+	{
+		myJreName = jreName;
+	}
+
+	@Nonnull
+	@Override
+	public ExternalProjectSettings clone()
+	{
+		GradleProjectSettings result = new GradleProjectSettings();
+		copyTo(result);
+		result.myGradleHome = myGradleHome;
+		result.distributionType = distributionType;
+		result.myJreName = myJreName;
+		result.disableWrapperSourceDistributionNotification = disableWrapperSourceDistributionNotification;
+		return result;
+	}
 }
