@@ -1,21 +1,14 @@
 package org.jetbrains.plugins.gradle.remote.impl;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.externalSystem.model.DataNode;
 import com.intellij.openapi.externalSystem.model.project.LibraryData;
 import com.intellij.openapi.externalSystem.model.project.LibraryPathType;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.containers.ContainerUtilRt;
-import com.intellij.util.containers.HashMap;
+
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.util.*;
 
 /**
  * Encapsulates logic of checking if particular collection of gradle libraries contains libraries with the same names and
