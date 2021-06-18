@@ -30,8 +30,6 @@ import com.intellij.openapi.externalSystem.model.project.ExternalSystemSourceTyp
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.io.StreamUtil;
 import consulo.container.boot.ContainerPathManager;
-import gnu.trove.THashMap;
-import gnu.trove.THashSet;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import javax.annotation.Nonnull;
@@ -147,22 +145,10 @@ public class ExternalProjectSerializer {
 				return new HashSet();
 			}
 		});
-		myKryo.register(THashSet.class, new CollectionSerializer() {
-			@Override
-			protected Collection create(Kryo kryo, Input input, Class<Collection> type) {
-				return new THashSet();
-			}
-		});
 		myKryo.register(Set.class, new CollectionSerializer() {
 			@Override
 			protected Collection create(Kryo kryo, Input input, Class<Collection> type) {
 				return new HashSet();
-			}
-		});
-		myKryo.register(THashMap.class, new MapSerializer() {
-			@Override
-			protected Map create(Kryo kryo, Input input, Class<Map> type) {
-				return new THashMap();
 			}
 		});
 	}
