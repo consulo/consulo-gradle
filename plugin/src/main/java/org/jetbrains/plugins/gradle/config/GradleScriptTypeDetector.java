@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author sergey.evdokimov
@@ -27,7 +28,7 @@ public class GradleScriptTypeDetector extends GroovyScriptTypeDetector {
 
 
   public GradleScriptTypeDetector() {
-    super(GradleScriptType.INSTANCE, GradleConstants.EXTENSION);
+    super(GradleScriptType.INSTANCE);
   }
 
   @Override

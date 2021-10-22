@@ -101,6 +101,8 @@
 						 implementationClass="org.jetbrains.plugins.gradle.codeInspection.MultipleRepositoryUrlsInspection"/>
 
 		<moduleImportProvider implementation="consulo.gradle.importProvider.GradleModuleImportProvider"/>
+
+		<fileTypeFactory implementation="consulo.gradle.config.GradleFileTypeFactory" />
 	</extensions>
 
 	<extensions defaultExtensionNs="org.intellij.groovy">
