@@ -20,7 +20,10 @@
 	<vendor>JetBrains</vendor>
 	<description>Gradle integration</description>
 	<version>SNAPSHOT</version>
-
+	<category>Build</category>
+	<tags>
+		<tag>build.framework</tag>
+	</tags>
 	<depends>org.intellij.groovy</depends>
 	<depends optional="true" config-file="gradle-maven-integration.xml">org.jetbrains.idea.maven</depends>
 	<depends optional="true" config-file="gradle-javaee-plugin.xml">consulo.javaee</depends>
