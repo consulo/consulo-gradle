@@ -59,10 +59,10 @@ public class GradleInstallationManager {
 
   static {
     // Init static data with ability to redefine it locally.
-    GRADLE_JAR_FILE_PATTERN = Pattern.compile(System.getProperty("gradle.pattern.core.jar", "gradle-(core-)?(\\d.*)\\.jar"));
-    ANY_GRADLE_JAR_FILE_PATTERN = Pattern.compile(System.getProperty("gradle.pattern.core.jar", "gradle-(.*)\\.jar"));
-    GRADLE_START_FILE_NAMES = System.getProperty("gradle.start.file.names", "gradle:gradle.cmd:gradle.sh").split(":");
-    GRADLE_ENV_PROPERTY_NAME = System.getProperty("gradle.home.env.key", "GRADLE_HOME");
+    GRADLE_JAR_FILE_PATTERN = Pattern.compile("gradle-(core-)?(\\d.*)\\.jar");
+    ANY_GRADLE_JAR_FILE_PATTERN = Pattern.compile("gradle-(.*)\\.jar");
+    GRADLE_START_FILE_NAMES = "gradle:gradle.cmd:gradle.sh".split(":");
+    GRADLE_ENV_PROPERTY_NAME = "GRADLE_HOME";
   }
 
   @javax.annotation.Nullable
