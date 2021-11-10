@@ -28,6 +28,10 @@
 	<depends optional="true" config-file="gradle-maven-integration.xml">org.jetbrains.idea.maven</depends>
 	<depends optional="true" config-file="gradle-javaee-plugin.xml">consulo.javaee</depends>
 
+	<permissions>
+		<permission type="GET_ENV" />
+	</permissions>
+
 	<extensionPoints>
 		<extensionPoint name="projectResolve" interface="org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension"/>
 		<extensionPoint name="taskManager" interface="org.jetbrains.plugins.gradle.service.task.GradleTaskManagerExtension"/>
