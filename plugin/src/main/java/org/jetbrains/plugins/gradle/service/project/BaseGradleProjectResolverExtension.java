@@ -677,21 +677,14 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 			@Nonnull IdeaModuleDependency dependency,
 			@Nonnull DataNode<ProjectData> ideProject) throws IllegalStateException
 	{
-		IdeaModule module = dependency.getDependencyModule();
-		if(module == null)
-		{
-			throw new IllegalStateException(String.format("Can't parse gradle module dependency '%s'. Reason: referenced module is null",
-					dependency));
-		}
-
-		String moduleName = module.getName();
+		String moduleName = dependency.getTargetModuleName();
 		if(moduleName == null)
 		{
 			throw new IllegalStateException(String.format("Can't parse gradle module dependency '%s'. Reason: referenced module name is undefined "
-					+ "(module: '%s') ", dependency, module));
+					+ "(module: '%s') ", dependency, moduleName));
 		}
 
-		Set<String> registeredModuleNames = ContainerUtilRt.newHashSet();
+		Set<String> registeredModuleNames = ContainerUtil.newHashSet();
 		Collection<DataNode<ModuleData>> modulesDataNode = ExternalSystemApiUtil.getChildren(ideProject, ProjectKeys.MODULE);
 		for(DataNode<ModuleData> moduleDataNode : modulesDataNode)
 		{

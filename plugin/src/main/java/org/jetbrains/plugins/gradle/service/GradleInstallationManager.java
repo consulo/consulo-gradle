@@ -1,28 +1,5 @@
 package org.jetbrains.plugins.gradle.service;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
-import org.gradle.StartParameter;
-import org.gradle.api.tasks.wrapper.Wrapper;
-import org.gradle.util.DistributionLocator;
-import org.gradle.util.GradleVersion;
-import org.gradle.wrapper.PathAssembler;
-import org.gradle.wrapper.WrapperConfiguration;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.gradle.settings.DistributionType;
-import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
-import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.util.GradleEnvironment;
-import org.jetbrains.plugins.gradle.util.GradleLog;
-import org.jetbrains.plugins.gradle.util.GradleUtil;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
 import com.intellij.openapi.module.Module;
@@ -37,6 +14,29 @@ import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.ContainerUtilRt;
 import consulo.vfs.util.ArchiveVfsUtil;
+import org.gradle.StartParameter;
+import org.gradle.api.tasks.wrapper.Wrapper;
+import org.gradle.util.GradleVersion;
+import org.gradle.util.internal.DistributionLocator;
+import org.gradle.wrapper.PathAssembler;
+import org.gradle.wrapper.WrapperConfiguration;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.gradle.settings.DistributionType;
+import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
+import org.jetbrains.plugins.gradle.settings.GradleSettings;
+import org.jetbrains.plugins.gradle.util.GradleEnvironment;
+import org.jetbrains.plugins.gradle.util.GradleLog;
+import org.jetbrains.plugins.gradle.util.GradleUtil;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Encapsulates algorithm of gradle libraries discovery.
@@ -129,8 +129,8 @@ public class GradleInstallationManager {
     return getGradleHome(settings.getDistributionType(), linkedProjectPath, settings.getGradleHome());
   }
 
-  @javax.annotation.Nullable
-  public File getGradleHome(@Nonnull DistributionType distributionType, @Nonnull String linkedProjectPath, @javax.annotation.Nullable String gradleHome) {
+  @Nullable
+  public File getGradleHome(@Nonnull DistributionType distributionType, @Nonnull String linkedProjectPath, @Nullable String gradleHome) {
     File candidate = null;
     switch (distributionType) {
       case LOCAL:
@@ -455,7 +455,7 @@ public class GradleInstallationManager {
     }
   }
 
-  private File getWrappedGradleHome(String linkedProjectPath, @javax.annotation.Nullable final WrapperConfiguration wrapperConfiguration) {
+  private File getWrappedGradleHome(String linkedProjectPath, @Nullable final WrapperConfiguration wrapperConfiguration) {
     if (wrapperConfiguration == null) {
       return null;
     }
@@ -471,7 +471,7 @@ public class GradleInstallationManager {
       return null;
     }
 
-    PathAssembler.LocalDistribution localDistribution = new PathAssembler(gradleSystemDir).getDistribution(wrapperConfiguration);
+    PathAssembler.LocalDistribution localDistribution = new PathAssembler(gradleSystemDir, new File(linkedProjectPath)).getDistribution(wrapperConfiguration);
 
     if (localDistribution.getDistributionDir() == null) {
       return null;

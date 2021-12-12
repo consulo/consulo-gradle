@@ -46,7 +46,7 @@
 			<plugin>
 				<groupId>org.codehaus.gmavenplus</groupId>
 				<artifactId>gmavenplus-plugin</artifactId>
-				<version>1.6</version>
+				<version>1.13.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -61,12 +61,16 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<targetBytecode>11</targetBytecode>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
 	<properties>
-		<gradle.version>4.10</gradle.version>
+		<gradle.version>7.1</gradle.version>
+		<java.level>11</java.level>
 	</properties>
 
 	<dependencies>
@@ -127,18 +131,6 @@
 
 		<dependency>
 			<groupId>consulo.internal.gradle.plugin</groupId>
-			<artifactId>gradle-ide</artifactId>
-			<version>${gradle.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>consulo.internal.gradle.plugin</groupId>
-			<artifactId>gradle-language-scala</artifactId>
-			<version>${gradle.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>consulo.internal.gradle.plugin</groupId>
 			<artifactId>gradle-base-services-groovy</artifactId>
 			<version>${gradle.version}</version>
 		</dependency>
@@ -157,7 +149,49 @@
 
 		<dependency>
 			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-core-api</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-language-java</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-ide</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-files</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
 			<artifactId>gradle-native</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-execution</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-data-structures</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-file-collections</artifactId>
 			<version>${gradle.version}</version>
 		</dependency>
 
@@ -170,8 +204,8 @@
 
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>2.4.12</version>
+			<artifactId>groovy</artifactId>
+			<version>3.0.9</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

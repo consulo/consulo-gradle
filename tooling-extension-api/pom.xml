@@ -41,6 +41,11 @@
 	<version>2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<properties>
+		<gradle.version>7.1</gradle.version>
+		<java.level>11</java.level>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>consulo</groupId>
@@ -50,22 +55,22 @@
 		<dependency>
 			<groupId>consulo.internal.gradle.plugin</groupId>
 			<artifactId>gradle-core</artifactId>
-			<version>4.10</version>
+			<version>${gradle.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>consulo.internal.gradle.plugin</groupId>
 			<artifactId>gradle-core-api</artifactId>
-			<version>4.10</version>
+			<version>${gradle.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>consulo.internal.gradle.plugin</groupId>
 			<artifactId>gradle-tooling-api</artifactId>
-			<version>4.10</version>
+			<version>${gradle.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>consulo.internal.gradle.plugin</groupId>
 			<artifactId>gradle-base-services</artifactId>
-			<version>4.10</version>
+			<version>${gradle.version}</version>
 		</dependency>
 
 		<dependency>

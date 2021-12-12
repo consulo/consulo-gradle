@@ -15,10 +15,9 @@
  */
 package org.jetbrains.plugins.gradle.model;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.Serializable;
-
-import org.gradle.api.Nullable;
 
 public interface ExtIdeaCompilerOutput extends Serializable {
   /**

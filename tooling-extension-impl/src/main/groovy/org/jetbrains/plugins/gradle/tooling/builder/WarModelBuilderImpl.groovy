@@ -84,7 +84,7 @@ class WarModelBuilderImpl implements ModelBuilderService {
           }
 
           final String relativePath = resolver.destPath.pathString
-          final def sourcePaths
+          def sourcePaths = null;
 
           if (resolver.metaClass.respondsTo(resolver, 'getSourcePaths')) {
             sourcePaths = resolver.getSourcePaths()
@@ -98,7 +98,7 @@ class WarModelBuilderImpl implements ModelBuilderService {
             throw new RuntimeException("${GradleVersion.current()} is not supported by web artifact importer")
           }*/
 
-          if(sourcePaths) {
+          if(sourcePaths != null) {
             (sourcePaths.flatten() as List).each { def path ->
               if (path instanceof String) {
                 def file = new File(warTask.project.projectDir, path)

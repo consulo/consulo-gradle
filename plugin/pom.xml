@@ -40,6 +40,11 @@
 		</repository>
 	</repositories>
 
+	<properties>
+		<gradle.version>7.1</gradle.version>
+		<java.level>11</java.level>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -80,10 +85,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<properties>
-		<gradle.version>4.10</gradle.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -160,13 +161,43 @@
 
 		<dependency>
 			<groupId>consulo.internal.gradle.plugin</groupId>
-			<artifactId>gradle-ide</artifactId>
+			<artifactId>gradle-language-java</artifactId>
 			<version>${gradle.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>consulo.internal.gradle.plugin</groupId>
-			<artifactId>gradle-language-scala</artifactId>
+			<artifactId>gradle-files</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-execution</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-data-structures</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-file-collections</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-build-operations</artifactId>
+			<version>${gradle.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>consulo.internal.gradle.plugin</groupId>
+			<artifactId>gradle-base-annotations</artifactId>
 			<version>${gradle.version}</version>
 		</dependency>
 

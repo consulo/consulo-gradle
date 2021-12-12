@@ -61,20 +61,6 @@ public class IdeaContentRootImpl implements ExtIdeaContentRoot
 		return ImmutableDomainObjectSet.of(mySourceDirectories);
 	}
 
-	@Override
-	public DomainObjectSet<? extends IdeaSourceDirectory> getGeneratedSourceDirectories()
-	{
-		List<IdeaSourceDirectory> directories = new ArrayList<>();
-		for(IdeaSourceDirectory sourceDirectory : mySourceDirectories)
-		{
-			if(sourceDirectory.isGenerated())
-			{
-				directories.add(sourceDirectory);
-			}
-		}
-		return ImmutableDomainObjectSet.of(directories);
-	}
-
 	public void addSourceDirectory(IdeaSourceDirectory sourceDirectory)
 	{
 		mySourceDirectories.add(sourceDirectory);
@@ -104,20 +90,6 @@ public class IdeaContentRootImpl implements ExtIdeaContentRoot
 	public DomainObjectSet<? extends IdeaSourceDirectory> getTestDirectories()
 	{
 		return ImmutableDomainObjectSet.of(myTestDirectories);
-	}
-
-	@Override
-	public DomainObjectSet<? extends IdeaSourceDirectory> getGeneratedTestDirectories()
-	{
-		List<IdeaSourceDirectory> directories = new ArrayList<>();
-		for(IdeaSourceDirectory sourceDirectory : myTestDirectories)
-		{
-			if(sourceDirectory.isGenerated())
-			{
-				directories.add(sourceDirectory);
-			}
-		}
-		return ImmutableDomainObjectSet.of(directories);
 	}
 
 	@Override

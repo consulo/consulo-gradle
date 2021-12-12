@@ -15,6 +15,32 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
+import com.intellij.execution.configurations.CommandLineTokenizer;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.externalSystem.model.ExternalSystemException;
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationEvent;
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.io.StreamUtil;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.*;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.ContainerUtilRt;
+import org.gradle.process.internal.JvmOptions;
+import org.gradle.tooling.*;
+import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
+import org.gradle.tooling.internal.consumer.Distribution;
+import org.gradle.tooling.model.build.BuildEnvironment;
+import org.jetbrains.plugins.gradle.settings.DistributionType;
+import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
+import org.jetbrains.plugins.gradle.tooling.internal.init.Init;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
+import org.jetbrains.plugins.gradle.util.GradleEnvironment;
+import org.jetbrains.plugins.gradle.util.GradleUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,44 +52,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.gradle.StartParameter;
-import org.gradle.process.internal.JvmOptions;
-import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.GradleConnector;
-import org.gradle.tooling.LongRunningOperation;
-import org.gradle.tooling.ModelBuilder;
-import org.gradle.tooling.ProgressEvent;
-import org.gradle.tooling.ProgressListener;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
-import org.gradle.tooling.internal.consumer.Distribution;
-import org.gradle.tooling.model.build.BuildEnvironment;
-import org.jetbrains.plugins.gradle.settings.DistributionType;
-import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
-import org.jetbrains.plugins.gradle.tooling.internal.init.Init;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.jetbrains.plugins.gradle.util.GradleEnvironment;
-import org.jetbrains.plugins.gradle.util.GradleUtil;
-import com.intellij.execution.configurations.CommandLineTokenizer;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.model.ExternalSystemException;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationEvent;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.io.StreamUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.ExceptionUtil;
-import com.intellij.util.Function;
-import com.intellij.util.PathUtil;
-import com.intellij.util.SystemProperties;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.ContainerUtilRt;
 
 /**
  * @author Denis Zhdanov
@@ -368,7 +356,7 @@ public class GradleExecutionHelper
 						File propertiesFile = new File(settings.getWrapperPropertyFile());
 						if(propertiesFile.exists())
 						{
-							Distribution distribution = new DistributionFactoryExt(StartParameter.DEFAULT_GRADLE_USER_HOME).getWrappedDistribution
+							Distribution distribution = new DistributionFactoryExt().getWrappedDistribution
 									(propertiesFile);
 							try
 							{
