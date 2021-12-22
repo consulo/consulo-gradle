@@ -37,7 +37,6 @@ import consulo.awt.TargetAWT;
 import consulo.bundle.ui.BundleBox;
 import consulo.bundle.ui.BundleBoxBuilder;
 import consulo.disposer.Disposable;
-import consulo.disposer.Disposer;
 import consulo.localize.LocalizeValue;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
@@ -92,7 +91,6 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 
 	private boolean myShowBalloonIfNecessary;
 
-	private Disposable myUiDisposable;
 	private BundleBox myBundleBox;
 
 	public GradleProjectSettingsControl(@Nonnull GradleProjectSettings initialSettings)
@@ -102,10 +100,8 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 	}
 
 	@Override
-	protected void fillExtraControls(@Nonnull PaintAwarePanel content, int indentLevel)
+	protected void fillExtraControls(@Nonnull Disposable uiDisposable, @Nonnull PaintAwarePanel content, int indentLevel)
 	{
-		myUiDisposable = Disposable.newDisposable();
-
 		content.setPaintCallback(graphics -> showBalloonIfNecessary());
 
 		content.addPropertyChangeListener(new PropertyChangeListener()
@@ -144,24 +140,13 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 		content.add(myGradleHomeLabel, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
 		content.add(myGradleHomePathField, ExternalSystemUiUtil.getFillLineConstraints(0));
 
-		BundleBoxBuilder builder = BundleBoxBuilder.create(myUiDisposable);
+		BundleBoxBuilder builder = BundleBoxBuilder.create(uiDisposable);
 		builder.withNoneItem("Auto Select", AllIcons.Actions.FindPlain);
 		builder.withSdkTypeFilterByType(JavaSdk.getInstance());
 
 		myBundleBox = builder.build();
 
 		content.add(TargetAWT.to(LabeledBuilder.sided(LocalizeValue.localizeTODO("JRE"), myBundleBox)), ExternalSystemUiUtil.getFillLineConstraints(0));
-	}
-
-	@Override
-	public void disposeUIResources()
-	{
-		super.disposeUIResources();
-
-		if(myUiDisposable != null)
-		{
-			Disposer.dispose(myUiDisposable);
-		}
 	}
 
 	private void initControls()

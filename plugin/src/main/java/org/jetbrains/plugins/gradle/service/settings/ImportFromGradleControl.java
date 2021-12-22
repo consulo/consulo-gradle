@@ -19,13 +19,14 @@ import com.intellij.openapi.externalSystem.service.settings.AbstractImportFromEx
 import com.intellij.openapi.externalSystem.util.ExternalSystemSettingsControl;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.text.StringUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
@@ -63,7 +64,7 @@ public class ImportFromGradleControl
   }
 
   @Override
-  protected void onLinkedProjectPathChange(@Nonnull String path) {
+  public void onLinkedProjectPathChange(@Nonnull String path) {
     ((GradleProjectSettingsControl)getProjectSettingsControl()).updateWrapperControls(path, false);
   }
 }

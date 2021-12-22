@@ -85,7 +85,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 		VirtualFile file = LocalFileSystem.getInstance().refreshAndFindFileByPath(importFile);
 		if(file != null && !file.isDirectory())
 		{
-			getControl(null).setLinkedProjectPath(file.getParent().getPath());
+			//getControl().setLinkedProjectPath(file.getParent().getPath());
 		}
 	}
 
