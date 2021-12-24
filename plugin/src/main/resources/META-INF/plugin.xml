@@ -14,7 +14,7 @@
   ~
   -->
 
-<consulo-plugin>
+<consulo-plugin url="https://github.com/consulo/consulo-gradle">
 	<id>org.jetbrains.plugins.gradle</id>
 	<name>Gradle</name>
 	<vendor>JetBrains</vendor>
