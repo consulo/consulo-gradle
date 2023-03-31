@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 org.jetbrains.plugins.gradle.tooling.builder.WarModelBuilderImpl
-org.jetbrains.plugins.gradle.tooling.builder.ModuleExtendedModelBuilderImpl
-org.jetbrains.plugins.gradle.tooling.builder.ModelBuildScriptClasspathBuilderImpl
-org.jetbrains.plugins.gradle.tooling.builder.ScalaModelBuilderImpl
+org.jetbrains.plugins.gradle.tooling.impl.builder.ModuleExtendedModelBuilderImpl
+org.jetbrains.plugins.gradle.tooling.impl.builder.ModelBuildScriptClasspathBuilderImpl
+org.jetbrains.plugins.gradle.tooling.impl.builder.ScalaModelBuilderImpl
 org.jetbrains.plugins.gradle.tooling.builder.ExternalProjectBuilderImpl

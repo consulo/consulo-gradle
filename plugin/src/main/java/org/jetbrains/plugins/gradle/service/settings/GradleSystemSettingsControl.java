@@ -15,25 +15,22 @@
  */
 package org.jetbrains.plugins.gradle.service.settings;
 
-import com.intellij.openapi.externalSystem.model.settings.LocationSettingType;
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
-import com.intellij.openapi.externalSystem.util.ExternalSystemSettingsControl;
-import com.intellij.openapi.externalSystem.util.ExternalSystemUiUtil;
-import com.intellij.openapi.externalSystem.util.PaintAwarePanel;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.ui.TextComponentAccessor;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBTextField;
-import javax.annotation.Nonnull;
-
+import consulo.configurable.ConfigurationException;
+import consulo.externalSystem.service.execution.ExternalSystemSettingsControl;
+import consulo.externalSystem.ui.awt.ExternalSystemUiUtil;
+import consulo.externalSystem.ui.awt.PaintAwarePanel;
+import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.fileChooser.FileChooserDescriptor;
+import consulo.ide.impl.idea.openapi.externalSystem.model.settings.LocationSettingType;
+import consulo.ui.ex.awt.*;
+import consulo.util.lang.Comparing;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.io.File;
@@ -51,11 +48,11 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
   private final GradleSettings myInitialSettings;
 
   @SuppressWarnings("FieldCanBeLocal") // Used by reflection at showUi() and disposeUiResources()
-  private JBLabel                   myServiceDirectoryLabel;
+  private JBLabel myServiceDirectoryLabel;
   private TextFieldWithBrowseButton myServiceDirectoryPathField;
   @SuppressWarnings("FieldCanBeLocal")  // Used by reflection at showUi() and disposeUiResources()
   private JBLabel                   myGradleVmOptionsLabel;
-  private JBTextField               myGradleVmOptionsField;
+  private JBTextField myGradleVmOptionsField;
   private boolean                   myServiceDirectoryPathModifiedByUser;
 
   public GradleSystemSettingsControl(@Nonnull GradleSettings settings) {
@@ -140,8 +137,8 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
            || !Comparing.equal(trimIfPossible(myGradleVmOptionsField.getText()), trimIfPossible(myInitialSettings.getGradleVmOptions()));
   }
 
-  @javax.annotation.Nullable
-  private static String trimIfPossible(@javax.annotation.Nullable String s) {
+  @Nullable
+  private static String trimIfPossible(@Nullable String s) {
     if (s == null) {
       return null;
     }

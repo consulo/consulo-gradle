@@ -1,13 +1,13 @@
 package org.jetbrains.plugins.gradle.service.project;
 
+import consulo.externalSystem.model.DataNode;
+import consulo.externalSystem.model.ProjectKeys;
+import consulo.externalSystem.model.project.LibraryData;
+import consulo.externalSystem.service.project.ProjectData;
+import consulo.externalSystem.util.ExternalSystemApiUtil;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.openapi.externalSystem.model.DataNode;
-import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.project.LibraryData;
-import com.intellij.openapi.externalSystem.model.project.ProjectData;
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 
 public class GradleProjectResolverUtil
 {

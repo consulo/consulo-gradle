@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.*;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
@@ -26,12 +28,14 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrRefer
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightParameter;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
  * @author Vladislav.Soroka
  * @since 8/30/13
  */
+@ExtensionImpl
 public class GradleArtifactsContributor implements GradleMethodContextContributor {
 
   @Override

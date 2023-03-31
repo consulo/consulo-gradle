@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.gradle.execution;
 
-import com.intellij.execution.PsiLocation;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import javax.annotation.Nonnull;
+import consulo.execution.action.PsiLocation;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

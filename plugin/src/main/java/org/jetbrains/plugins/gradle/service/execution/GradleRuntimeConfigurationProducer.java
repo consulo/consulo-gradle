@@ -15,16 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service.execution;
 
-import com.intellij.openapi.externalSystem.service.execution.AbstractExternalSystemRuntimeConfigurationProducer;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.ide.impl.idea.openapi.externalSystem.service.execution.AbstractExternalSystemRuntimeConfigurationProducer;
 
 /**
  * @author Denis Zhdanov
  * @since 6/5/13 8:17 PM
  */
-public class GradleRuntimeConfigurationProducer extends AbstractExternalSystemRuntimeConfigurationProducer
-{
-	public GradleRuntimeConfigurationProducer()
-	{
-		super(GradleExternalTaskConfigurationType.getInstance());
-	}
+@ExtensionImpl
+public class GradleRuntimeConfigurationProducer extends AbstractExternalSystemRuntimeConfigurationProducer {
+  public GradleRuntimeConfigurationProducer() {
+    super(GradleExternalTaskConfigurationType.getInstance());
+  }
 }

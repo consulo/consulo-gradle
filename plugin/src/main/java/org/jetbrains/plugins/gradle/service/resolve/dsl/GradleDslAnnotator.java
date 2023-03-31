@@ -15,24 +15,24 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve.dsl;
 
-import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.editor.annotation.Annotator;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames;
 import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
-import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
+import org.jetbrains.plugins.groovy.impl.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.Annotator;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.InheritanceUtil;
+
+import javax.annotation.Nonnull;
+
+import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
 
 /**
  * @author Vladislav.Soroka

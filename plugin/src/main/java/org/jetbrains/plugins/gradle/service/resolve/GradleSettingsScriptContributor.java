@@ -15,18 +15,25 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Vladislav.Soroka
  * @since 10/22/13
  */
+@ExtensionImpl
 public class GradleSettingsScriptContributor extends NonCodeMembersContributor {
 
   @Override

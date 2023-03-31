@@ -16,18 +16,13 @@
 package org.jetbrains.plugins.gradle.tooling.builder
 
 import com.google.gson.GsonBuilder
-import com.intellij.openapi.externalSystem.model.*
-import com.intellij.openapi.externalSystem.model.project.ExternalSystemSourceType
-import org.gradle.api.Action
-import org.gradle.api.Project
-import org.gradle.api.Task
+import consulo.externalSystem.rt.model.*
+import org.gradle.api.*
 import org.gradle.api.file.ContentFilterable
 import org.gradle.api.file.FileCopyDetails
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.util.PatternFilterable
-import org.jetbrains.annotations.NotNull
-import org.jetbrains.annotations.Nullable
 import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderService
 
@@ -46,7 +41,6 @@ class ExternalProjectBuilderImpl implements ModelBuilderService {
     return ExternalProject.name.equals(modelName)
   }
 
-  @Nullable
   @Override
   public Object buildAll(final String modelName, final Project project) {
     ExternalProject externalProject = cache[project.path]
@@ -221,9 +215,8 @@ class ExternalProjectBuilderImpl implements ModelBuilderService {
     return o instanceof CharSequence ? o.toString() : ""
   }
 
-  @NotNull
   @Override
-  public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+  public ErrorMessageBuilder getErrorMessageBuilder(Project project, Exception e) {
     return ErrorMessageBuilder.create(
       project, e, "Project resolve errors"
     ).withDescription("Unable to resolve additional project configuration.")

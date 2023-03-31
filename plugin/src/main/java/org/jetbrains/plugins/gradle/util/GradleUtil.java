@@ -1,26 +1,24 @@
 package org.jetbrains.plugins.gradle.util;
 
-import com.intellij.ide.actions.OpenProjectFileChooserDescriptor;
-import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.externalSystem.model.ExternalSystemException;
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
-import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.fileChooser.FileTypeDescriptor;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.containers.ContainerUtilRt;
-import com.intellij.util.containers.Stack;
+import consulo.externalSystem.rt.model.ExternalSystemException;
+import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.externalSystem.util.ExternalSystemConstants;
+import consulo.fileChooser.FileChooserDescriptor;
 import consulo.gradle.icon.GradleIconGroup;
+import consulo.ide.impl.idea.ide.actions.OpenProjectFileChooserDescriptor;
+import consulo.ide.impl.idea.ide.util.PropertiesComponent;
+import consulo.util.collection.Stack;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import org.gradle.tooling.model.GradleProject;
 import org.gradle.tooling.model.gradle.GradleScript;
 import org.gradle.wrapper.WrapperConfiguration;
 import org.gradle.wrapper.WrapperExecutor;
 import org.jetbrains.annotations.NonNls;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.io.*;
 import java.net.URI;
 import java.util.Arrays;
@@ -170,7 +168,7 @@ public class GradleUtil {
     }
     File rootProjectParent = new File(rootProjectPath);
     StringBuilder buffer = new StringBuilder(FileUtil.toCanonicalPath(rootProjectParent.getAbsolutePath()));
-    Stack<String> stack = ContainerUtilRt.newStack();
+    Stack<String> stack = new Stack<>();
     for (GradleProject p = subProject; p != null; p = p.getParent()) {
       stack.push(p.getName());
     }

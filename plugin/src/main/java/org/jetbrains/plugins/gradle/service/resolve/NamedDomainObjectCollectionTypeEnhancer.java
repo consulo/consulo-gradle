@@ -15,23 +15,27 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.source.PsiClassReferenceType;
-import org.jetbrains.plugins.groovy.extensions.GroovyMapContentProvider;
+import com.intellij.java.language.impl.psi.impl.source.PsiClassReferenceType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.plugins.groovy.impl.extensions.GroovyMapContentProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrReferenceTypeEnhancer;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Vladislav.Soroka
  * @since 9/25/13
  */
+@ExtensionImpl
 public class NamedDomainObjectCollectionTypeEnhancer extends GrReferenceTypeEnhancer {
   @Override
-  public PsiType getReferenceType(GrReferenceExpression ref, @javax.annotation.Nullable PsiElement resolved) {
+  public PsiType getReferenceType(GrReferenceExpression ref, @Nullable PsiElement resolved) {
     if (resolved != null) return null;
 
     GrExpression qualifierExpression = ref.getQualifierExpression();

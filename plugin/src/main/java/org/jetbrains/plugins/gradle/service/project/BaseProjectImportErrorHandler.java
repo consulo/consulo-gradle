@@ -15,15 +15,14 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import com.google.common.base.Strings;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.model.ExternalSystemException;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
+import consulo.externalSystem.rt.model.ExternalSystemException;
+import consulo.logging.Logger;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
 import org.gradle.tooling.UnsupportedVersionException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.ConnectException;
@@ -35,7 +34,7 @@ import java.net.UnknownHostException;
  */
 public class BaseProjectImportErrorHandler extends AbstractProjectImportErrorHandler {
 
-  private static final Logger LOG = Logger.getInstance("#" + BaseProjectImportErrorHandler.class.getName());
+  private static final Logger LOG = Logger.getInstance(BaseProjectImportErrorHandler.class);
 
   @Nonnull
   @Override
@@ -54,7 +53,7 @@ public class BaseProjectImportErrorHandler extends AbstractProjectImportErrorHan
     Throwable rootCause = rootCauseAndLocation.getFirst();
 
     String location = rootCauseAndLocation.getSecond();
-    if (location == null && !Strings.isNullOrEmpty(buildFilePath)) {
+    if (location == null && !StringUtil.isEmptyOrSpaces(buildFilePath)) {
       location = String.format("Build file: '%1$s'", buildFilePath);
     }
 
@@ -96,15 +95,15 @@ public class BaseProjectImportErrorHandler extends AbstractProjectImportErrorHan
 
     if (rootCause instanceof ClassNotFoundException) {
       String msg = String.format("Unable to load class '%1$s'.", rootCause.getMessage()) + EMPTY_LINE +
-                   UNEXPECTED_ERROR_FILE_BUG;
+        UNEXPECTED_ERROR_FILE_BUG;
       // Location of build.gradle is useless for this error. Omitting it.
       return createUserFriendlyError(msg, null);
     }
 
     if (rootCause instanceof UnknownHostException) {
       String msg = String.format("Unknown host '%1$s'.", rootCause.getMessage()) +
-                   EMPTY_LINE + "Please ensure the host name is correct. " +
-                   SET_UP_HTTP_PROXY;
+        EMPTY_LINE + "Please ensure the host name is correct. " +
+        SET_UP_HTTP_PROXY;
       // Location of build.gradle is useless for this error. Omitting it.
       return createUserFriendlyError(msg, null);
     }

@@ -1,10 +1,10 @@
 package org.jetbrains.plugins.gradle.action;
 
+import consulo.dataContext.DataContext;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.ContextHelpAction;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
-import com.intellij.ide.actions.ContextHelpAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.project.Project;
 
 /**
  * @author Denis Zhdanov
@@ -14,7 +14,7 @@ public class GradleToolWindowHelpAction extends ContextHelpAction {
 
   @Override
   public void update(AnActionEvent event) {
-    final Project project = event.getProject();
+    final Project project = event.getData(Project.KEY);
     if (project == null) {
       event.getPresentation().setVisible(false);
       return;

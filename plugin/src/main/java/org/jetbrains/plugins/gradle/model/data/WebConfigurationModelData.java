@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.gradle.model.data;
 
-import java.util.List;
+import consulo.externalSystem.model.Key;
+import consulo.externalSystem.model.ProjectKeys;
+import consulo.externalSystem.model.ProjectSystemId;
+import consulo.externalSystem.service.project.AbstractExternalEntityData;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.openapi.externalSystem.model.Key;
-import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.ProjectSystemId;
-import com.intellij.openapi.externalSystem.model.project.AbstractExternalEntityData;
+import java.util.List;
 
 /**
  * @author Vladislav.Soroka

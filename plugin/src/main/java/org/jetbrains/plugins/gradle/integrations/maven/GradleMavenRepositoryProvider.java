@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven;
 
-import com.intellij.openapi.project.Project;
-import javax.annotation.Nonnull;
+import consulo.maven.rt.server.common.model.MavenRemoteRepository;
+import consulo.project.Project;
 import org.jetbrains.idea.maven.indices.MavenRepositoryProvider;
-import org.jetbrains.idea.maven.model.MavenRemoteRepository;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 /**

@@ -23,15 +23,12 @@ import org.gradle.api.java.archives.Manifest
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.tasks.bundling.War
 import org.gradle.util.GradleVersion
-import org.jetbrains.annotations.NotNull
-import org.jetbrains.annotations.Nullable
-import org.jetbrains.plugins.gradle.model.web.WebConfiguration
+import org.jetbrains.plugins.gradle.tooling.web.WebConfiguration
 import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderService
-import org.jetbrains.plugins.gradle.tooling.internal.web.WarModelImpl
-import org.jetbrains.plugins.gradle.tooling.internal.web.WebConfigurationImpl
-import org.jetbrains.plugins.gradle.tooling.internal.web.WebResourceImpl
-
+import org.jetbrains.plugins.gradle.tooling.impl.internal.web.WarModelImpl
+import org.jetbrains.plugins.gradle.tooling.impl.internal.web.WebConfigurationImpl
+import org.jetbrains.plugins.gradle.tooling.impl.internal.web.WebResourceImpl
 /**
  * @author Vladislav.Soroka
  * @since 6/25/2014
@@ -46,7 +43,6 @@ class WarModelBuilderImpl implements ModelBuilderService {
     return WebConfiguration.name.equals(modelName)
   }
 
-  @Nullable
   @Override
   public Object buildAll(String modelName, Project project) {
     final WarPlugin warPlugin = project.plugins.findPlugin(WarPlugin)
@@ -147,9 +143,8 @@ class WarModelBuilderImpl implements ModelBuilderService {
     new WebConfigurationImpl(warModels)
   }
 
-  @NotNull
   @Override
-  public ErrorMessageBuilder getErrorMessageBuilder(@NotNull Project project, @NotNull Exception e) {
+  public ErrorMessageBuilder getErrorMessageBuilder(Project project, Exception e) {
     ErrorMessageBuilder.create(
       project, e, "Web project import errors"
     ).withDescription("Web Facets/Artifacts will not be configured")

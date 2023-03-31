@@ -16,10 +16,13 @@
 package org.jetbrains.plugins.gradle.service.resolve;
 
 
+import consulo.annotation.component.ExtensionImpl;
+
 /**
  * @author Vladislav.Soroka
  * @since 11/18/13
  */
+@ExtensionImpl
 public class GradleIdeaPluginScriptContributor extends GradleSimpleContributor {
   public GradleIdeaPluginScriptContributor() {
     super("idea", "org.gradle.plugins.ide.idea.model.IdeaModel");

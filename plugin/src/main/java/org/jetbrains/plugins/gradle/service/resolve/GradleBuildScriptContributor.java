@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
+import consulo.annotation.component.ExtensionImpl;
+
 /**
  * @author Vladislav.Soroka
  * @since 8/30/13
  */
+@ExtensionImpl
 public class GradleBuildScriptContributor extends GradleSimpleContributor {
   public GradleBuildScriptContributor() {
     super("buildscript", GradleCommonClassNames.GRADLE_API_SCRIPT_HANDLER);

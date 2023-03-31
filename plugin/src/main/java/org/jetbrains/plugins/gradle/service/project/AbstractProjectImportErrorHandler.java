@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import consulo.externalSystem.rt.model.ExternalSystemException;
+import consulo.externalSystem.rt.model.LocationAwareExternalSystemException;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.openapi.externalSystem.model.ExternalSystemException;
-import com.intellij.openapi.externalSystem.model.LocationAwareExternalSystemException;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Vladislav.Soroka
@@ -52,9 +52,9 @@ public abstract class AbstractProjectImportErrorHandler
 
 	public static final String EMPTY_LINE = "\n\n";
 
-	@javax.annotation.Nullable
+	@Nullable
 	public abstract ExternalSystemException getUserFriendlyError(@Nonnull Throwable error, @Nonnull String projectPath,
-			@javax.annotation.Nullable String buildFilePath);
+			@Nullable String buildFilePath);
 
 	@Nonnull
 	public Pair<Throwable, String> getRootCauseAndLocation(@Nonnull Throwable error)
@@ -77,7 +77,7 @@ public abstract class AbstractProjectImportErrorHandler
 		return Pair.create(rootCause, location);
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public String getLocationFrom(@Nonnull Throwable error)
 	{
 		String errorToString = error.toString();
@@ -147,7 +147,7 @@ public abstract class AbstractProjectImportErrorHandler
 	}
 
 
-	@javax.annotation.Nullable
+	@Nullable
 	public String parseMissingMethod(@Nonnull String rootCauseText)
 	{
 		Matcher matcher = MISSING_METHOD_PATTERN.matcher(rootCauseText);

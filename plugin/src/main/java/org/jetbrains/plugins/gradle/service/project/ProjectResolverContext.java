@@ -15,16 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
+import consulo.externalSystem.model.task.ExternalSystemTaskId;
+import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.model.idea.IdeaModule;
-import org.jetbrains.plugins.gradle.model.ProjectImportAction;
+import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author Vladislav.Soroka
@@ -36,7 +36,7 @@ public class ProjectResolverContext
 	private final ExternalSystemTaskId myExternalSystemTaskId;
 	@Nonnull
 	private final String myProjectPath;
-	@javax.annotation.Nullable
+	@Nullable
 	private final GradleExecutionSettings mySettings;
 	@Nonnull
 	private final ProjectConnection myConnection;
@@ -47,7 +47,7 @@ public class ProjectResolverContext
 	private ProjectImportAction.AllModels myModels;
 
 	public ProjectResolverContext(@Nonnull final ExternalSystemTaskId externalSystemTaskId, @Nonnull final String projectPath,
-			@javax.annotation.Nullable final GradleExecutionSettings settings, @Nonnull final ProjectConnection connection,
+			@Nullable final GradleExecutionSettings settings, @Nonnull final ProjectConnection connection,
 			@Nonnull final ExternalSystemTaskNotificationListener listener, final boolean isPreviewMode)
 	{
 		myExternalSystemTaskId = externalSystemTaskId;
@@ -70,7 +70,7 @@ public class ProjectResolverContext
 		return myProjectPath;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public GradleExecutionSettings getSettings()
 	{
 		return mySettings;
@@ -104,14 +104,14 @@ public class ProjectResolverContext
 		myModels = models;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public <T> T getExtraProject(Class<T> modelClazz)
 	{
 		return myModels.getExtraProject(null, modelClazz);
 	}
 
-	@javax.annotation.Nullable
-	public <T> T getExtraProject(@javax.annotation.Nullable IdeaModule module, Class<T> modelClazz)
+	@Nullable
+	public <T> T getExtraProject(@Nullable IdeaModule module, Class<T> modelClazz)
 	{
 		return myModels.getExtraProject(module, modelClazz);
 	}

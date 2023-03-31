@@ -1,10 +1,10 @@
 package org.jetbrains.plugins.gradle.service.project;
 
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
+import consulo.externalSystem.model.task.ExternalSystemTaskId;
+import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -17,7 +17,7 @@ public class OutputWrapper extends OutputStream {
   @Nonnull
   private final ExternalSystemTaskNotificationListener myListener;
   @Nonnull
-  private final ExternalSystemTaskId                   myTaskId;
+  private final ExternalSystemTaskId myTaskId;
 
   @Nullable private StringBuilder myBuffer;
 

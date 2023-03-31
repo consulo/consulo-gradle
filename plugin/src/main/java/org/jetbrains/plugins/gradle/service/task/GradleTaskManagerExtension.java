@@ -15,28 +15,31 @@
  */
 package org.jetbrains.plugins.gradle.service.task;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.externalSystem.model.ExternalSystemException;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.externalSystem.model.task.ExternalSystemTaskId;
+import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
+import consulo.externalSystem.rt.model.ExternalSystemException;
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * @author Vladislav.Soroka
  * @since 11/5/13
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public interface GradleTaskManagerExtension {
 
-  ExtensionPointName<GradleTaskManagerExtension> EP_NAME = ExtensionPointName.create("org.jetbrains.plugins.gradle.taskManager");
+  ExtensionPointName<GradleTaskManagerExtension> EP_NAME = ExtensionPointName.create(GradleTaskManagerExtension.class);
 
   boolean executeTasks(@Nonnull final ExternalSystemTaskId id,
                        @Nonnull final List<String> taskNames,
                        @Nonnull String projectPath,
-                       @javax.annotation.Nullable final GradleExecutionSettings settings,
+                       @Nullable final GradleExecutionSettings settings,
                        @Nonnull final List<String> vmOptions,
                        @Nonnull final List<String> scriptParameters,
                        @Nullable final String debuggerSetup,

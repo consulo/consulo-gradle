@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.settings;
 
-import com.intellij.openapi.externalSystem.settings.ExternalProjectSettings;
+import consulo.externalSystem.setting.ExternalProjectSettings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

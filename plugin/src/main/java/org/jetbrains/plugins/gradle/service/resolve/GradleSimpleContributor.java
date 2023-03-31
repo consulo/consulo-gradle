@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public abstract class GradleSimpleContributor implements GradleMethodContextCont
   protected GradleSimpleContributor(@Nonnull String blockName, @Nonnull String fqName, String... mixIns) {
     this.blockName = blockName;
     this.fqName = fqName;
-    myMixIns = ContainerUtil.newArrayList(mixIns);
+    myMixIns = List.of(mixIns);
   }
 
   @Override

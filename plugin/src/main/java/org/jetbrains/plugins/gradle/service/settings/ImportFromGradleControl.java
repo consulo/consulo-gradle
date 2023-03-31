@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.gradle.service.settings;
 
-import com.intellij.openapi.externalSystem.service.settings.AbstractImportFromExternalSystemControl;
-import com.intellij.openapi.externalSystem.util.ExternalSystemSettingsControl;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.util.text.StringUtil;
+import consulo.externalSystem.service.execution.ExternalSystemSettingsControl;
+import consulo.ide.impl.idea.openapi.externalSystem.service.settings.AbstractImportFromExternalSystemControl;
+import consulo.project.ProjectManager;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;

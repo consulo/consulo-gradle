@@ -15,25 +15,28 @@
  */
 package org.jetbrains.plugins.gradle.service.settings;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.externalSystem.service.settings.AbstractExternalSystemConfigurable;
-import com.intellij.openapi.externalSystem.util.ExternalSystemSettingsControl;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NonNls;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.configurable.ProjectConfigurable;
+import consulo.configurable.StandardConfigurableIds;
+import consulo.externalSystem.service.execution.ExternalSystemSettingsControl;
+import consulo.ide.impl.idea.openapi.externalSystem.service.settings.AbstractExternalSystemConfigurable;
+import consulo.project.Project;
+import jakarta.inject.Inject;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author Denis Zhdanov
  * @since 4/30/13 11:42 PM
  */
-public class GradleConfigurable extends AbstractExternalSystemConfigurable<GradleProjectSettings, GradleSettingsListener, GradleSettings> {
-
-  @NonNls public static final String HELP_TOPIC = "reference.settingsdialog.project.gradle";
-
+@ExtensionImpl
+public class GradleConfigurable extends AbstractExternalSystemConfigurable<GradleProjectSettings, GradleSettingsListener, GradleSettings> implements ProjectConfigurable {
+  @Inject
   public GradleConfigurable(@Nonnull Project project) {
     super(project, GradleConstants.SYSTEM_ID);
   }
@@ -44,7 +47,7 @@ public class GradleConfigurable extends AbstractExternalSystemConfigurable<Gradl
     return new GradleProjectSettingsControl(settings);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@Nonnull GradleSettings settings) {
     return new GradleSystemSettingsControl(settings);
@@ -59,12 +62,12 @@ public class GradleConfigurable extends AbstractExternalSystemConfigurable<Gradl
   @Nonnull
   @Override
   public String getId() {
-    return getHelpTopic();
+    return "execution.gradle";
   }
 
-  @Nonnull
+  @Nullable
   @Override
-  public String getHelpTopic() {
-    return HELP_TOPIC;
+  public String getParentId() {
+    return StandardConfigurableIds.EXECUTION_GROUP;
   }
 }

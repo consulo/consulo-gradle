@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven;
 
-import static javax.swing.SwingUtilities.invokeLater;
+import consulo.externalSystem.model.task.ExternalSystemTaskId;
+import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter;
+import consulo.externalSystem.model.task.ExternalSystemTaskType;
+import consulo.project.Project;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
 
 import javax.annotation.Nonnull;
 
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType;
-import com.intellij.openapi.project.Project;
+import static javax.swing.SwingUtilities.invokeLater;
 
 /**
  * {@link GradleMavenProjectImportNotificationListener} listens for Gradle project import events.

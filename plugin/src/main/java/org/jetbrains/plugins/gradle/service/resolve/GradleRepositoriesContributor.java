@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
+import consulo.annotation.component.ExtensionImpl;
+
 /**
  * @author Denis Zhdanov
  * @since 8/14/13 12:56 PM
  */
+@ExtensionImpl
 public class GradleRepositoriesContributor extends GradleSimpleContributor {
   public GradleRepositoriesContributor() {
     super("repositories", GradleCommonClassNames.GRADLE_API_REPOSITORY_HANDLER,

@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
+import consulo.annotation.component.ExtensionImpl;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -24,9 +25,8 @@ import javax.annotation.Nonnull;
 /**
  * @author sergey.evdokimov
  */
+@ExtensionImpl
 public class GradleScriptTypeDetector extends GroovyScriptTypeDetector {
-
-
   public GradleScriptTypeDetector() {
     super(GradleScriptType.INSTANCE);
   }

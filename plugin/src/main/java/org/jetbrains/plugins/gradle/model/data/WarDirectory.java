@@ -15,11 +15,10 @@
  */
 package org.jetbrains.plugins.gradle.model.data;
 
-import java.io.Serializable;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.text.StringUtil;
+import java.io.Serializable;
 
 /**
  * @author Vladislav.Soroka

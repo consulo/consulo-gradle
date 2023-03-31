@@ -15,24 +15,27 @@
  */
 package org.jetbrains.plugins.gradle.documentation;
 
-import com.intellij.codeInsight.javadoc.JavaDocUtil;
-import com.intellij.lang.documentation.DocumentationProvider;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.util.PsiTreeUtil;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.codeInsight.javadoc.JavaDocUtil;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.Language;
+import consulo.language.editor.documentation.LanguageDocumentationProvider;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleDocumentationBundle;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.dsl.CustomMembersGenerator;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +43,8 @@ import java.util.List;
  * @author Vladislav.Soroka
  * @since 8/29/13
  */
-public class GradleDocumentationProvider implements DocumentationProvider {
+@ExtensionImpl
+public class GradleDocumentationProvider implements LanguageDocumentationProvider {
 
   @Nullable
   @Override
@@ -55,40 +59,35 @@ public class GradleDocumentationProvider implements DocumentationProvider {
     return result.isEmpty() ? null : result;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public String generateDoc(PsiElement element, PsiElement originalElement) {
     PsiFile file = element.getContainingFile();
-    if (file == null || !FileUtilRt.extensionEquals(file.getName(), GradleConstants.EXTENSION)) return null;
+    if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) return null;
     return element instanceof GrLiteral ? findDoc(element, GrLiteral.class.cast(element).getValue()) : null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiElement getDocumentationElementForLookupItem(PsiManager psiManager, Object object, PsiElement element) {
     final PsiFile file = element.getContainingFile();
-    if (file == null || !FileUtilRt.extensionEquals(file.getName(), GradleConstants.EXTENSION)) return null;
+    if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) return null;
     final String doc = findDoc(element, object);
     return !StringUtil.isEmpty(doc) ? new CustomMembersGenerator.GdslNamedParameter(String.valueOf(object), doc, element, null) : null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiElement getDocumentationElementForLink(PsiManager psiManager, String link, PsiElement context) {
     return JavaDocUtil.findReferenceTarget(psiManager, link, context);
   }
 
   @Nullable
-  private static String findDoc(@javax.annotation.Nullable PsiElement element, Object argValue) {
+  private static String findDoc(@Nullable PsiElement element, Object argValue) {
     String result = null;
     if (element instanceof GrLiteral) {
       GrLiteral grLiteral = (GrLiteral)element;
-      PsiElement stmt = PsiTreeUtil.findFirstParent(grLiteral, new Condition<PsiElement>() {
-        @Override
-        public boolean value(PsiElement psiElement) {
-          return psiElement instanceof GrCall;
-        }
-      });
+      PsiElement stmt = PsiTreeUtil.findFirstParent(grLiteral, psiElement -> psiElement instanceof GrCall);
       if (stmt instanceof GrCall) {
         GrCall grCall = (GrCall)stmt;
         PsiMethod psiMethod = grCall.resolveMethod();
@@ -112,5 +111,11 @@ public class GradleDocumentationProvider implements DocumentationProvider {
       }
     }
     return result;
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import java.util.Arrays;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.RecursionManager;
+import consulo.java.language.module.util.JavaClassNames;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.gradle.util.GradleLog;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -35,12 +38,10 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightParameter;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.RecursionManager;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
-import consulo.java.module.util.JavaClassNames;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
 
 /**
  * @author Vladislav.Soroka
@@ -86,7 +87,7 @@ public class GradleResolverUtil {
 
   @Nullable
   public static GrLightMethodBuilder createMethodWithClosure(@Nonnull String name,
-                                                             @javax.annotation.Nullable String returnType,
+                                                             @Nullable String returnType,
                                                              @Nullable String closureTypeParameter,
                                                              @Nonnull PsiElement place,
                                                              @Nonnull GroovyPsiManager psiManager) {
@@ -219,7 +220,7 @@ public class GradleResolverUtil {
     return parent;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static <T extends PsiElement> T findParent(@Nonnull PsiElement element, Class<T> clazz) {
     PsiElement parent = element;
     do {
@@ -240,12 +241,7 @@ public class GradleResolverUtil {
   @Nullable
   public static PsiType getTypeOf(@Nullable final GrExpression expression) {
     if (expression == null) return null;
-    return RecursionManager.doPreventingRecursion(expression, true, new Computable<PsiType>() {
-      @Override
-      public PsiType compute() {
-        return expression.getNominalType();
-      }
-    });
+    return RecursionManager.doPreventingRecursion(expression, true, () -> expression.getNominalType());
   }
 
   public static boolean isLShiftElement(@Nullable PsiElement psiElement) {

@@ -15,22 +15,22 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.psi.PsiType;
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.extensions.GroovyUnresolvedHighlightFilter;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ExtensionImpl;
+import org.jetbrains.plugins.groovy.impl.extensions.GroovyUnresolvedHighlightFilter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
-
-import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 /**
  * @author Vladislav.Soroka
  * @since 9/25/13
  */
+@ExtensionImpl
 public class GradleUnresolvedReferenceFilter extends GroovyUnresolvedHighlightFilter {
 
-  private final static Set<String> IGNORE_SET = newHashSet(
+  private final static Set<String> IGNORE_SET = Set.of(
     GradleCommonClassNames.GRADLE_API_TASK,
     GradleCommonClassNames.GRADLE_API_SOURCE_SET,
     GradleCommonClassNames.GRADLE_API_CONFIGURATION);

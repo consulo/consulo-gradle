@@ -15,19 +15,21 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import javax.annotation.Nonnull;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrReferenceExpressionImpl;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
  * @author Vladislav.Soroka
  * @since 8/29/13
  */
+@ExtensionImpl
 public class GradleConfigurationsContributor implements GradleMethodContextContributor {
 
   private static final String CONFIGURATIONS = "configurations";

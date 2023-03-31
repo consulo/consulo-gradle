@@ -38,7 +38,7 @@ public class ErrorMessageBuilder {
   private final String myGroup;
   @Nullable private String myDescription;
 
-  private ErrorMessageBuilder(@Nonnull Project project, @javax.annotation.Nullable Exception exception, @Nonnull String group) {
+  private ErrorMessageBuilder(@Nonnull Project project, @Nullable Exception exception, @Nonnull String group) {
     myProject = project;
     myException = exception;
     myGroup = group;
@@ -48,7 +48,7 @@ public class ErrorMessageBuilder {
     return new ErrorMessageBuilder(project, null, group);
   }
 
-  public static ErrorMessageBuilder create(@Nonnull Project project, @javax.annotation.Nullable Exception exception, @Nonnull String group) {
+  public static ErrorMessageBuilder create(@Nonnull Project project, @Nullable Exception exception, @Nonnull String group) {
     return new ErrorMessageBuilder(project, exception, group);
   }
 

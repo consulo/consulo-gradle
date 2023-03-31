@@ -15,23 +15,24 @@
  */
 package org.jetbrains.plugins.gradle.codeInspection;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.io.FileUtil;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
+import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import java.util.List;
  * @author Vladislav.Soroka
  * @since 11/21/13
  */
+@ExtensionImpl
 public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
 
   @Nonnull
@@ -54,6 +56,11 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
     return PROBABLE_BUGS;
   }
 
+  @Nonnull
+  @Override
+  public String[] getGroupPath() {
+    return new String[] {"Gradle"};
+  }
 
   @Override
   protected String buildErrorString(Object... args) {
@@ -71,7 +78,7 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
     @Override
     public void visitClosure(GrClosableBlock closure) {
       PsiFile file = closure.getContainingFile();
-      if (file == null || !FileUtilRt.extensionEquals(file.getName(), GradleConstants.EXTENSION)) return;
+      if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) return;
 
       super.visitClosure(closure);
       GrMethodCall mavenMethodCall = PsiTreeUtil.getParentOfType(closure, GrMethodCall.class);
@@ -103,7 +110,7 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
     GrCallExpression[] applicationStatements = PsiTreeUtil.getChildrenOfType(closure, GrCallExpression.class);
     if (applicationStatements == null) return Collections.emptyList();
 
-    List<GrCallExpression> statements = ContainerUtil.newArrayList();
+    List<GrCallExpression> statements = new ArrayList<>();
     for (GrCallExpression statement : applicationStatements) {
       GrReferenceExpression[] referenceExpressions = PsiTreeUtil.getChildrenOfType(statement, GrReferenceExpression.class);
       if (referenceExpressions == null) continue;

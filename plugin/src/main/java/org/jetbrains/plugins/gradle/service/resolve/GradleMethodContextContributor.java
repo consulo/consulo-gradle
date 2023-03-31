@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import javax.annotation.Nonnull;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -43,10 +45,11 @@ import java.util.List;
  * @author Denis Zhdanov
  * @since 7/23/13 7:32 PM
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public interface GradleMethodContextContributor {
 
   ExtensionPointName<GradleMethodContextContributor> EP_NAME =
-    ExtensionPointName.create("org.jetbrains.plugins.gradle.resolve.contributor");
+    ExtensionPointName.create(GradleMethodContextContributor.class);
 
   /**
    * Tries to resolve target element.

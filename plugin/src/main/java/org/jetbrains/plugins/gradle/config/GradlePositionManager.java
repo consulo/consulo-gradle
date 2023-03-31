@@ -15,34 +15,33 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
-import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.util.containers.ConcurrentFactoryMap;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.util.*;
+import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.externalSystem.util.ExternalSystemConstants;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.internal.com.sun.jdi.AbsentInformationException;
 import consulo.internal.com.sun.jdi.ReferenceType;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.ModuleUtilCore;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
 import consulo.util.dataholder.Key;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
 import consulo.util.nodep.classloader.UrlClassLoader;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import jakarta.inject.Inject;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
+import org.jetbrains.plugins.groovy.impl.extensions.debugger.ScriptPositionManagerHelper;
+import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,9 +55,10 @@ import java.util.regex.Pattern;
 /**
  * @author John Murph
  */
+@ExtensionImpl
 public class GradlePositionManager extends ScriptPositionManagerHelper {
 
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.gradle.config.GradlePositionManager");
+  private static final Logger LOG = Logger.getInstance(GradlePositionManager.class);
 
   private static final Pattern                                    GRADLE_CLASS_PATTERN  = Pattern.compile(".*_gradle_.*");
   private static final String                                     SCRIPT_CLOSURE_PREFIX = "build_";
@@ -67,6 +67,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
 
   private final GradleInstallationManager myLibraryManager;
 
+  @Inject
   public GradlePositionManager(@Nonnull GradleInstallationManager manager) {
     myLibraryManager = manager;
   }
@@ -105,7 +106,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
     return PsiManager.getInstance(project).findFile(virtualFile);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static String getScriptForClassName(@Nonnull ReferenceType refType) {
     try {
       final List<String> data = refType.sourcePaths(null);
@@ -118,7 +119,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private ClassLoader getGradleClassLoader(@Nonnull final Module module) {
     final Project project = module.getProject();
     return CachedValuesManager.getManager(project).getCachedValue(module, GRADLE_CLASS_LOADER, new CachedValueProvider<ClassLoader>() {
@@ -163,7 +164,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
       return Result.create(result, ProjectRootManager.getInstance(myModule.getProject()));
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     private String calcClassName(File scriptFile) {
       final ClassLoader loader = getGradleClassLoader(myModule);
       if (loader != null) {

@@ -1,17 +1,18 @@
 package org.jetbrains.plugins.gradle.action;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.OpenFileDescriptor;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.application.dumb.DumbAware;
+import consulo.fileEditor.FileEditorManager;
+import consulo.logging.Logger;
+import consulo.navigation.OpenFileDescriptor;
+import consulo.navigation.OpenFileDescriptorFactory;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
+
+import javax.annotation.Nonnull;
 
 /**
  * Forces the IntelliJ IDEA to open {@link GradleSettings#getLinkedExternalProjectPath() linked gradle project} at the editor
@@ -23,7 +24,7 @@ import org.jetbrains.plugins.gradle.util.GradleBundle;
  */
 public class GradleOpenScriptAction extends AbstractGradleLinkedProjectAction implements DumbAware {
 
-  private static final Logger LOG = Logger.getInstance("#" + GradleOpenScriptAction.class.getName());
+  private static final Logger LOG = Logger.getInstance(GradleOpenScriptAction.class);
 
   public GradleOpenScriptAction() {
     getTemplatePresentation().setText(GradleBundle.message("gradle.action.open.script.text"));
@@ -41,7 +42,7 @@ public class GradleOpenScriptAction extends AbstractGradleLinkedProjectAction im
       LOG.warn(String.format("Can't obtain virtual file for the target file path: '%s'", linkedProjectPath));
       return;
     }
-    OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
+    OpenFileDescriptor descriptor = OpenFileDescriptorFactory.getInstance(project).builder(virtualFile).build();
     FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
   }
 }

@@ -15,20 +15,21 @@
  */
 package org.jetbrains.plugins.gradle.codeInsight;
 
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.psi.PsiElement;
-import javax.annotation.Nonnull;
-
+import consulo.language.editor.completion.CompletionContributor;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
 
-import static com.intellij.patterns.PlatformPatterns.psiElement;
-import static com.intellij.patterns.PlatformPatterns.psiFile;
-import static com.intellij.patterns.StandardPatterns.string;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static consulo.language.pattern.PlatformPatterns.psiElement;
+import static consulo.language.pattern.PlatformPatterns.psiFile;
+import static consulo.language.pattern.StandardPatterns.string;
 
 /**
  * @author Vladislav.Soroka
@@ -38,8 +39,8 @@ public abstract class AbstractGradleCompletionContributor extends CompletionCont
   protected static final ElementPattern<PsiElement> GRADLE_FILE_PATTERN = psiElement()
     .inFile(psiFile().withName(string().endsWith('.' + GradleConstants.EXTENSION)));
 
-  @javax.annotation.Nullable
-  protected String findNamedArgumentValue(@javax.annotation.Nullable GrNamedArgumentsOwner namedArgumentsOwner, @Nonnull String label) {
+  @Nullable
+  protected String findNamedArgumentValue(@Nullable GrNamedArgumentsOwner namedArgumentsOwner, @Nonnull String label) {
     if (namedArgumentsOwner == null) return null;
     GrNamedArgument namedArgument = namedArgumentsOwner.findNamedArgument(label);
     if (namedArgument == null) return null;

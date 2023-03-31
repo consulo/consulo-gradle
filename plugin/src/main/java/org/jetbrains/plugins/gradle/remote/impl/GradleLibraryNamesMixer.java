@@ -1,12 +1,12 @@
 package org.jetbrains.plugins.gradle.remote.impl;
 
-import com.intellij.openapi.externalSystem.model.DataNode;
-import com.intellij.openapi.externalSystem.model.project.LibraryData;
-import com.intellij.openapi.externalSystem.model.project.LibraryPathType;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.containers.ContainerUtilRt;
+import consulo.externalSystem.model.DataNode;
+import consulo.externalSystem.model.project.LibraryData;
+import consulo.externalSystem.model.project.LibraryPathType;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 
@@ -63,8 +63,8 @@ public class GradleLibraryNamesMixer {
     if (libraries.isEmpty()) {
       return;
     }
-    Map<String, Wrapped> names = ContainerUtilRt.newHashMap();
-    List<Wrapped> data = ContainerUtilRt.newArrayList();
+    Map<String, Wrapped> names = new HashMap<>();
+    List<Wrapped> data = new ArrayList<>();
     for (DataNode<LibraryData> library : libraries) {
       Wrapped wrapped = new Wrapped(library.getData());
       data.add(wrapped);
@@ -172,7 +172,7 @@ public class GradleLibraryNamesMixer {
   }
 
   @SuppressWarnings("ConstantConditions")
-  private static void diversifyName(@Nonnull String changeText, @Nonnull Wrapped wrapped, @javax.annotation.Nullable File file) {
+  private static void diversifyName(@Nonnull String changeText, @Nonnull Wrapped wrapped, @Nullable File file) {
     String name = wrapped.library.getExternalName();
     int i = file == null ? - 1 : name.indexOf(file.getName());
     final String newName;

@@ -15,11 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrReferenceExpressionImpl;
@@ -27,6 +32,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrImplicitVariableIm
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightParameter;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
+
+import javax.annotation.Nonnull;
 
 import static org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames.GRADLE_API_CONFIGURATION;
 import static org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER;
@@ -36,6 +43,7 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.
  * @author Vladislav.Soroka
  * @since 8/30/13
  */
+@ExtensionImpl
 public class GradleConfigurationsNonCodeMembersContributor extends NonCodeMembersContributor {
 
   private static final String METHOD_GET_BY_NAME = "getByName";
@@ -98,7 +106,7 @@ public class GradleConfigurationsNonCodeMembersContributor extends NonCodeMember
     for (PsiMethod method : dependencyHandlerClass.findMethodsByName(methodName, false)) {
       int methodParameterCount = method.getParameterList().getParametersCount();
       if (methodParameterCount == parametersCount &&
-          method.getParameterList().getParameters()[methodParameterCount - 1].getType().equalsToText(GROOVY_LANG_CLOSURE)) {
+        method.getParameterList().getParameters()[methodParameterCount - 1].getType().equalsToText(GROOVY_LANG_CLOSURE)) {
         element.setNavigationElement(method);
       }
     }

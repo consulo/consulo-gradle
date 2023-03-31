@@ -15,17 +15,20 @@
  */
 package org.jetbrains.plugins.gradle.codeInsight.actions;
 
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.codeInsight.actions.CodeInsightAction;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiCompiledElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.annotation.component.ActionImpl;
+import consulo.annotation.component.ActionParentRef;
+import consulo.annotation.component.ActionRef;
+import consulo.annotation.component.ActionRefAnchor;
+import consulo.application.AllIcons;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.action.CodeInsightAction;
+import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.psi.PsiCompiledElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleDocumentationBundle;
@@ -33,15 +36,14 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * @author Vladislav.Soroka
  * @since 10/22/13
  */
+@ActionImpl(id = "AddGradleDslPluginAction", parents = @ActionParentRef(value = @ActionRef(id = "GenerateGroup"), anchor = ActionRefAnchor.FIRST))
 public class AddGradleDslPluginAction extends CodeInsightAction {
-  static final ThreadLocal<String> TEST_THREAD_LOCAL = new ThreadLocal<String>();
   private final Pair[] myPlugins;
 
   public AddGradleDslPluginAction() {
@@ -54,18 +56,8 @@ public class AddGradleDslPluginAction extends CodeInsightAction {
       "build-announcements,checkstyle,codenarc,eclipse-wtp,findbugs,jdepend,pmd,project-report,signing,sonar", ",");
 
     myPlugins = new Pair[plugins.size()];
-    ContainerUtil.map2Array(plugins, myPlugins, new Function<String, Pair>() {
-      @Override
-      public Pair fun(String o) {
-        return createPluginKey(o);
-      }
-    });
-    Arrays.sort(myPlugins, new Comparator<Pair>() {
-      @Override
-      public int compare(Pair o1, Pair o2) {
-        return String.valueOf(o1.getFirst()).compareTo(String.valueOf(o2.getFirst()));
-      }
-    });
+    ContainerUtil.map2Array(plugins, myPlugins, o -> createPluginKey(o));
+    Arrays.sort(myPlugins, (o1, o2) -> String.valueOf(o1.getFirst()).compareTo(String.valueOf(o2.getFirst())));
   }
 
   @Nonnull

@@ -1,9 +1,9 @@
 package org.jetbrains.plugins.gradle.util;
 
-import javax.annotation.Nonnull;
-
+import consulo.externalSystem.model.ProjectSystemId;
 import org.jetbrains.annotations.NonNls;
-import com.intellij.openapi.externalSystem.model.ProjectSystemId;
+
+import javax.annotation.Nonnull;
 
 /**
  * Holds object representation of icons used at the <code>Gradle</code> plugin.

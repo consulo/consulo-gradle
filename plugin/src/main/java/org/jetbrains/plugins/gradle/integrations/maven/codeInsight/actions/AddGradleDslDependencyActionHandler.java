@@ -15,21 +15,19 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven.codeInsight.actions;
 
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.codeInsight.CodeInsightUtilBase;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.Editor;
+import consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.maven.rt.server.common.model.MavenId;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.idea.maven.dom.model.MavenDomDependency;
 import org.jetbrains.idea.maven.indices.MavenArtifactSearchDialog;
-import org.jetbrains.idea.maven.model.MavenId;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -37,8 +35,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * @author Vladislav.Soroka
@@ -65,9 +65,9 @@ class AddGradleDslDependencyActionHandler implements CodeInsightActionHandler {
       protected void run() {
         GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
         List<GrMethodCall> closableBlocks = PsiTreeUtil.getChildrenOfTypeAsList(file, GrMethodCall.class);
-        GrCall dependenciesBlock = ContainerUtil.find(closableBlocks, new Condition<GrMethodCall>() {
+        GrCall dependenciesBlock = ContainerUtil.find(closableBlocks, new Predicate<GrMethodCall>() {
           @Override
-          public boolean value(GrMethodCall call) {
+          public boolean test(GrMethodCall call) {
             GrExpression expression = call.getInvokedExpression();
             return expression != null && "dependencies".equals(expression.getText());
           }

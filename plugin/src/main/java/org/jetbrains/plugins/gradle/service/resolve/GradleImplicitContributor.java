@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import static com.intellij.util.containers.ContainerUtil.ar;
-import static com.intellij.util.containers.ContainerUtil.getLastItem;
-import static com.intellij.util.containers.ContainerUtil.newHashMap;
-import static org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames.*;
-import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.externalSystem.model.execution.ExternalTaskPojo;
+import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.externalSystem.util.ExternalSystemConstants;
+import consulo.ide.impl.idea.util.containers.ContainerUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.gradle.settings.GradleLocalSettings;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -35,24 +35,24 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-import com.intellij.openapi.externalSystem.model.execution.ExternalTaskPojo;
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
-import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames.*;
+import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.canBeMethodOf;
 
 /**
  * @author Vladislav.Soroka
  * @since 9/24/13
  */
+@ExtensionImpl
 public class GradleImplicitContributor implements GradleMethodContextContributor {
-  private final static Map<String, String> BUILT_IN_TASKS = newHashMap(
+  private final static Map<String, String> BUILT_IN_TASKS = ContainerUtil.newHashMap(
     new Pair<String, String>("assemble", GRADLE_API_DEFAULT_TASK),
     new Pair<String, String>("build", GRADLE_API_DEFAULT_TASK),
     new Pair<String, String>("buildDependents", GRADLE_API_DEFAULT_TASK),
@@ -89,7 +89,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
       return;
     }
 
-    final String methodCall = getLastItem(methodCallInfo);
+    final String methodCall = consulo.util.collection.ContainerUtil.getLastItem(methodCallInfo);
     if (methodCall == null) return;
 
     if (!methodCall.equals("task")) {
@@ -102,7 +102,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
     }
 
     if (methodCallInfo.size() >= 3 && Arrays.equals(
-      ar("dirs", "flatDir", "repositories"), methodCallInfo.subList(0, 3).toArray())) {
+      ContainerUtil.ar("dirs", "flatDir", "repositories"), methodCallInfo.subList(0, 3).toArray())) {
       final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
       GradleResolverUtil.processDeclarations(
         psiManager, processor, state, place, GRADLE_API_ARTIFACTS_REPOSITORIES_FLAT_DIRECTORY_ARTIFACT_REPOSITORY);
@@ -139,7 +139,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
   }
 
   private static void checkForAvailableTasks(int level,
-                                             @javax.annotation.Nullable String taskName,
+                                             @Nullable String taskName,
                                              @Nonnull PsiScopeProcessor processor,
                                              @Nonnull ResolveState state,
                                              @Nonnull PsiElement place) {

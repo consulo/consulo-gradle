@@ -15,15 +15,14 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.externalSystem.settings.DelegatingExternalSystemSettingsListener;
-import com.intellij.openapi.externalSystem.settings.ExternalSystemSettingsListener;
-
-import javax.annotation.Nullable;
+import consulo.externalSystem.setting.ExternalSystemSettingsListener;
+import consulo.ide.impl.idea.openapi.externalSystem.settings.DelegatingExternalSystemSettingsListener;
 import org.jetbrains.plugins.gradle.settings.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
@@ -38,7 +37,7 @@ public class DelegatingGradleSettingsListenerAdapter extends DelegatingExternalS
   }
 
   @Override
-  public void onGradleHomeChange(@javax.annotation.Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
+  public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
   }
 
   @Override
@@ -46,7 +45,7 @@ public class DelegatingGradleSettingsListenerAdapter extends DelegatingExternalS
   }
 
   @Override
-  public void onServiceDirectoryPathChange(@javax.annotation.Nullable String oldPath, @Nullable String newPath) {
+  public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath) {
   }
 
   @Override

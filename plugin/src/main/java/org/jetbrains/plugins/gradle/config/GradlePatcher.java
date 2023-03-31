@@ -1,9 +1,9 @@
 package org.jetbrains.plugins.gradle.config;
 
-import javax.annotation.Nonnull;
+import consulo.project.Project;
+import consulo.project.ProjectManager;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
+import javax.annotation.Nonnull;
 
 /**
  * Encapsulates functionality of patching problems from the previous gradle integration releases.

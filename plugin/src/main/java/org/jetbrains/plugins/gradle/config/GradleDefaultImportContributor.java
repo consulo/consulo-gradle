@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
+import consulo.annotation.component.ExtensionImpl;
+import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptUtil;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.resolve.DefaultImportContributor;
+
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.resolve.DefaultImportContributor;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
-
 /**
  * @author peter
  */
+@ExtensionImpl
 public class GradleDefaultImportContributor extends DefaultImportContributor {
 
   // As listed here - http://www.gradle.org/docs/current/userguide/userguide_single.html#sec:using_gradle_without_ide_support

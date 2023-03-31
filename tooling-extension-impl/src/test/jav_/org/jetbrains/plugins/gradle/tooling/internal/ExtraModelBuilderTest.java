@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
 import org.jetbrains.plugins.gradle.tooling.annotation.TargetVersions;
+import org.jetbrains.plugins.gradle.tooling.impl.internal.ExtraModelBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

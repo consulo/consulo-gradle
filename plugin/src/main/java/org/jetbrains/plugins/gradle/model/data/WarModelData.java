@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.gradle.model.data;
 
-import com.intellij.openapi.externalSystem.model.Key;
-import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.ProjectSystemId;
-import com.intellij.openapi.externalSystem.model.project.AbstractExternalEntityData;
-import javax.annotation.Nonnull;
+import consulo.externalSystem.model.Key;
+import consulo.externalSystem.model.ProjectKeys;
+import consulo.externalSystem.model.ProjectSystemId;
+import consulo.externalSystem.service.project.AbstractExternalEntityData;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Collections;
 import java.util.Map;
@@ -39,13 +40,13 @@ public class WarModelData extends AbstractExternalEntityData {
   private final String myWebAppDirName;
   @Nonnull
   private final File myWebAppDir;
-  @javax.annotation.Nullable
+  @Nullable
   private File myWebXml;
   @Nonnull
   private Map<String, Set<String>> myWebRoots;
   @Nonnull
   private Set<File> myClasspath;
-  @javax.annotation.Nullable
+  @Nullable
   private String myManifestContent;
 
 
@@ -67,16 +68,16 @@ public class WarModelData extends AbstractExternalEntityData {
     return myWebAppDir;
   }
 
-  public void setWebXml(@javax.annotation.Nullable File webXml) {
+  public void setWebXml(@Nullable File webXml) {
     myWebXml = webXml;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public File getWebXml() {
     return myWebXml;
   }
 
-  public void setWebRoots(@javax.annotation.Nullable Map<String, Set<String>> webRoots) {
+  public void setWebRoots(@Nullable Map<String, Set<String>> webRoots) {
     myWebRoots = webRoots == null ? Collections.<String, Set<String>>emptyMap() : webRoots;
   }
 
@@ -85,7 +86,7 @@ public class WarModelData extends AbstractExternalEntityData {
     return myWebRoots;
   }
 
-  public void setClasspath(@javax.annotation.Nullable Set<File> classpath) {
+  public void setClasspath(@Nullable Set<File> classpath) {
     myClasspath = classpath == null ? Collections.<File>emptySet() : classpath;
   }
 
@@ -94,11 +95,11 @@ public class WarModelData extends AbstractExternalEntityData {
     return myClasspath;
   }
 
-  public void setManifestContent(@javax.annotation.Nullable String manifestContent) {
+  public void setManifestContent(@Nullable String manifestContent) {
     myManifestContent = manifestContent;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public String getManifestContent() {
     return myManifestContent;
   }

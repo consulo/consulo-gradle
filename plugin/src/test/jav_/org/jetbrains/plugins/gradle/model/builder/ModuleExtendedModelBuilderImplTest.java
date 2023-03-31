@@ -46,7 +46,7 @@ public class ModuleExtendedModelBuilderImplTest extends AbstractModelBuilderTest
     final int modulesSize = 7;
 
     ModuleExtendedModelBuilderImpl moduleExtendedModelBuilder = new ModuleExtendedModelBuilderImpl();
-    assertTrue(moduleExtendedModelBuilder.canBuild("org.jetbrains.plugins.gradle.model.ModuleExtendedModel"));
+    assertTrue(moduleExtendedModelBuilder.canBuild("org.jetbrains.plugins.gradle.tooling.model.ModuleExtendedModel"));
 
     DomainObjectSet<? extends IdeaModule> ideaModules = allModels.getIdeaProject().getModules();
 

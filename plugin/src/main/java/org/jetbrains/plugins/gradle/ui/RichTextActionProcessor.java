@@ -1,27 +1,19 @@
 package org.jetbrains.plugins.gradle.ui;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JComponent;
-import javax.swing.JLabel;
+import consulo.dataContext.DataContext;
+import consulo.dataContext.DataManager;
+import consulo.ide.impl.idea.openapi.actionSystem.impl.PresentationFactory;
+import consulo.ui.Size;
+import consulo.ui.ex.action.*;
+import consulo.ui.ex.awt.ClickListener;
+import consulo.ui.ex.awt.UIUtil;
+import consulo.util.concurrent.AsyncResult;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
 
 import javax.annotation.Nonnull;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.actionSystem.impl.ActionButton;
-import com.intellij.openapi.actionSystem.impl.PresentationFactory;
-import com.intellij.openapi.util.AsyncResult;
-import com.intellij.ui.ClickListener;
-import com.intellij.util.ui.UIUtil;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
 
 /**
  * @author Denis Zhdanov
@@ -39,7 +31,7 @@ public class RichTextActionProcessor implements RichTextControlBuilder.RichTextP
     final Presentation presentation = action.getTemplatePresentation();
 
     if (presentation.getIcon() != null) {
-      return new ActionButton(action, presentation.clone(), GradleConstants.TOOL_WINDOW_TOOLBAR_PLACE, new Dimension(0, 0));
+      return ActionButtonFactory.getInstance().create(action, presentation.clone(), GradleConstants.TOOL_WINDOW_TOOLBAR_PLACE, new Size(0, 0)).getComponent();
     }
 
     final String text = action.getTemplatePresentation().getText();

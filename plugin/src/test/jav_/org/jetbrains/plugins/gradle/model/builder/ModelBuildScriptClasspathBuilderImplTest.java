@@ -36,7 +36,7 @@ public class ModelBuildScriptClasspathBuilderImplTest extends AbstractModelBuild
   @Test
   public void testModelBuildScriptClasspathBuilder() throws Exception {
     ModelBuildScriptClasspathBuilderImpl buildScriptClasspathBuilder = new ModelBuildScriptClasspathBuilderImpl();
-    assertTrue(buildScriptClasspathBuilder.canBuild("org.jetbrains.plugins.gradle.model.BuildScriptClasspathModel"));
+    assertTrue(buildScriptClasspathBuilder.canBuild("org.jetbrains.plugins.gradle.tooling.model.BuildScriptClasspathModel"));
 
     DomainObjectSet<? extends IdeaModule> ideaModules = allModels.getIdeaProject().getModules();
 

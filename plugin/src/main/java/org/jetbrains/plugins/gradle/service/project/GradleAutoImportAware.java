@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import com.intellij.openapi.externalSystem.ExternalSystemAutoImportAware;
-import com.intellij.openapi.externalSystem.ExternalSystemManager;
-import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemSettings;
-import com.intellij.openapi.externalSystem.settings.ExternalProjectSettings;
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.util.containers.ContainerUtilRt;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.externalSystem.ExternalSystemAutoImportAware;
+import consulo.externalSystem.ExternalSystemManager;
+import consulo.externalSystem.setting.AbstractExternalSystemSettings;
+import consulo.externalSystem.setting.ExternalProjectSettings;
+import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.project.Project;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -45,12 +45,12 @@ public class GradleAutoImportAware implements ExternalSystemAutoImportAware {
 
     ExternalSystemManager<?,?,?,?,?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
     assert manager != null;
-    AbstractExternalSystemSettings<?, ?,?> systemSettings = manager.getSettingsProvider().fun(project);
+    AbstractExternalSystemSettings<?, ?,?> systemSettings = manager.getSettingsProvider().apply(project);
     Collection<? extends ExternalProjectSettings> projectsSettings = systemSettings.getLinkedProjectsSettings();
     if (projectsSettings.isEmpty()) {
       return null;
     }
-    Map<String /* config dir path */, String /* config file path */> rootPaths = ContainerUtilRt.newHashMap();
+    Map<String /* config dir path */, String /* config file path */> rootPaths = new HashMap<>();
     for (ExternalProjectSettings setting : projectsSettings) {
       if(setting != null && setting.getExternalProjectPath() != null) {
         File rootPath = new File(setting.getExternalProjectPath());

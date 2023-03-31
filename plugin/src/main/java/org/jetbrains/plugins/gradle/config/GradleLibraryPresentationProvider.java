@@ -15,34 +15,37 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
-import java.io.File;
-import java.util.regex.Matcher;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import consulo.annotation.component.ExtensionImpl;
+import consulo.content.base.BinariesOrderRootType;
+import consulo.content.library.LibraryKind;
+import consulo.content.library.ui.LibraryEditor;
 import consulo.gradle.icon.GradleIconGroup;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
+import consulo.ui.image.Image;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.LibraryKind;
-import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import consulo.ui.image.Image;
+import org.jetbrains.plugins.groovy.impl.config.GroovyLibraryPresentationProviderBase;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.regex.Matcher;
 
 /**
  * @author nik
  */
+@ExtensionImpl
 public class GradleLibraryPresentationProvider extends GroovyLibraryPresentationProviderBase {
 
   private static final LibraryKind GRADLE_KIND = LibraryKind.create(GradleConstants.EXTENSION);
 
   private final GradleInstallationManager myLibraryManager;
 
+  @Inject
   public GradleLibraryPresentationProvider(@Nonnull GradleInstallationManager libraryManager) {
     super(GRADLE_KIND);
     myLibraryManager = libraryManager;
@@ -100,7 +103,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
     if (jars != null) {
       for (File file : jars) {
         if (file.getName().endsWith(".jar")) {
-          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), OrderRootType.BINARIES);
+          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
         }
       }
     }

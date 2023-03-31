@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven.codeInsight.actions;
 
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.codeInsight.actions.CodeInsightAction;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiCompiledElement;
-import com.intellij.psi.PsiFile;
-import javax.annotation.Nonnull;
-import org.jetbrains.idea.maven.model.MavenId;
+import consulo.application.AllIcons;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.action.CodeInsightAction;
+import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.psi.PsiCompiledElement;
+import consulo.language.psi.PsiFile;
+import consulo.maven.rt.server.common.model.MavenId;
+import consulo.project.Project;
 import org.jetbrains.plugins.gradle.util.GradleBundle;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

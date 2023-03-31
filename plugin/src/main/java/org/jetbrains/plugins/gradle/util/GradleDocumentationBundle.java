@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.gradle.util;
 
-import com.intellij.AbstractBundle;
-import com.intellij.CommonBundle;
-import com.intellij.reference.SoftReference;
-import javax.annotation.Nonnull;
+import consulo.application.CommonBundle;
+import consulo.component.util.localize.AbstractBundle;
+import consulo.util.lang.ref.SoftReference;
 import org.jetbrains.annotations.PropertyKey;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.Reference;
 import java.util.ResourceBundle;
 

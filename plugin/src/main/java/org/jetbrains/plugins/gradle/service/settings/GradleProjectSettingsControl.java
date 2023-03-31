@@ -15,32 +15,28 @@
  */
 package org.jetbrains.plugins.gradle.service.settings;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.externalSystem.model.settings.LocationSettingType;
-import com.intellij.openapi.externalSystem.service.settings.AbstractExternalProjectSettingsControl;
-import com.intellij.openapi.externalSystem.util.ExternalSystemUiUtil;
-import com.intellij.openapi.externalSystem.util.PaintAwarePanel;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.projectRoots.JavaSdk;
-import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.TextComponentAccessor;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBRadioButton;
-import com.intellij.util.Alarm;
-import com.intellij.util.ui.UIUtil;
-import consulo.awt.TargetAWT;
-import consulo.bundle.ui.BundleBox;
-import consulo.bundle.ui.BundleBoxBuilder;
+import com.intellij.java.language.projectRoots.JavaSdk;
+import consulo.application.AllIcons;
+import consulo.configurable.ConfigurationException;
 import consulo.disposer.Disposable;
+import consulo.externalSystem.ui.awt.ExternalSystemUiUtil;
+import consulo.externalSystem.ui.awt.PaintAwarePanel;
+import consulo.fileChooser.FileChooserDescriptor;
+import consulo.ide.ServiceManager;
+import consulo.ide.impl.idea.openapi.externalSystem.model.settings.LocationSettingType;
+import consulo.ide.impl.idea.openapi.externalSystem.service.settings.AbstractExternalProjectSettingsControl;
 import consulo.localize.LocalizeValue;
+import consulo.module.ui.BundleBox;
+import consulo.module.ui.BundleBoxBuilder;
+import consulo.ui.NotificationType;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.awt.*;
+import consulo.ui.ex.awt.util.Alarm;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.ui.image.Image;
 import consulo.ui.util.LabeledBuilder;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
 import org.gradle.util.GradleVersion;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.settings.DistributionType;
@@ -249,7 +245,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 			else if(!myInstallationManager.isGradleSdkHome(new File(gradleHomePath)))
 			{
 				myGradleHomeSettingType = LocationSettingType.EXPLICIT_INCORRECT;
-				new DelayedBalloonInfo(MessageType.ERROR, myGradleHomeSettingType, 0).run();
+				new DelayedBalloonInfo(NotificationType.ERROR, myGradleHomeSettingType, 0).run();
 				throw new ConfigurationException(GradleBundle.message("gradle.home.setting.type.explicit.incorrect", gradleHomePath));
 			}
 		}
@@ -373,7 +369,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 			myAlarm.cancelAllRequests();
 			if(myGradleHomeSettingType == LocationSettingType.EXPLICIT_INCORRECT && getInitialSettings().getDistributionType() == DistributionType.LOCAL)
 			{
-				new DelayedBalloonInfo(MessageType.ERROR, myGradleHomeSettingType, 0).run();
+				new DelayedBalloonInfo(NotificationType.ERROR, myGradleHomeSettingType, 0).run();
 			}
 		}
 	}
@@ -438,11 +434,11 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 		File gradleHome = myInstallationManager.getAutodetectedGradleHome();
 		if(gradleHome == null)
 		{
-			new DelayedBalloonInfo(MessageType.WARNING, LocationSettingType.UNKNOWN, BALLOON_DELAY_MILLIS).run();
+			new DelayedBalloonInfo(NotificationType.WARNING, LocationSettingType.UNKNOWN, BALLOON_DELAY_MILLIS).run();
 			return;
 		}
 		myGradleHomeSettingType = LocationSettingType.DEDUCED;
-		new DelayedBalloonInfo(MessageType.INFO, LocationSettingType.DEDUCED, BALLOON_DELAY_MILLIS).run();
+		new DelayedBalloonInfo(NotificationType.INFO, LocationSettingType.DEDUCED, BALLOON_DELAY_MILLIS).run();
 		myGradleHomePathField.setText(gradleHome.getPath());
 		myGradleHomePathField.getTextField().setForeground(LocationSettingType.DEDUCED.getColor());
 	}
@@ -454,15 +450,15 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 			return;
 		}
 		myShowBalloonIfNecessary = false;
-		MessageType messageType = null;
+		NotificationType messageType = null;
 		switch(myGradleHomeSettingType)
 		{
 			case DEDUCED:
-				messageType = MessageType.INFO;
+				messageType = NotificationType.INFO;
 				break;
 			case EXPLICIT_INCORRECT:
 			case UNKNOWN:
-				messageType = MessageType.ERROR;
+				messageType = NotificationType.ERROR;
 				break;
 			default:
 		}
@@ -474,11 +470,11 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 
 	private class DelayedBalloonInfo implements Runnable
 	{
-		private final MessageType myMessageType;
+		private final NotificationType myMessageType;
 		private final String myText;
 		private final long myTriggerTime;
 
-		DelayedBalloonInfo(@Nonnull MessageType messageType, @Nonnull LocationSettingType settingType, long delayMillis)
+		DelayedBalloonInfo(@Nonnull NotificationType messageType, @Nonnull LocationSettingType settingType, long delayMillis)
 		{
 			myMessageType = messageType;
 			myText = settingType.getDescription(GradleConstants.SYSTEM_ID);

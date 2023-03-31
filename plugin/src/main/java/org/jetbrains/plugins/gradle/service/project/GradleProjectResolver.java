@@ -15,37 +15,32 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import com.intellij.execution.configurations.ParametersList;
-import com.intellij.externalSystem.JavaProjectData;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.model.DataNode;
-import com.intellij.openapi.externalSystem.model.ExternalSystemException;
-import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.project.LibraryData;
-import com.intellij.openapi.externalSystem.model.project.ModuleData;
-import com.intellij.openapi.externalSystem.model.project.ProjectData;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
-import com.intellij.openapi.externalSystem.model.task.TaskData;
-import com.intellij.openapi.externalSystem.service.project.ExternalSystemProjectResolver;
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
-import com.intellij.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.Pair;
-import com.intellij.util.BooleanFunction;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.ContainerUtilRt;
-import org.gradle.tooling.BuildActionExecuter;
-import org.gradle.tooling.ModelBuilder;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.UnsupportedVersionException;
+import com.intellij.java.impl.externalSystem.JavaProjectData;
+import consulo.externalSystem.model.DataNode;
+import consulo.externalSystem.model.ProjectKeys;
+import consulo.externalSystem.model.project.LibraryData;
+import consulo.externalSystem.model.project.ModuleData;
+import consulo.externalSystem.model.task.ExternalSystemTaskId;
+import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
+import consulo.externalSystem.model.task.TaskData;
+import consulo.externalSystem.rt.model.ExternalSystemException;
+import consulo.externalSystem.service.project.ExternalSystemProjectResolver;
+import consulo.externalSystem.service.project.ProjectData;
+import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
+import consulo.ide.impl.idea.util.BooleanFunction;
+import consulo.ide.impl.idea.util.containers.ContainerUtil;
+import consulo.logging.Logger;
+import consulo.process.cmd.ParametersList;
+import consulo.util.lang.Couple;
+import consulo.util.lang.Pair;
+import org.gradle.tooling.*;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.build.BuildEnvironment;
 import org.gradle.tooling.model.idea.BasicIdeaProject;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
-import org.jetbrains.plugins.gradle.model.ProjectImportAction;
+import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.remote.impl.GradleLibraryNamesMixer;
 import org.jetbrains.plugins.gradle.settings.ClassHolder;
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
@@ -56,6 +51,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author Denis Zhdanov, Vladislav Soroka
@@ -63,8 +59,7 @@ import java.util.*;
  */
 public class GradleProjectResolver implements ExternalSystemProjectResolver<GradleExecutionSettings>
 {
-
-	private static final Logger LOG = Logger.getInstance("#" + GradleProjectResolver.class.getName());
+	private static final Logger LOG = Logger.getInstance(GradleProjectResolver.class);
 
 	@Nonnull
 	private final GradleExecutionHelper myHelper;
@@ -119,7 +114,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 
 		final ProjectImportAction projectImportAction = new ProjectImportAction(resolverCtx.isPreviewMode());
 
-		final List<consulo.util.lang.Pair<String, String>> extraJvmArgs = new ArrayList<>();
+		final List<Pair<String, String>> extraJvmArgs = new ArrayList<>();
 		final List<String> commandLineArgs = ContainerUtil.newArrayList();
 		final Set<Class> toolingExtensionClasses = ContainerUtil.newHashSet();
 
@@ -141,7 +136,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 		}
 
 		final ParametersList parametersList = new ParametersList();
-		for(consulo.util.lang.Pair<String, String> jvmArg : extraJvmArgs)
+		for(Pair<String, String> jvmArg : extraJvmArgs)
 		{
 			parametersList.addProperty(jvmArg.getFirst(), jvmArg.getSecond());
 		}
@@ -204,7 +199,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 		{
 			throw new IllegalStateException("No modules found for the target project: " + ideaProject);
 		}
-		final Map<String, Pair<DataNode<ModuleData>, IdeaModule>> moduleMap = ContainerUtilRt.newHashMap();
+		final Map<String, Pair<DataNode<ModuleData>, IdeaModule>> moduleMap = new HashMap<>();
 
 		// import modules data
 		for(IdeaModule gradleModule : gradleModules)
@@ -257,7 +252,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 		// populate root project tasks
 		final Collection<TaskData> rootProjectTaskCandidates = projectResolverChain.filterRootProjectTasks(allTasks);
 
-		Set<Couple<String>> rootProjectTaskCandidatesMap = ContainerUtilRt.newHashSet();
+		Set<Couple<String>> rootProjectTaskCandidatesMap = new HashSet<>();
 		for(final TaskData taskData : rootProjectTaskCandidates)
 		{
 			rootProjectTaskCandidatesMap.add(Couple.of(taskData.getName(), taskData.getDescription()));
@@ -352,7 +347,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 		private final boolean myIsBuildSrcProject;
 
 		public ProjectConnectionDataNodeFunction(@Nonnull ExternalSystemTaskId id, @Nonnull String projectPath,
-				@javax.annotation.Nullable GradleExecutionSettings settings, @Nonnull ExternalSystemTaskNotificationListener listener, boolean isPreviewMode,
+				@Nullable GradleExecutionSettings settings, @Nonnull ExternalSystemTaskNotificationListener listener, boolean isPreviewMode,
 				@Nonnull GradleProjectResolverExtension projectResolverChain, boolean isBuildSrcProject)
 		{
 			myId = id;
@@ -365,7 +360,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 		}
 
 		@Override
-		public DataNode<ProjectData> fun(ProjectConnection connection)
+		public DataNode<ProjectData> apply(ProjectConnection connection)
 		{
 			try
 			{

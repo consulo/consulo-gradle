@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven;
 
-import javax.annotation.Nonnull;
+import consulo.application.ApplicationManager;
+import consulo.project.DumbService;
+import consulo.project.Project;
+import consulo.project.startup.StartupActivity;
+import consulo.ui.UIAccess;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupActivity;
+import javax.annotation.Nonnull;
 
 /**
  * @author Vladislav.Soroka
@@ -29,8 +30,7 @@ import com.intellij.openapi.startup.StartupActivity;
 public class GradleProjectStartupActivity implements StartupActivity {
 
   @Override
-  public void runActivity(@Nonnull final Project project) {
-    if (ApplicationManager.getApplication().isUnitTestMode()) return;
+  public void runActivity(@Nonnull final Project project, @Nonnull UIAccess uiAccess) {
     DumbService.getInstance(project).smartInvokeLater(new ImportMavenRepositoriesTask(project));
   }
 }

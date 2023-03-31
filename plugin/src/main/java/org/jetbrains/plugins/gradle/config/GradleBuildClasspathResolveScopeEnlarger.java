@@ -15,42 +15,38 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
-import java.util.List;
+import com.intellij.java.language.impl.psi.NonClasspathDirectoriesScope;
+import com.intellij.java.language.psi.PsiElementFinder;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.content.scope.SearchScope;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
+import consulo.language.psi.ResolveScopeEnlarger;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
+import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import com.intellij.openapi.extensions.Extensions;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElementFinder;
-import com.intellij.psi.ResolveScopeEnlarger;
-import com.intellij.psi.search.NonClasspathDirectoriesScope;
-import com.intellij.psi.search.SearchScope;
+import java.util.List;
 
 /**
  * @author Vladislav.Soroka
  * @since 5/16/2014
  */
-public class GradleBuildClasspathResolveScopeEnlarger extends ResolveScopeEnlarger
-{
-	@Override
-	public SearchScope getAdditionalResolveScope(@Nonnull VirtualFile file, Project project)
-	{
-		String fileExtension = file.getExtension();
-		if(GroovyFileType.DEFAULT_EXTENSION.equals(fileExtension))
-		{
-			GradleClassFinder gradleClassFinder = Extensions.findExtension(PsiElementFinder.EP_NAME, project, GradleClassFinder.class);
-			final List<VirtualFile> roots = gradleClassFinder.getClassRoots();
-			for(VirtualFile root : roots)
-			{
-				if(VfsUtilCore.isAncestor(root, file, true))
-				{
-					return NonClasspathDirectoriesScope.compose(roots);
-				}
-			}
-		}
-		return null;
-	}
+@ExtensionImpl
+public class GradleBuildClasspathResolveScopeEnlarger extends ResolveScopeEnlarger {
+  @Override
+  public SearchScope getAdditionalResolveScope(@Nonnull VirtualFile file, Project project) {
+    String fileExtension = file.getExtension();
+    if (GroovyFileType.DEFAULT_EXTENSION.equals(fileExtension)) {
+      GradleClassFinder gradleClassFinder = project.getExtensionPoint(PsiElementFinder.class).findExtensionOrFail(GradleClassFinder.class);
+
+      final List<VirtualFile> roots = gradleClassFinder.getClassRoots();
+      for (VirtualFile root : roots) {
+        if (VfsUtilCore.isAncestor(root, file, true)) {
+          return NonClasspathDirectoriesScope.compose(roots);
+        }
+      }
+    }
+    return null;
+  }
 }

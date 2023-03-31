@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven;
 
+import consulo.ide.ServiceManager;
+import consulo.ide.impl.idea.util.containers.ContainerUtil;
+import consulo.maven.rt.server.common.model.MavenRemoteRepository;
+import consulo.project.Project;
+import jakarta.inject.Singleton;
+
 import java.util.Set;
-
-import javax.inject.Singleton;
-
-import org.jetbrains.idea.maven.model.MavenRemoteRepository;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author Vladislav.Soroka

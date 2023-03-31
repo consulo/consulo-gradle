@@ -20,14 +20,14 @@ import com.intellij.util.containers.ContainerUtil;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.idea.IdeaModule;
 import javax.annotation.Nonnull;
-import org.jetbrains.plugins.gradle.model.web.WebConfiguration;
+import org.jetbrains.plugins.gradle.tooling.web.WebConfiguration;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Set;
 
-import static org.jetbrains.plugins.gradle.model.web.WebConfiguration.WarModel;
-import static org.jetbrains.plugins.gradle.model.web.WebConfiguration.WebResource;
+import static org.jetbrains.plugins.gradle.tooling.web.WebConfiguration.WarModel;
+import static org.jetbrains.plugins.gradle.tooling.web.WebConfiguration.WebResource;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 

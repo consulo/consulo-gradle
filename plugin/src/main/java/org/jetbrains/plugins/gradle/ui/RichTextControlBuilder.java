@@ -1,25 +1,14 @@
 package org.jetbrains.plugins.gradle.ui;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import consulo.ui.ex.awt.MultiRowFlowPanel;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
-import javax.swing.Box;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.ui.MultiRowFlowPanel;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 /**
  * Allows to build controls that show target user text with 'reach info' (e.g. inline icon button).
@@ -249,7 +238,7 @@ public class RichTextControlBuilder {
      * @param text  target rich text
      * @return      UI control that represents given rich text in a way specific to the current processor (if any)
      */
-    @javax.annotation.Nullable
+    @Nullable
     JComponent process(@Nonnull String text);
   }
 }

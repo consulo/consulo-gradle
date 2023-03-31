@@ -15,61 +15,56 @@
  */
 package org.jetbrains.plugins.gradle.service.resolve;
 
-import static org.jetbrains.plugins.gradle.service.resolve.GradleSourceSetsContributor.SOURCE_SETS;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.ide.impl.idea.util.containers.ContainerUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.util.containers.ContainerUtil;
+import static org.jetbrains.plugins.gradle.service.resolve.GradleSourceSetsContributor.SOURCE_SETS;
 
 /**
  * @author Denis Zhdanov
  * @since 8/14/13 1:03 PM
  */
-public class GradleRootContributor implements GradleMethodContextContributor
-{
-	private final static Set<String> BUILD_SCRIPT_BLOCKS = ContainerUtil.newHashSet(
-			"subprojects",
-			"allprojects",
-			"beforeEvaluate",
-			"afterEvaluate",
-			SOURCE_SETS);
+@ExtensionImpl
+public class GradleRootContributor implements GradleMethodContextContributor {
+  private final static Set<String> BUILD_SCRIPT_BLOCKS = Set.of(
+    "subprojects",
+    "allprojects",
+    "beforeEvaluate",
+    "afterEvaluate",
+    SOURCE_SETS);
 
-	@Override
-	public void process(@Nonnull List<String> methodCallInfo,
-						@Nonnull PsiScopeProcessor processor,
-						@Nonnull ResolveState state,
-						@Nonnull PsiElement place)
-	{
-		if(methodCallInfo.size() > 2)
-		{
-			return;
-		}
+  @Override
+  public void process(@Nonnull List<String> methodCallInfo,
+                      @Nonnull PsiScopeProcessor processor,
+                      @Nonnull ResolveState state,
+                      @Nonnull PsiElement place) {
+    if (methodCallInfo.size() > 2) {
+      return;
+    }
 
-		if(methodCallInfo.size() == 2 && !BUILD_SCRIPT_BLOCKS.contains(methodCallInfo.get(1)))
-		{
-			return;
-		}
-		if(methodCallInfo.size() > 0)
-		{
-			String method = ContainerUtil.getLastItem(methodCallInfo);
-			if(method != null && StringUtil.startsWith(method, SOURCE_SETS))
-			{
-				GradleSourceSetsContributor.getInstance().process(methodCallInfo, processor, state, place);
-				return;
-			}
-		}
+    if (methodCallInfo.size() == 2 && !BUILD_SCRIPT_BLOCKS.contains(methodCallInfo.get(1))) {
+      return;
+    }
+    if (methodCallInfo.size() > 0) {
+      String method = ContainerUtil.getLastItem(methodCallInfo);
+      if (method != null && StringUtil.startsWith(method, SOURCE_SETS)) {
+        GradleSourceSetsContributor.getInstance().process(methodCallInfo, processor, state, place);
+        return;
+      }
+    }
 
-		GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-		GradleResolverUtil.processDeclarations(methodCallInfo.size() > 0 ? methodCallInfo.get(0) : null,
-				psiManager, processor, state, place,
-				GradleCommonClassNames.GRADLE_API_PROJECT);
-	}
+    GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+    GradleResolverUtil.processDeclarations(methodCallInfo.size() > 0 ? methodCallInfo.get(0) : null,
+                                           psiManager, processor, state, place,
+                                           GradleCommonClassNames.GRADLE_API_PROJECT);
+  }
 }

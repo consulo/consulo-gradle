@@ -15,37 +15,35 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven.codeInsight.completion;
 
-import static com.intellij.patterns.PlatformPatterns.psiElement;
-
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.application.AllIcons;
+import consulo.language.Language;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.pattern.PatternCondition;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
+import consulo.maven.rt.server.common.model.MavenArtifactInfo;
+import consulo.maven.rt.server.common.model.MavenId;
 import org.jetbrains.idea.maven.indices.MavenArtifactSearchResult;
 import org.jetbrains.idea.maven.indices.MavenArtifactSearcher;
 import org.jetbrains.idea.maven.indices.MavenProjectIndicesManager;
-import org.jetbrains.idea.maven.model.MavenArtifactInfo;
-import org.jetbrains.idea.maven.model.MavenId;
 import org.jetbrains.plugins.gradle.codeInsight.AbstractGradleCompletionContributor;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtil;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+
+import static consulo.language.pattern.PlatformPatterns.psiElement;
 
 /**
  * @author Vladislav.Soroka
@@ -90,9 +88,9 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
     //    compile(group:'junit', name:'junit-dep', version:'4.7')
     extend(CompletionType.BASIC, IN_MAP_DEPENDENCY_NOTATION, new CompletionProvider() {
       @Override
-	  public void addCompletions(@Nonnull CompletionParameters params,
-                                    ProcessingContext context,
-                                    @Nonnull final CompletionResultSet result) {
+      public void addCompletions(@Nonnull CompletionParameters params,
+                                 ProcessingContext context,
+                                 @Nonnull final CompletionResultSet result) {
         result.stopHere();
 
         final PsiElement parent = params.getPosition().getParent().getParent();
@@ -142,15 +140,15 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
     //    compile('junit:junit:4.11')
     extend(CompletionType.BASIC, IN_METHOD_DEPENDENCY_NOTATION, new CompletionProvider() {
       @Override
-	  public void addCompletions(@Nonnull CompletionParameters params,
-                                    ProcessingContext context,
-                                    @Nonnull final CompletionResultSet result) {
+      public void addCompletions(@Nonnull CompletionParameters params,
+                                 ProcessingContext context,
+                                 @Nonnull final CompletionResultSet result) {
         result.stopHere();
 
         final PsiElement parent = params.getPosition().getParent();
         if (!(parent instanceof GrLiteral) || !(parent.getParent() instanceof GrArgumentList)) return;
 
-        String searchText = CompletionUtil.findReferenceOrAlphanumericPrefix(params);
+        String searchText = CompletionUtilCore.findReferenceOrAlphanumericPrefix(params);
         MavenArtifactSearcher searcher = new MavenArtifactSearcher();
         List<MavenArtifactSearchResult> searchResults = searcher.search(params.getPosition().getProject(), searchText, 100);
         for (MavenArtifactSearchResult searchResult : searchResults) {
@@ -166,5 +164,11 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
         }
       }
     });
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

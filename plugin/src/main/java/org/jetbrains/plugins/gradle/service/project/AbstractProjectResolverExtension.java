@@ -15,30 +15,28 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.SimpleJavaParameters;
-import com.intellij.externalSystem.JavaProjectData;
-import com.intellij.openapi.externalSystem.model.DataNode;
-import com.intellij.openapi.externalSystem.model.ExternalSystemException;
-import com.intellij.openapi.externalSystem.model.project.ModuleData;
-import com.intellij.openapi.externalSystem.model.project.ProjectData;
-import com.intellij.openapi.externalSystem.model.task.TaskData;
-import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
-import com.intellij.openapi.externalSystem.util.Order;
-import com.intellij.util.Consumer;
+import com.intellij.java.impl.externalSystem.JavaProjectData;
+import consulo.externalSystem.model.DataNode;
+import consulo.externalSystem.model.project.ModuleData;
+import consulo.externalSystem.model.task.TaskData;
+import consulo.externalSystem.rt.model.ExternalSystemException;
+import consulo.externalSystem.service.project.ProjectData;
+import consulo.externalSystem.util.ExternalSystemConstants;
+import consulo.externalSystem.util.Order;
+import consulo.process.ExecutionException;
+import consulo.process.cmd.SimpleJavaParameters;
 import consulo.util.lang.Pair;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
- * {@link org.jetbrains.plugins.gradle.service.project.AbstractProjectResolverExtension} provides dummy implementation of Gradle project resolver.
+ * {@link AbstractProjectResolverExtension} provides dummy implementation of Gradle project resolver.
  *
  * @author Vladislav.Soroka
  * @since 10/14/13
@@ -67,7 +65,7 @@ public abstract class AbstractProjectResolverExtension implements GradleProjectR
 		nextResolver = next;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	@Override
 	public GradleProjectResolverExtension getNext()
 	{
@@ -172,7 +170,7 @@ public abstract class AbstractProjectResolverExtension implements GradleProjectR
 
 	@Nonnull
 	@Override
-	public ExternalSystemException getUserFriendlyError(@Nonnull Throwable error, @Nonnull String projectPath, @javax.annotation.Nullable String buildFilePath)
+	public ExternalSystemException getUserFriendlyError(@Nonnull Throwable error, @Nonnull String projectPath, @Nullable String buildFilePath)
 	{
 		return nextResolver.getUserFriendlyError(error, projectPath, buildFilePath);
 	}
@@ -193,7 +191,7 @@ public abstract class AbstractProjectResolverExtension implements GradleProjectR
 	}
 
 	@Override
-	public void enhanceTaskProcessing(@Nonnull List<String> taskNames, @javax.annotation.Nullable String debuggerSetup, @Nonnull Consumer<String> initScriptConsumer)
+	public void enhanceTaskProcessing(@Nonnull List<String> taskNames, @Nullable String debuggerSetup, @Nonnull Consumer<String> initScriptConsumer)
 	{
 	}
 }

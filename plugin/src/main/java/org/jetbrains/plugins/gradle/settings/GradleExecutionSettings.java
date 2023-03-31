@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.gradle.settings;
 
-import java.util.List;
+import consulo.externalSystem.model.setting.ExternalSystemExecutionSettings;
+import org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension;
-import com.intellij.openapi.externalSystem.model.settings.ExternalSystemExecutionSettings;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.util.containers.ContainerUtilRt;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Denis Zhdanov
@@ -35,7 +35,7 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 	private static final long serialVersionUID = 1L;
 
 	@Nonnull
-	private final List<ClassHolder<? extends GradleProjectResolverExtension>> myResolverExtensions = ContainerUtilRt.newArrayList();
+	private final List<ClassHolder<? extends GradleProjectResolverExtension>> myResolverExtensions = new ArrayList<>();
 	@Nullable
 	private final String myGradleHome;
 
@@ -70,13 +70,13 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 		return myGradleHome;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public String getServiceDirectory()
 	{
 		return myServiceDirectory;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public String getJavaHome()
 	{
 		return myJavaHome;
@@ -112,7 +112,7 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 		return myDaemonVmOptions;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public String getWrapperPropertyFile()
 	{
 		return wrapperPropertyFile;
@@ -155,7 +155,7 @@ public class GradleExecutionSettings extends ExternalSystemExecutionSettings
 		{
 			return false;
 		}
-		if(!Comparing.equal(myDaemonVmOptions, that.myDaemonVmOptions))
+		if(!Objects.equals(myDaemonVmOptions, that.myDaemonVmOptions))
 		{
 			return false;
 		}

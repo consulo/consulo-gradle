@@ -15,23 +15,30 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
+import consulo.ide.ServiceManager;
+import consulo.ide.impl.idea.ui.AppUIUtil;
+import consulo.project.Project;
+import consulo.project.ui.notification.NotificationGroup;
+import consulo.project.ui.notification.NotificationType;
+import consulo.project.ui.notification.event.NotificationListener;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import javax.annotation.Nonnull;
-
-import com.intellij.notification.NotificationGroup;
-import com.intellij.notification.NotificationListener;
-import com.intellij.notification.NotificationType;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.ui.AppUIUtil;
-
 import javax.annotation.Nullable;
 
 /**
  * @author Vladislav.Soroka
  * @since 12/10/13
  */
+@ServiceAPI(ComponentScope.PROJECT)
+@ServiceImpl
+@Singleton
 public class GradleNotification {
-  private static final NotificationGroup NOTIFICATION_GROUP = NotificationGroup.balloonGroup("Gradle Notification Group");
+  public static final NotificationGroup NOTIFICATION_GROUP = NotificationGroup.balloonGroup("Gradle Notification Group");
 
   @Nonnull
   private final Project myProject;
@@ -41,6 +48,7 @@ public class GradleNotification {
     return ServiceManager.getService(project, GradleNotification.class);
   }
 
+  @Inject
   public GradleNotification(@Nonnull Project project) {
     myProject = project;
   }
@@ -49,12 +57,8 @@ public class GradleNotification {
                           @Nonnull final String message,
                           @Nonnull final NotificationType type,
                           @Nullable final NotificationListener listener) {
-    AppUIUtil.invokeLaterIfProjectAlive(myProject, new Runnable() {
-      @Override
-      public void run() {
-        NOTIFICATION_GROUP.createNotification(title, message, type, listener).notify(myProject);
-      }
-    });
+    AppUIUtil.invokeLaterIfProjectAlive(myProject,
+                                        () -> NOTIFICATION_GROUP.createNotification(title, message, type, listener).notify(myProject));
   }
 }
 

@@ -1,6 +1,6 @@
 package org.jetbrains.plugins.gradle.util;
 
-import com.intellij.openapi.diagnostic.Logger;
+import consulo.logging.Logger;
 
 /**
  * @author Denis Zhdanov
@@ -8,7 +8,7 @@ import com.intellij.openapi.diagnostic.Logger;
  */
 public class GradleLog {
 
-  public static final Logger LOG = Logger.getInstance("#" + GradleLog.class.getName());
+  public static final Logger LOG = Logger.getInstance(GradleLog.class);
 
   private GradleLog() {
   }
