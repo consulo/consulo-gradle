@@ -41,7 +41,7 @@
   </repositories>
 
   <properties>
-    <gradle.version>7.1</gradle.version>
+    <gradle.version>7.6.1</gradle.version>
   </properties>
 
   <build>
