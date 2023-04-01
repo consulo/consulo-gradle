@@ -23,7 +23,7 @@ public class GradleModuleExtensionProvider implements ModuleExtensionProvider<Ex
   @Nonnull
   @Override
   public String getId() {
-    return "gradle";
+    return "GRADLE";
   }
 
   @Nullable

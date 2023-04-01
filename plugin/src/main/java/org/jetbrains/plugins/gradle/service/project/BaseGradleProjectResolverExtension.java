@@ -27,6 +27,8 @@ import consulo.externalSystem.rt.model.*;
 import consulo.externalSystem.service.project.ProjectData;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.Order;
+import consulo.gradle.service.project.GradleProjectResolverExtension;
+import consulo.gradle.service.project.ProjectResolverContext;
 import consulo.http.HttpProxyManager;
 import consulo.ide.impl.idea.openapi.application.PathManager;
 import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
@@ -61,8 +63,8 @@ import org.jetbrains.plugins.gradle.tooling.model.BuildScriptClasspathModel;
 import org.jetbrains.plugins.gradle.tooling.model.ExtIdeaContentRoot;
 import org.jetbrains.plugins.gradle.tooling.model.ModuleExtendedModel;
 import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleBundle;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import javax.annotation.Nonnull;
@@ -80,8 +82,7 @@ import java.util.function.Consumer;
  * @author Vladislav.Soroka
  * @since 10/14/13
  */
-@ExtensionImpl
-@Order(Integer.MAX_VALUE)
+@ExtensionImpl(order = "last")
 public class BaseGradleProjectResolverExtension implements GradleProjectResolverExtension {
   private static final Logger LOG = Logger.getInstance(BaseGradleProjectResolverExtension.class);
 

@@ -40,8 +40,8 @@ import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleBundle;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.swing.event.HyperlinkEvent;

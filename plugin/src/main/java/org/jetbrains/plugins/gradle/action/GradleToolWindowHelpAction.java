@@ -4,7 +4,7 @@ import consulo.dataContext.DataContext;
 import consulo.project.Project;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.ContextHelpAction;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 
 /**
  * @author Denis Zhdanov

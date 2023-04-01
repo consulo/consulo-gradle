@@ -26,8 +26,8 @@ import consulo.ui.ex.awt.*;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleBundle;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

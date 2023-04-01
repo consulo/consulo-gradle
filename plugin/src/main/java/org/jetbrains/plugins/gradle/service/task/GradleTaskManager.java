@@ -31,9 +31,9 @@ import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.ProjectConnection;
 import org.jetbrains.plugins.gradle.service.project.GradleExecutionHelper;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver;
-import org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension;
-import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.service.project.GradleProjectResolverExtension;
+import consulo.gradle.setting.GradleExecutionSettings;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

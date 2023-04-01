@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.config;
 
 import consulo.annotation.component.ExtensionImpl;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 

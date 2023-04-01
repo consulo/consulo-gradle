@@ -10,7 +10,7 @@ import consulo.ui.ex.action.AnActionEvent;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
+import consulo.gradle.GradleBundle;
 
 import javax.annotation.Nonnull;
 

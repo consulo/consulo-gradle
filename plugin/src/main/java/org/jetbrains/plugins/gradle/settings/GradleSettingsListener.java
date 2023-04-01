@@ -3,6 +3,7 @@ package org.jetbrains.plugins.gradle.settings;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.TopicAPI;
 import consulo.externalSystem.setting.ExternalSystemSettingsListener;
+import consulo.gradle.setting.DistributionType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

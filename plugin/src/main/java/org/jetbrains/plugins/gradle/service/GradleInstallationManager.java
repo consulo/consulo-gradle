@@ -23,7 +23,7 @@ import org.gradle.util.internal.DistributionLocator;
 import org.gradle.wrapper.PathAssembler;
 import org.gradle.wrapper.WrapperConfiguration;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.gradle.settings.DistributionType;
+import consulo.gradle.setting.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleEnvironment;

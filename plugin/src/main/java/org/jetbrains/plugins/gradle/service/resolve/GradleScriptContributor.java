@@ -25,7 +25,7 @@ import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.io.FileUtil;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;

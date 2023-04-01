@@ -39,10 +39,10 @@ import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
 import org.gradle.util.GradleVersion;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.gradle.settings.DistributionType;
+import consulo.gradle.setting.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleBundle;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import javax.annotation.Nonnull;

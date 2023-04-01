@@ -34,10 +34,10 @@ import org.gradle.tooling.*;
 import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
 import org.gradle.tooling.internal.consumer.Distribution;
 import org.gradle.tooling.model.build.BuildEnvironment;
-import org.jetbrains.plugins.gradle.settings.DistributionType;
-import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
+import consulo.gradle.setting.DistributionType;
+import consulo.gradle.setting.GradleExecutionSettings;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.init.Init;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleEnvironment;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 

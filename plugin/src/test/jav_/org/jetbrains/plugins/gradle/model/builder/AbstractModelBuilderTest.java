@@ -22,7 +22,7 @@ import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
 import org.jetbrains.plugins.gradle.service.project.GradleExecutionHelper;
 import org.jetbrains.plugins.gradle.service.project.ProjectImportAction;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

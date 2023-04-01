@@ -23,7 +23,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.io.FileUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;

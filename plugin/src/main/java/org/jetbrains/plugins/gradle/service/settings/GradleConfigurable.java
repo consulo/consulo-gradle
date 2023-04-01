@@ -25,7 +25,7 @@ import jakarta.inject.Inject;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

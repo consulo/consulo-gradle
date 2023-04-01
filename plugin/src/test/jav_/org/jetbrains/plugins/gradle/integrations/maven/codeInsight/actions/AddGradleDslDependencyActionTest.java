@@ -21,6 +21,7 @@ import com.intellij.testFramework.fixtures.CodeInsightTestUtil;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.idea.maven.model.MavenId;
+import org.jetbrains.plugins.gradle.integrations.maven.action.AddGradleDslDependencyAction;
 
 import java.io.File;
 

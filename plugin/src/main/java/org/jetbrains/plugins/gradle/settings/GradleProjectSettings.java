@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.gradle.settings;
 
 import consulo.externalSystem.setting.ExternalProjectSettings;
+import consulo.gradle.setting.DistributionType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

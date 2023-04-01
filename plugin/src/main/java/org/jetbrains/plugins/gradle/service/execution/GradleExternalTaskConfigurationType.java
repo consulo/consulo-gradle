@@ -17,7 +17,7 @@ package org.jetbrains.plugins.gradle.service.execution;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.externalSystem.service.execution.AbstractExternalSystemTaskConfigurationType;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 

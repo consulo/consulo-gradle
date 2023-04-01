@@ -4,6 +4,7 @@ import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
 import consulo.fileChooser.FileChooserDescriptor;
+import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
 import consulo.ide.impl.idea.ide.actions.OpenProjectFileChooserDescriptor;
 import consulo.ide.impl.idea.ide.util.PropertiesComponent;

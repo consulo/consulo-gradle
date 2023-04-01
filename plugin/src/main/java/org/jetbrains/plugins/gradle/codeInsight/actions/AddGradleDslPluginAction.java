@@ -29,9 +29,9 @@ import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.jetbrains.plugins.gradle.util.GradleDocumentationBundle;
+import consulo.gradle.GradleBundle;
+import consulo.gradle.GradleConstants;
+import consulo.gradle.GradleDocumentationBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.annotation.Nonnull;

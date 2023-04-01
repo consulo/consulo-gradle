@@ -6,7 +6,7 @@ import consulo.ide.impl.idea.openapi.externalSystem.service.task.ui.AbstractExte
 import consulo.localize.LocalizeValue;
 import consulo.ui.ex.toolWindow.ToolWindowAnchor;
 import consulo.ui.image.Image;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 

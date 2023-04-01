@@ -33,7 +33,7 @@ import consulo.project.Project;
 import consulo.ui.ex.popup.JBPopup;
 import consulo.ui.ex.popup.JBPopupFactory;
 import consulo.util.lang.Pair;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
+import consulo.gradle.GradleBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;

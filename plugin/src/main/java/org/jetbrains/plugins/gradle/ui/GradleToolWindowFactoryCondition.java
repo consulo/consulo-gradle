@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.ui;
 
 import consulo.ide.impl.idea.openapi.externalSystem.service.settings.AbstractExternalSystemToolWindowCondition;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 
 /**
  * @author Denis Zhdanov

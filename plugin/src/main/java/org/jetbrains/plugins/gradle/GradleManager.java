@@ -17,8 +17,10 @@ package org.jetbrains.plugins.gradle;
 
 import com.intellij.java.language.LanguageLevel;
 import consulo.annotation.component.ExtensionImpl;
+import consulo.application.Application;
 import consulo.application.util.AtomicNotNullLazyValue;
 import consulo.application.util.NotNullLazyValue;
+import consulo.component.extension.ExtensionPointCacheKey;
 import consulo.component.messagebus.MessageBusConnection;
 import consulo.configurable.Configurable;
 import consulo.content.bundle.Sdk;
@@ -42,6 +44,9 @@ import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
 import consulo.fileChooser.FileChooserDescriptor;
 import consulo.gradle.icon.GradleIconGroup;
+import consulo.gradle.setting.ClassHolder;
+import consulo.gradle.setting.DistributionType;
+import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.ide.ServiceManager;
 import consulo.ide.impl.idea.openapi.externalSystem.service.project.ExternalProjectRefreshCallback;
 import consulo.ide.impl.idea.openapi.externalSystem.service.project.autoimport.CachingExternalSystemAutoImportAware;
@@ -67,11 +72,11 @@ import org.jetbrains.plugins.gradle.config.GradleSettingsListenerAdapter;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.service.project.GradleAutoImportAware;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver;
-import org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension;
+import consulo.gradle.service.project.GradleProjectResolverExtension;
 import org.jetbrains.plugins.gradle.service.settings.GradleConfigurable;
 import org.jetbrains.plugins.gradle.service.task.GradleTaskManager;
 import org.jetbrains.plugins.gradle.settings.*;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import javax.annotation.Nonnull;
@@ -97,19 +102,6 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 
   @Nonnull
   private final GradleInstallationManager myInstallationManager;
-
-  @Nonnull
-  private static final NotNullLazyValue<List<GradleProjectResolverExtension>> RESOLVER_EXTENSIONS = new
-    AtomicNotNullLazyValue<List<GradleProjectResolverExtension>>() {
-      @Nonnull
-      @Override
-      protected List<GradleProjectResolverExtension> compute() {
-        List<GradleProjectResolverExtension> result = new ArrayList<>();
-        Collections.addAll(result, GradleProjectResolverExtension.EP_NAME.getExtensions());
-        ExternalSystemApiUtil.orderAwareSort(result);
-        return result;
-      }
-    };
 
   @Inject
   public GradleManager(@Nonnull GradleInstallationManager manager) {
@@ -165,7 +157,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
       GradleExecutionSettings result = new GradleExecutionSettings(localGradlePath, settings.getServiceDirectoryPath(), distributionType,
                                                                    settings.getGradleVmOptions(), settings.isOfflineWork());
 
-      for (GradleProjectResolverExtension extension : RESOLVER_EXTENSIONS.getValue()) {
+      for (GradleProjectResolverExtension extension : Application.get().getExtensionList(GradleProjectResolverExtension.class)) {
         result.addResolverExtensionClass(ClassHolder.from(extension.getClass()));
       }
 
@@ -183,7 +175,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
   @Override
   public void enhanceRemoteProcessing(@Nonnull SimpleJavaParameters parameters) throws ExecutionException {
     final Set<String> additionalEntries = new HashSet<>();
-    for (GradleProjectResolverExtension extension : RESOLVER_EXTENSIONS.getValue()) {
+    for (GradleProjectResolverExtension extension : Application.get().getExtensionList(GradleProjectResolverExtension.class)) {
       ContainerUtil.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(extension.getClass()));
       for (Class aClass : extension.getExtraProjectModelClasses()) {
         ContainerUtil.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(aClass));

@@ -9,7 +9,7 @@ import consulo.ui.ex.awt.*;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 import org.jetbrains.plugins.gradle.ui.RichTextControlBuilder;
-import org.jetbrains.plugins.gradle.util.GradleBundle;
+import consulo.gradle.GradleBundle;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;

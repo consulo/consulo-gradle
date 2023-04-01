@@ -12,7 +12,7 @@ import consulo.ide.ServiceManager;
 import consulo.project.Project;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

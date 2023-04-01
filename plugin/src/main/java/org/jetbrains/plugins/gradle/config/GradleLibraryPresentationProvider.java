@@ -27,7 +27,7 @@ import consulo.virtualFileSystem.VirtualFile;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.impl.config.GroovyLibraryPresentationProviderBase;
 
 import javax.annotation.Nonnull;

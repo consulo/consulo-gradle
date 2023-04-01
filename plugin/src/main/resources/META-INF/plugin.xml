@@ -25,30 +25,13 @@
     <tag>build.framework</tag>
   </tags>
   <depends>org.intellij.groovy</depends>
-  <depends optional="true" config-file="gradle-maven-integration.xml">org.jetbrains.idea.maven</depends>
-  <depends optional="true" config-file="gradle-javaee-plugin.xml">consulo.javaee</depends>
+  <depends optional="true">org.jetbrains.idea.maven</depends>
+  <depends optional="true">consulo.javaee</depends>
 
   <permissions>
     <permission type="GET_ENV"/>
     <permission type="PROCESS_CREATE"/>
   </permissions>
-
-
-  <extensions defaultExtensionNs="com.intellij">
-
-
-    <internalFileTemplate name="Gradle Build Script"/>
-    <internalFileTemplate name="Gradle Build Script with wrapper"/>
-
-
-
-    <localInspection language="Groovy" groupPath="Gradle" shortName="MultipleRepositoryUrls"
-                     bundle="org.jetbrains.plugins.gradle.codeInspection.GradleInspectionBundle"
-                     key="multiple.repository.urls" groupName="Probable bugs" enabledByDefault="true" level="WARNING"
-                     implementationClass="org.jetbrains.plugins.gradle.codeInspection.MultipleRepositoryUrlsInspection"/>
-
-
-  </extensions>
 
   <extensions defaultExtensionNs="org.intellij.groovy">
     <methodDescriptor class="org.gradle.api.Project" name="apply">

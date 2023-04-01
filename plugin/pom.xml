@@ -97,6 +97,26 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>org.jetbrains.plugins.gradle-gradle.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>org.jetbrains.plugins.gradle-maven.impl</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>org.jetbrains.plugins.gradle-jakarta.web.impl</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>org.jetbrains.plugins.gradle-tooling.extension.api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -165,12 +185,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>org.intellij.groovy</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>org.jetbrains.idea.maven</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>

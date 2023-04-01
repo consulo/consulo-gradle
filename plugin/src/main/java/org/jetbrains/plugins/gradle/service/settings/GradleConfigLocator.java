@@ -7,7 +7,7 @@ import consulo.externalSystem.setting.ExternalProjectSettings;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import org.gradle.tooling.GradleConnector;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

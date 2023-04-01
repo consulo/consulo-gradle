@@ -21,7 +21,7 @@ import consulo.component.extension.ExtensionPointName;
 import consulo.externalSystem.model.task.ExternalSystemTaskId;
 import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import consulo.externalSystem.rt.model.ExternalSystemException;
-import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings;
+import consulo.gradle.setting.GradleExecutionSettings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

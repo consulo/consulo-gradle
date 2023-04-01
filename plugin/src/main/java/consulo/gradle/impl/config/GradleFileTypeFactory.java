@@ -3,7 +3,7 @@ package consulo.gradle.impl.config;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.virtualFileSystem.fileType.FileTypeConsumer;
 import consulo.virtualFileSystem.fileType.FileTypeFactory;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.annotation.Nonnull;

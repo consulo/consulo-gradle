@@ -8,7 +8,7 @@ import consulo.ui.ex.action.*;
 import consulo.ui.ex.awt.ClickListener;
 import consulo.ui.ex.awt.UIUtil;
 import consulo.util.concurrent.AsyncResult;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;

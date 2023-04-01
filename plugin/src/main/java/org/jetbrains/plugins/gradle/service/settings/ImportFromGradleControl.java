@@ -22,7 +22,7 @@ import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
+import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import javax.annotation.Nonnull;

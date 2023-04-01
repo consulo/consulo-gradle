@@ -11,6 +11,8 @@ open module org.jetbrains.plugins.gradle {
   requires org.intellij.groovy.psi;
   requires org.intellij.groovy;
 
+  requires org.jetbrains.plugins.gradle.api;
+
   requires consulo.internal.jdi;
 
   requires com.google.gson;
@@ -25,9 +27,6 @@ open module org.jetbrains.plugins.gradle {
 
   requires org.jetbrains.plugins.gradle.tooling;
   requires org.jetbrains.plugins.gradle.tooling.impl;
-
-  // TODO move to own module impl
-  requires org.jetbrains.idea.maven;
 
   // TODO remove in future
   requires consulo.ide.impl;

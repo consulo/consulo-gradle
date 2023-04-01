@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.gradle.config;
 
 import consulo.ide.impl.idea.openapi.externalSystem.settings.ExternalSystemSettingsListenerAdapter;
-import org.jetbrains.plugins.gradle.settings.DistributionType;
+import consulo.gradle.setting.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 
