@@ -2,13 +2,13 @@ package org.jetbrains.plugins.gradle.ui;
 
 import consulo.dataContext.DataContext;
 import consulo.dataContext.DataManager;
-import consulo.ide.impl.idea.openapi.actionSystem.impl.PresentationFactory;
+import consulo.gradle.GradleConstants;
+import consulo.ide.impl.idea.openapi.actionSystem.impl.BasePresentationFactory;
 import consulo.ui.Size;
 import consulo.ui.ex.action.*;
 import consulo.ui.ex.awt.ClickListener;
 import consulo.ui.ex.awt.UIUtil;
 import consulo.util.concurrent.AsyncResult;
-import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -55,7 +55,7 @@ public class RichTextActionProcessor implements RichTextControlBuilder.RichTextP
         if (context == null) {
           return false;
         }
-        final Presentation presentation = new PresentationFactory().getPresentation(action);
+        final Presentation presentation = new BasePresentationFactory().getPresentation(action);
         action.actionPerformed(new AnActionEvent(
           e, context, GradleConstants.TOOL_WINDOW_TOOLBAR_PLACE, presentation, ActionManager.getInstance(), e.getModifiers()
         ));
