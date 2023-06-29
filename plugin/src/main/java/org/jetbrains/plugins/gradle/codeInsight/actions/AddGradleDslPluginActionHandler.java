@@ -21,15 +21,16 @@ import consulo.colorScheme.EditorColorsManager;
 import consulo.colorScheme.EditorColorsScheme;
 import consulo.colorScheme.EditorFontType;
 import consulo.document.Document;
-import consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase;
-import consulo.ide.impl.idea.codeInsight.lookup.impl.LookupCellRenderer;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.editor.util.LanguageEditorUtil;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
+import consulo.ui.ex.SimpleTextAttributes;
+import consulo.ui.ex.awt.ColoredListCellRenderer;
 import consulo.ui.ex.popup.JBPopup;
 import consulo.ui.ex.popup.JBPopupFactory;
 import consulo.util.lang.Pair;
@@ -58,7 +59,7 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
 
   @Override
   public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
-    if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return;
+    if (!LanguageEditorUtil.checkModificationAllowed(editor)) return;
 
     Consumer<Pair> runnable =
       selected -> new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"), file) {
@@ -89,7 +90,24 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
                                   .setTitle(GradleBundle.message("gradle.codeInsight.action.apply_plugin.popup.title"))
                                   .setNamerForFiltering(pair -> String.valueOf(pair.getFirst()))
                                   .setItemChosenCallback(runnable)
-                                  .setRenderer(new MyListCellRenderer())
+                                  .setRenderer(new ColoredListCellRenderer<Pair<String, String>>() {
+
+                                    @Override
+                                    protected void customizeCellRenderer(@Nonnull JList<? extends Pair<String, String>> list,
+                                                                         Pair<String, String> descriptor,
+                                                                         int index,
+                                                                         boolean selected,
+                                                                         boolean hasFocus) {
+                                      EditorColorsScheme scheme = EditorColorsManager.getInstance().getGlobalScheme();
+                                      Font font = scheme.getFont(EditorFontType.PLAIN);
+                                      setFont(font);
+
+                                      append(String.valueOf(descriptor.getFirst()));
+
+                                      String description = String.valueOf(descriptor.getSecond());
+                                      append(description, SimpleTextAttributes.GRAY_ATTRIBUTES);
+                                    }
+                                  })
                                   .createPopup();
 
     EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
@@ -98,45 +116,5 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
   @Override
   public boolean startInWriteAction() {
     return false;
-  }
-
-  private static class MyListCellRenderer implements ListCellRenderer<Pair<String, String>> {
-    private final JPanel myPanel;
-    private final JLabel myNameLabel;
-    private final JLabel myDescLabel;
-
-    public MyListCellRenderer() {
-      myPanel = new JPanel(new BorderLayout());
-      myPanel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 0));
-      myNameLabel = new JLabel();
-
-      myPanel.add(myNameLabel, BorderLayout.WEST);
-      myPanel.add(new JLabel("     "));
-      myDescLabel = new JLabel();
-      myPanel.add(myDescLabel, BorderLayout.EAST);
-
-      EditorColorsScheme scheme = EditorColorsManager.getInstance().getGlobalScheme();
-      Font font = scheme.getFont(EditorFontType.PLAIN);
-      myNameLabel.setFont(font);
-      myDescLabel.setFont(font);
-    }
-
-    @Override
-    public Component getListCellRendererComponent(JList list, Pair value, int index, boolean isSelected, boolean cellHasFocus) {
-
-      Pair descriptor = value;
-      Color backgroundColor = isSelected ? list.getSelectionBackground() : list.getBackground();
-
-      myNameLabel.setText(String.valueOf(descriptor.getFirst()));
-      myNameLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-      myPanel.setBackground(backgroundColor);
-
-      String description = String.format("<html><div WIDTH=%d>%s</div><html>", 400, String.valueOf(descriptor.getSecond()));
-      myDescLabel.setText(description);
-      myDescLabel.setForeground(LookupCellRenderer.getGrayedForeground(isSelected));
-      myDescLabel.setBackground(backgroundColor);
-
-      return myPanel;
-    }
   }
 }
