@@ -18,7 +18,6 @@ package org.jetbrains.plugins.gradle.integrations.maven.action;
 import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
-import consulo.annotation.component.ActionRefAnchor;
 import consulo.application.AllIcons;
 import consulo.codeEditor.Editor;
 import consulo.gradle.GradleBundle;
@@ -38,8 +37,7 @@ import java.util.List;
  * @author Vladislav.Soroka
  * @since 10/23/13
  */
-@ActionImpl(id = "Gradle.AddGradleDslDependencyAction", parents =
-  @ActionParentRef(value = @ActionRef(id = "Gradle.GenerateGroup"), anchor = ActionRefAnchor.FIRST, relatedToAction = @ActionRef(id = "AddGradleDslPluginAction")))
+@ActionImpl(id = "Gradle.AddGradleDslDependencyAction", parents = @ActionParentRef(value = @ActionRef(id = "GenerateGroup")))
 public class AddGradleDslDependencyAction extends CodeInsightAction {
   static final ThreadLocal<List<MavenId>> TEST_THREAD_LOCAL = new ThreadLocal<List<MavenId>>();
 
