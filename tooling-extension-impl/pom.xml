@@ -20,7 +20,7 @@
 
   <parent>
     <groupId>consulo</groupId>
-    <artifactId>arch.managment</artifactId>
+    <artifactId>arch.managment-low-java</artifactId>
     <version>3-SNAPSHOT</version>
     <relativePath/>
   </parent>
@@ -74,7 +74,7 @@
           </execution>
         </executions>
         <configuration>
-          <targetBytecode>11</targetBytecode>
+          <targetBytecode>9</targetBytecode>
         </configuration>
       </plugin>
     </plugins>
@@ -82,7 +82,7 @@
 
   <properties>
     <gradle.version>7.1</gradle.version>
-    <java.level>11</java.level>
+    <java.level>9</java.level>
   </properties>
 
   <dependencies>
