@@ -19,11 +19,11 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
 import consulo.ide.ServiceManager;
-import consulo.ide.impl.idea.ui.AppUIUtil;
 import consulo.project.Project;
 import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationType;
 import consulo.project.ui.notification.event.NotificationListener;
+import consulo.project.ui.util.AppUIUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
