@@ -1,18 +1,19 @@
 package consulo.gradle.impl.importProvider;
 
 import com.intellij.java.impl.externalSystem.JavaProjectData;
-import com.intellij.java.language.projectRoots.JavaSdk;
 import com.intellij.java.language.projectRoots.JavaSdkVersion;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.content.bundle.Sdk;
-import consulo.content.bundle.SdkTable;
 import consulo.externalSystem.model.DataNode;
 import consulo.externalSystem.service.project.ProjectData;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.gradle.GradleBundle;
+import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
 import consulo.ide.impl.externalSystem.service.module.wizard.AbstractExternalModuleImportProvider;
 import consulo.ide.impl.externalSystem.service.module.wizard.ExternalModuleImportContext;
 import consulo.ide.impl.idea.openapi.externalSystem.service.project.manage.ProjectDataManager;
+import consulo.java.language.bundle.JavaSdkTypeUtil;
 import consulo.project.Project;
 import consulo.ui.image.Image;
 import consulo.util.io.FileUtil;
@@ -20,8 +21,6 @@ import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
-import consulo.gradle.GradleBundle;
-import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -114,11 +113,10 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 
   @Nullable
   private static Sdk findJdk(@Nonnull JavaSdkVersion version) {
-    JavaSdk javaSdk = JavaSdk.getInstance();
-    List<Sdk> javaSdks = SdkTable.getInstance().getSdksOfType(javaSdk);
+    List<Sdk> javaSdks = JavaSdkTypeUtil.getAllJavaSdks();
     Sdk candidate = null;
     for (Sdk sdk : javaSdks) {
-      JavaSdkVersion v = javaSdk.getVersion(sdk);
+      JavaSdkVersion v = JavaSdkTypeUtil.getVersion(sdk);
       if (v == version) {
         return sdk;
       }

@@ -15,19 +15,23 @@
  */
 package org.jetbrains.plugins.gradle.service.settings;
 
-import com.intellij.java.language.projectRoots.JavaSdk;
+import com.intellij.java.language.projectRoots.JavaSdkType;
 import consulo.application.AllIcons;
 import consulo.configurable.ConfigurationException;
 import consulo.disposer.Disposable;
 import consulo.externalSystem.ui.awt.ExternalSystemUiUtil;
 import consulo.externalSystem.ui.awt.PaintAwarePanel;
 import consulo.fileChooser.FileChooserDescriptor;
+import consulo.gradle.GradleBundle;
+import consulo.gradle.GradleConstants;
+import consulo.gradle.setting.DistributionType;
 import consulo.ide.ServiceManager;
 import consulo.ide.impl.idea.openapi.externalSystem.model.settings.LocationSettingType;
 import consulo.ide.impl.idea.openapi.externalSystem.service.settings.AbstractExternalProjectSettingsControl;
 import consulo.localize.LocalizeValue;
 import consulo.module.ui.BundleBox;
 import consulo.module.ui.BundleBoxBuilder;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.NotificationType;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.*;
@@ -39,10 +43,7 @@ import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
 import org.gradle.util.GradleVersion;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import consulo.gradle.setting.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
-import consulo.gradle.GradleBundle;
-import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import javax.annotation.Nonnull;
@@ -137,8 +138,8 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 		content.add(myGradleHomePathField, ExternalSystemUiUtil.getFillLineConstraints(0));
 
 		BundleBoxBuilder builder = BundleBoxBuilder.create(uiDisposable);
-		builder.withNoneItem("Auto Select", AllIcons.Actions.FindPlain);
-		builder.withSdkTypeFilterByType(JavaSdk.getInstance());
+		builder.withNoneItem("Auto Select", PlatformIconGroup.actionsFind());
+		builder.withSdkTypeFilterByClass(JavaSdkType.class);
 
 		myBundleBox = builder.build();
 
