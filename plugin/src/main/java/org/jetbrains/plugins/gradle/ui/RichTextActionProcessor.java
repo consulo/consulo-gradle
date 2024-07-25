@@ -3,7 +3,6 @@ package org.jetbrains.plugins.gradle.ui;
 import consulo.dataContext.DataContext;
 import consulo.dataContext.DataManager;
 import consulo.gradle.GradleConstants;
-import consulo.ide.impl.idea.openapi.actionSystem.impl.BasePresentationFactory;
 import consulo.ui.Size;
 import consulo.ui.ex.action.*;
 import consulo.ui.ex.awt.ClickListener;
