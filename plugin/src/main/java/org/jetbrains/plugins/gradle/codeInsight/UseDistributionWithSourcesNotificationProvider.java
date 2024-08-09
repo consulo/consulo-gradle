@@ -135,7 +135,7 @@ public class UseDistributionWithSourcesNotificationProvider implements EditorNot
                         updateDefaultWrapperConfiguration(rootProjectPath);
                         final Project project = module.getProject();
                         EditorNotifications.getInstance(project).updateAllNotifications();
-                        final ProjectDataManager projectDataManager = project.getInstance(ProjectDataManager.class);
+                        final ProjectDataManager projectDataManager = project.getApplication().getInstance(ProjectDataManager.class);
                         ExternalSystemUtil.refreshProject(
                             project,
                             GradleConstants.SYSTEM_ID,
