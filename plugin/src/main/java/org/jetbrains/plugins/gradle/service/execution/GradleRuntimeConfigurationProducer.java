@@ -24,7 +24,7 @@ import consulo.ide.impl.idea.openapi.externalSystem.service.execution.AbstractEx
  */
 @ExtensionImpl
 public class GradleRuntimeConfigurationProducer extends AbstractExternalSystemRuntimeConfigurationProducer {
-  public GradleRuntimeConfigurationProducer() {
-    super(GradleExternalTaskConfigurationType.getInstance());
-  }
+    public GradleRuntimeConfigurationProducer() {
+        super(GradleExternalTaskConfigurationType.getInstance());
+    }
 }

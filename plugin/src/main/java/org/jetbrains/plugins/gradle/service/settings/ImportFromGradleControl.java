@@ -33,38 +33,37 @@ import javax.annotation.Nullable;
  * @since 4/30/13 4:58 PM
  */
 public class ImportFromGradleControl
-  extends AbstractImportFromExternalSystemControl<GradleProjectSettings, GradleSettingsListener, GradleSettings>
-{
-  public ImportFromGradleControl() {
-    super(GradleConstants.SYSTEM_ID, new GradleSettings(ProjectManager.getInstance().getDefaultProject()), getInitialProjectSettings());
-  }
-
-  @Nonnull
-  private static GradleProjectSettings getInitialProjectSettings() {
-    GradleProjectSettings result = new GradleProjectSettings();
-    String gradleHome = GradleUtil.getLastUsedGradleHome();
-    if (!StringUtil.isEmpty(gradleHome)) {
-      result.setGradleHome(gradleHome);
+    extends AbstractImportFromExternalSystemControl<GradleProjectSettings, GradleSettingsListener, GradleSettings> {
+    public ImportFromGradleControl() {
+        super(GradleConstants.SYSTEM_ID, new GradleSettings(ProjectManager.getInstance().getDefaultProject()), getInitialProjectSettings());
     }
-    return result;
-  }
-  
-  @Nonnull
-  @Override
-  protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@Nonnull GradleProjectSettings settings) {
-    GradleProjectSettingsControl settingsControl = new GradleProjectSettingsControl(settings);
-    settingsControl.hideUseAutoImportBox();
-    return settingsControl;
-  }
 
-  @Nullable
-  @Override
-  protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@Nonnull GradleSettings settings) {
-    return new GradleSystemSettingsControl(settings);
-  }
+    @Nonnull
+    private static GradleProjectSettings getInitialProjectSettings() {
+        GradleProjectSettings result = new GradleProjectSettings();
+        String gradleHome = GradleUtil.getLastUsedGradleHome();
+        if (!StringUtil.isEmpty(gradleHome)) {
+            result.setGradleHome(gradleHome);
+        }
+        return result;
+    }
 
-  @Override
-  public void onLinkedProjectPathChange(@Nonnull String path) {
-    ((GradleProjectSettingsControl)getProjectSettingsControl()).updateWrapperControls(path, false);
-  }
+    @Nonnull
+    @Override
+    protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@Nonnull GradleProjectSettings settings) {
+        GradleProjectSettingsControl settingsControl = new GradleProjectSettingsControl(settings);
+        settingsControl.hideUseAutoImportBox();
+        return settingsControl;
+    }
+
+    @Nullable
+    @Override
+    protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@Nonnull GradleSettings settings) {
+        return new GradleSystemSettingsControl(settings);
+    }
+
+    @Override
+    public void onLinkedProjectPathChange(@Nonnull String path) {
+        ((GradleProjectSettingsControl)getProjectSettingsControl()).updateWrapperControls(path, false);
+    }
 }

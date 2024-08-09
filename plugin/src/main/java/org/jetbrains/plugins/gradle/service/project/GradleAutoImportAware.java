@@ -35,38 +35,37 @@ import java.util.Map;
  * @since 6/8/13 3:49 PM
  */
 public class GradleAutoImportAware implements ExternalSystemAutoImportAware {
-
-  @Nullable
-  @Override
-  public String getAffectedExternalProjectPath(@Nonnull String changedFileOrDirPath, @Nonnull Project project) {
-    if (!changedFileOrDirPath.endsWith(GradleConstants.EXTENSION)) {
-      return null;
-    }
-
-    ExternalSystemManager<?,?,?,?,?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
-    assert manager != null;
-    AbstractExternalSystemSettings<?, ?,?> systemSettings = manager.getSettingsProvider().apply(project);
-    Collection<? extends ExternalProjectSettings> projectsSettings = systemSettings.getLinkedProjectsSettings();
-    if (projectsSettings.isEmpty()) {
-      return null;
-    }
-    Map<String /* config dir path */, String /* config file path */> rootPaths = new HashMap<>();
-    for (ExternalProjectSettings setting : projectsSettings) {
-      if(setting != null && setting.getExternalProjectPath() != null) {
-        File rootPath = new File(setting.getExternalProjectPath());
-        if(rootPath.getParentFile() != null) {
-          rootPaths.put(rootPath.getParentFile().getAbsolutePath(), setting.getExternalProjectPath());
+    @Nullable
+    @Override
+    public String getAffectedExternalProjectPath(@Nonnull String changedFileOrDirPath, @Nonnull Project project) {
+        if (!changedFileOrDirPath.endsWith(GradleConstants.EXTENSION)) {
+            return null;
         }
-      }
-    }
 
-    for (File f = new File(changedFileOrDirPath).getParentFile(); f != null; f = f.getParentFile()) {
-      String dirPath = f.getAbsolutePath();
-      String configFilePath = rootPaths.get(dirPath);
-      if (rootPaths.containsKey(dirPath)) {
-        return configFilePath;
-      }
+        ExternalSystemManager<?, ?, ?, ?, ?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
+        assert manager != null;
+        AbstractExternalSystemSettings<?, ?, ?> systemSettings = manager.getSettingsProvider().apply(project);
+        Collection<? extends ExternalProjectSettings> projectsSettings = systemSettings.getLinkedProjectsSettings();
+        if (projectsSettings.isEmpty()) {
+            return null;
+        }
+        Map<String /* config dir path */, String /* config file path */> rootPaths = new HashMap<>();
+        for (ExternalProjectSettings setting : projectsSettings) {
+            if (setting != null && setting.getExternalProjectPath() != null) {
+                File rootPath = new File(setting.getExternalProjectPath());
+                if (rootPath.getParentFile() != null) {
+                    rootPaths.put(rootPath.getParentFile().getAbsolutePath(), setting.getExternalProjectPath());
+                }
+            }
+        }
+
+        for (File f = new File(changedFileOrDirPath).getParentFile(); f != null; f = f.getParentFile()) {
+            String dirPath = f.getAbsolutePath();
+            String configFilePath = rootPaths.get(dirPath);
+            if (rootPaths.containsKey(dirPath)) {
+                return configFilePath;
+            }
+        }
+        return null;
     }
-    return null;
-  }
 }

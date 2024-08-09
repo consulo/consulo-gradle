@@ -24,7 +24,7 @@ import consulo.annotation.component.ExtensionImpl;
  */
 @ExtensionImpl
 public class GradleIdeaPluginScriptContributor extends GradleSimpleContributor {
-  public GradleIdeaPluginScriptContributor() {
-    super("idea", "org.gradle.plugins.ide.idea.model.IdeaModel");
-  }
+    public GradleIdeaPluginScriptContributor() {
+        super("idea", "org.gradle.plugins.ide.idea.model.IdeaModel");
+    }
 }

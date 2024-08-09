@@ -17,6 +17,7 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -35,27 +36,35 @@ import javax.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GradleSettingsScriptContributor extends NonCodeMembersContributor {
+    @Override
+    @RequiredReadAction
+    public void processDynamicElements(
+        @Nonnull PsiType qualifierType,
+        PsiClass aClass,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull PsiElement place,
+        @Nonnull ResolveState state
+    ) {
+        if (place == null) {
+            return;
+        }
 
-  @Override
-  public void processDynamicElements(@Nonnull PsiType qualifierType,
-                                     PsiClass aClass,
-                                     PsiScopeProcessor processor,
-                                     PsiElement place,
-                                     ResolveState state) {
-    if (place == null) {
-      return;
+        if (!(aClass instanceof GroovyScriptClass)) {
+            return;
+        }
+
+        PsiFile file = aClass.getContainingFile();
+        if (file == null || !file.getName().equals(GradleConstants.SETTINGS_FILE_NAME)) {
+            return;
+        }
+
+        GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+        GradleResolverUtil.processDeclarations(
+            psiManager,
+            processor,
+            state,
+            place,
+            GradleCommonClassNames.GRADLE_API_INITIALIZATION_SETTINGS
+        );
     }
-
-    if (!(aClass instanceof GroovyScriptClass)) {
-      return;
-    }
-
-    PsiFile file = aClass.getContainingFile();
-    if (file == null || !file.getName().equals(GradleConstants.SETTINGS_FILE_NAME)) {
-      return;
-    }
-
-    GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-    GradleResolverUtil.processDeclarations(psiManager, processor, state, place, GradleCommonClassNames.GRADLE_API_INITIALIZATION_SETTINGS);
-  }
 }

@@ -47,21 +47,21 @@ import java.util.List;
  */
 @ExtensionAPI(ComponentScope.APPLICATION)
 public interface GradleMethodContextContributor {
+    ExtensionPointName<GradleMethodContextContributor> EP_NAME = ExtensionPointName.create(GradleMethodContextContributor.class);
 
-  ExtensionPointName<GradleMethodContextContributor> EP_NAME =
-    ExtensionPointName.create(GradleMethodContextContributor.class);
-
-  /**
-   * Tries to resolve target element.
-   *
-   * @param methodCallInfo information about method call hierarchy which points to the target place. Every entry is a method name
-   *                       and the deepest one is assumed to be added the head
-   * @param processor      the processor receiving the declarations.
-   * @param state          current resolve state
-   * @param place          the original element from which the tree up walk was initiated.
-   */
-  void process(@Nonnull List<String> methodCallInfo,
-               @Nonnull PsiScopeProcessor processor,
-               @Nonnull ResolveState state,
-               @Nonnull PsiElement place);
+    /**
+     * Tries to resolve target element.
+     *
+     * @param methodCallInfo information about method call hierarchy which points to the target place. Every entry is a method name
+     *                       and the deepest one is assumed to be added the head
+     * @param processor      the processor receiving the declarations.
+     * @param state          current resolve state
+     * @param place          the original element from which the tree up walk was initiated.
+     */
+    void process(
+        @Nonnull List<String> methodCallInfo,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    );
 }
