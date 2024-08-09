@@ -9,7 +9,7 @@ import consulo.gradle.GradleConstants;
 
 /**
  * @author Denis Zhdanov
- * @since 3/17/12 2:34 PM
+ * @since 2012-03-17
  */
 public class GradleToolWindowHelpAction extends ContextHelpAction {
     @Override

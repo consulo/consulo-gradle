@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
- * @since 31/03/2023
+ * @since 2023-03-31
  */
 @ExtensionImpl
 public class GradleDslAnnotatorFactory implements AnnotatorFactory {

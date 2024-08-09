@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NonNls;
 
 /**
  * @author Vladislav.Soroka
- * @since 9/3/13
+ * @since 2013-09-03
  */
 public final class GradleCommonClassNames {
     @NonNls

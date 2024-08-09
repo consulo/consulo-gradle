@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  * {@link GradleMavenProjectImportNotificationListener} listens for Gradle project import events.
  *
  * @author Vladislav.Soroka
- * @since 10/28/13
+ * @since 2013-10-28
  */
 @ExtensionImpl
 public class GradleMavenProjectImportNotificationListener extends ExternalSystemTaskNotificationListenerAdapter {

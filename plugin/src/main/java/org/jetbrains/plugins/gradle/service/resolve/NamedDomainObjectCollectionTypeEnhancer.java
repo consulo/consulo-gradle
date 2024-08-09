@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author Vladislav.Soroka
- * @since 9/25/13
+ * @since 2013-09-25
  */
 @ExtensionImpl
 public class NamedDomainObjectCollectionTypeEnhancer extends GrReferenceTypeEnhancer {

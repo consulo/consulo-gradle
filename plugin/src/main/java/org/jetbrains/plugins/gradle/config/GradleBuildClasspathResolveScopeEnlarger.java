@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 5/16/2014
+ * @since 2014-05-16
  */
 @ExtensionImpl
 public class GradleBuildClasspathResolveScopeEnlarger extends ResolveScopeEnlarger {

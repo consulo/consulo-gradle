@@ -30,7 +30,7 @@ import java.util.List;
  * Not thread-safe.
  *
  * @author Denis Zhdanov
- * @since 12/26/11 5:19 PM
+ * @since 2011-12-26
  */
 public abstract class GradleToolWindowPanel extends SimpleToolWindowPanel {
     private static final String NON_LINKED_CARD_NAME = "NON_LINKED";

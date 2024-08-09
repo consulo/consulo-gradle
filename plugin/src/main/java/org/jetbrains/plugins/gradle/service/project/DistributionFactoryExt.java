@@ -46,7 +46,7 @@ import java.util.concurrent.CancellationException;
 
 /**
  * @author Vladislav.Soroka
- * @since 8/23/13
+ * @since 2013-08-23
  */
 public class DistributionFactoryExt extends DistributionFactory {
     public DistributionFactoryExt() {

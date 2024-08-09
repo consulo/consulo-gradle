@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author Vladislav.Soroka
- * @since 12/10/13
+ * @since 2013-12-10
  */
 @ServiceAPI(ComponentScope.PROJECT)
 @ServiceImpl

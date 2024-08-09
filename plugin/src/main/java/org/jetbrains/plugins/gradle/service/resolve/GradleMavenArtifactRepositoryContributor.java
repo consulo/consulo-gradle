@@ -36,7 +36,7 @@ import java.util.List;
  * }
  *
  * @author Vladislav.Soroka
- * @since 10/21/13
+ * @since 2013-10-21
  */
 @ExtensionImpl
 public class GradleMavenArtifactRepositoryContributor implements GradleMethodContextContributor {

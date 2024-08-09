@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/23/13
+ * @since 2013-10-23
  */
 @ActionImpl(id = "Gradle.AddGradleDslDependencyAction", parents = @ActionParentRef(value = @ActionRef(id = "GenerateGroup")))
 public class AddGradleDslDependencyAction extends CodeInsightAction {

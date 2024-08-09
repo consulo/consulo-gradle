@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/16/13
+ * @since 2013-10-16
  */
 public abstract class AbstractProjectImportErrorHandler {
     public static final String OPEN_GRADLE_SETTINGS = "Please fix the project's Gradle settings.";

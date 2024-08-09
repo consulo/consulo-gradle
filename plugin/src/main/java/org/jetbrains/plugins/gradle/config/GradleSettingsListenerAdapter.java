@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
- * @since 3/13/12 3:53 PM
+ * @since 2012-03-13
  */
 public abstract class GradleSettingsListenerAdapter extends ExternalSystemSettingsListenerAdapter<GradleProjectSettings>
     implements GradleSettingsListener {

@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 8/29/13
+ * @since 2013-08-29
  */
 @ExtensionImpl
 public class GradleSourceSetsContributor implements GradleMethodContextContributor {

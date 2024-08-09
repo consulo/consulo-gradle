@@ -27,7 +27,7 @@ import java.util.Set;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/28/13
+ * @since 2013-10-28
  */
 @Singleton
 @ServiceAPI(ComponentScope.PROJECT)

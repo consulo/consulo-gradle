@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
  * Thread-safe.
  *
  * @author Denis Zhdanov
- * @since 3/19/12 3:48 PM
+ * @since 2012-03-19
  */
 public class GradlePatcher {
     @SuppressWarnings("MethodMayBeStatic")

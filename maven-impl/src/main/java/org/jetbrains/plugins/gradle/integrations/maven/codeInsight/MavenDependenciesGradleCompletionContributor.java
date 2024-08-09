@@ -49,7 +49,7 @@ import static consulo.language.pattern.PlatformPatterns.psiElement;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/31/13
+ * @since 2013-10-31
  */
 @ExtensionImpl
 public class MavenDependenciesGradleCompletionContributor extends AbstractGradleCompletionContributor {

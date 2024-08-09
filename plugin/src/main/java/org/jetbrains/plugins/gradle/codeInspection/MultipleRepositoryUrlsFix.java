@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 11/21/13
+ * @since 2013-11-21
  */
 public class MultipleRepositoryUrlsFix extends GroovyFix {
     private final GrClosableBlock myClosure;

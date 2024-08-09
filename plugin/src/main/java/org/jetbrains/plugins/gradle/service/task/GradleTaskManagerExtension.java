@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 11/5/13
+ * @since 2013-11-05
  */
 @ExtensionAPI(ComponentScope.APPLICATION)
 public interface GradleTaskManagerExtension {

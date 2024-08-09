@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
  * Not thread-safe.
  *
  * @author Denis Zhdanov
- * @since 1/31/12 5:16 PM
+ * @since 2012-01-31
  */
 public class GradleOpenScriptAction extends AbstractGradleLinkedProjectAction implements DumbAware {
     private static final Logger LOG = Logger.getInstance(GradleOpenScriptAction.class);

@@ -31,7 +31,7 @@ import static org.jetbrains.plugins.gradle.service.resolve.GradleSourceSetsContr
 
 /**
  * @author Denis Zhdanov
- * @since 8/14/13 1:03 PM
+ * @since 2013-08-14
  */
 @ExtensionImpl
 public class GradleRootContributor implements GradleMethodContextContributor {

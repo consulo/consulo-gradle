@@ -20,7 +20,7 @@ import org.jetbrains.annotations.PropertyKey;
 
 /**
  * @author Vladislav.Soroka
- * @since 9/13/13
+ * @since 2013-09-13
  */
 public class GradleInspectionBundle extends AbstractBundle {
     private static final String BUNDLE = "org.jetbrains.plugins.gradle.codeInspection.GradleInspectionBundle";

@@ -42,7 +42,7 @@ import java.util.*;
 
 /**
  * @author Vladislav.Soroka
- * @since 7/15/2014
+ * @since 2014-07-15
  */
 public class ExternalProjectSerializer {
     private static final Logger LOG = Logger.getInstance(ExternalProjectSerializer.class);

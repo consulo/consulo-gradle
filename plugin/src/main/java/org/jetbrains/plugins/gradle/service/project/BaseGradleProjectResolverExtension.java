@@ -76,7 +76,7 @@ import java.util.function.Consumer;
  * {@link BaseGradleProjectResolverExtension} provides base implementation of Gradle project resolver.
  *
  * @author Vladislav.Soroka
- * @since 10/14/13
+ * @since 2013-10-14
  */
 @ExtensionImpl(order = "last")
 public class BaseGradleProjectResolverExtension implements GradleProjectResolverExtension {

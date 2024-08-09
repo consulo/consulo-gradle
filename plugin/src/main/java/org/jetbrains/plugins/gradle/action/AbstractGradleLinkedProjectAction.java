@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
  * Not thread-safe.
  *
  * @author Denis Zhdanov
- * @since 1/31/12 5:36 PM
+ * @since 2021-01-31
  */
 public abstract class AbstractGradleLinkedProjectAction extends AnAction {
     @Override

@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Denis Zhdanov
- * @since 3/14/13 5:11 PM
+ * @since 2013-03-14
  */
 public class GradleExecutionHelper {
     private static final Logger LOG = Logger.getInstance(GradleExecutionHelper.class);

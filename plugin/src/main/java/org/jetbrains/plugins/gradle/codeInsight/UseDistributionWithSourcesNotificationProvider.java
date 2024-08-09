@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Vladislav.Soroka
- * @since 9/13/13
+ * @since 2013-09-13
  */
 @ExtensionImpl
 public class UseDistributionWithSourcesNotificationProvider implements EditorNotificationProvider {

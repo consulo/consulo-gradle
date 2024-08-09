@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/28/13
+ * @since 2013-10-28
  */
 @ExtensionImpl
 public class GradleProjectStartupActivity implements PostStartupActivity {

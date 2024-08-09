@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
- * @since 6/24/13 6:35 PM
+ * @since 2013-06-24
  */
 public class DelegatingGradleSettingsListenerAdapter extends DelegatingExternalSystemSettingsListener<GradleProjectSettings>
     implements GradleSettingsListener {

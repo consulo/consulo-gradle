@@ -39,7 +39,7 @@ import java.util.Set;
 
 /**
  * @author Denis Zhdanov
- * @since 7/23/13 4:21 PM
+ * @since 2013-07-23
  */
 @ExtensionImpl
 public class GradleScriptContributor extends NonCodeMembersContributor {

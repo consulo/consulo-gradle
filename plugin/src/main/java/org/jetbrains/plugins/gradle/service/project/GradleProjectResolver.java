@@ -57,7 +57,7 @@ import java.util.function.Function;
 
 /**
  * @author Denis Zhdanov, Vladislav Soroka
- * @since 8/8/11 11:09 AM
+ * @since 2011-08-08
  */
 public class GradleProjectResolver implements ExternalSystemProjectResolver<GradleExecutionSettings> {
     private static final Logger LOG = Logger.getInstance(GradleProjectResolver.class);

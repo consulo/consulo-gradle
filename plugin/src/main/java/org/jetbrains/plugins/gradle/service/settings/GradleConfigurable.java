@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
- * @since 4/30/13 11:42 PM
+ * @since 2013-04-30
  */
 @ExtensionImpl
 public class GradleConfigurable extends AbstractExternalSystemConfigurable<GradleProjectSettings, GradleSettingsListener, GradleSettings> implements ProjectConfigurable {

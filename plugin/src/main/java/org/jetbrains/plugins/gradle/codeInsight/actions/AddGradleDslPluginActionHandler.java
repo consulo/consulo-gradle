@@ -50,7 +50,7 @@ import java.util.function.Consumer;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/24/13
+ * @since 2013-10-24
  */
 class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
     private final Pair[] myPlugins;

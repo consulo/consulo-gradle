@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/22/13
+ * @since 2013-10-22
  */
 @ActionImpl(
     id = "AddGradleDslPluginAction",

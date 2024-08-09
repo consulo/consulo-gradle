@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * @author Denis Zhdanov
- * @since 8/14/13 12:58 PM
+ * @since 2013-08-14
  */
 @ExtensionImpl
 public class GradleDependenciesContributor implements GradleMethodContextContributor {

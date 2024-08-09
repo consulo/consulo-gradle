@@ -55,7 +55,7 @@ import java.util.*;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/29/13
+ * @since 2013-10-29
  */
 public class ImportMavenRepositoriesTask implements Runnable {
     @Nonnull

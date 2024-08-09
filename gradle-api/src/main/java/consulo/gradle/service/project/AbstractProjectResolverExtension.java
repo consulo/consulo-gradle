@@ -40,7 +40,7 @@ import java.util.function.Consumer;
  * {@link AbstractProjectResolverExtension} provides dummy implementation of Gradle project resolver.
  *
  * @author Vladislav.Soroka
- * @since 10/14/13
+ * @since 2013-10-14
  */
 public abstract class AbstractProjectResolverExtension implements GradleProjectResolverExtension {
 

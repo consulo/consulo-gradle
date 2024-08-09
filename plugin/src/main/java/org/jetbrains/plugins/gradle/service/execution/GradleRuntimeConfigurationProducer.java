@@ -20,7 +20,7 @@ import consulo.ide.impl.idea.openapi.externalSystem.service.execution.AbstractEx
 
 /**
  * @author Denis Zhdanov
- * @since 6/5/13 8:17 PM
+ * @since 2013-06-05
  */
 @ExtensionImpl
 public class GradleRuntimeConfigurationProducer extends AbstractExternalSystemRuntimeConfigurationProducer {
