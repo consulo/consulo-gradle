@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.codeInsight.actions;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
 import consulo.colorScheme.EditorColorsManager;
@@ -30,6 +31,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.SimpleTextAttributes;
 import consulo.ui.ex.awt.ColoredListCellRenderer;
 import consulo.ui.ex.popup.JBPopup;
@@ -58,46 +60,50 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
     }
 
     @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
         if (!LanguageEditorUtil.checkModificationAllowed(editor)) {
             return;
         }
 
-        Consumer<Pair> runnable =
-            selected -> new WriteCommandAction.Simple(project, GradleLocalize.gradleCodeinsightActionApply_pluginText().get(), file) {
-                @Override
-                protected void run() {
-                    if (selected == null) {
-                        return;
-                    }
-                    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-                    GrStatement grStatement = factory.createStatementFromText(
-                        String.format("apply plugin: '%s'", selected.getFirst()),
-                        null
-                    );
-
-                    PsiElement anchor = file.findElementAt(editor.getCaretModel().getOffset());
-                    PsiElement currentElement = PsiTreeUtil.getParentOfType(anchor, GrClosableBlock.class, GroovyFile.class);
-                    if (currentElement != null) {
-                        currentElement.addAfter(grStatement, anchor);
-                    }
-                    else {
-                        file.addAfter(grStatement, file.findElementAt(editor.getCaretModel().getOffset() - 1));
-                    }
-                    PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
-                    Document document = documentManager.getDocument(file);
-                    if (document != null) {
-                        documentManager.commitDocument(document);
-                    }
+        Consumer<Pair> runnable = selected -> new WriteCommandAction.Simple(
+            project,
+            GradleLocalize.gradleCodeinsightActionApply_pluginText().get(),
+            file
+        ) {
+            @Override
+            @RequiredReadAction
+            protected void run() {
+                if (selected == null) {
+                    return;
                 }
-            }.execute();
+                GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+                GrStatement grStatement = factory.createStatementFromText(
+                    String.format("apply plugin: '%s'", selected.getFirst()),
+                    null
+                );
+
+                PsiElement anchor = file.findElementAt(editor.getCaretModel().getOffset());
+                PsiElement currentElement = PsiTreeUtil.getParentOfType(anchor, GrClosableBlock.class, GroovyFile.class);
+                if (currentElement != null) {
+                    currentElement.addAfter(grStatement, anchor);
+                }
+                else {
+                    file.addAfter(grStatement, file.findElementAt(editor.getCaretModel().getOffset() - 1));
+                }
+                PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
+                Document document = documentManager.getDocument(file);
+                if (document != null) {
+                    documentManager.commitDocument(document);
+                }
+            }
+        }.execute();
 
         JBPopup popup = JBPopupFactory.getInstance().createPopupChooserBuilder(List.of(myPlugins))
             .setTitle(GradleLocalize.gradleCodeinsightActionApply_pluginPopupTitle().get())
             .setNamerForFiltering(pair -> String.valueOf(pair.getFirst()))
             .setItemChosenCallback(runnable)
             .setRenderer(new ColoredListCellRenderer<Pair<String, String>>() {
-
                 @Override
                 protected void customizeCellRenderer(
                     @Nonnull JList<? extends Pair<String, String>> list,

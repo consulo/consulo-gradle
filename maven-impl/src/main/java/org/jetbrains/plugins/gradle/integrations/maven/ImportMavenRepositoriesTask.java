@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.gradle.integrations.maven;
 
 import com.intellij.java.language.psi.PsiLiteral;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.application.ReadAction;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
@@ -51,8 +52,6 @@ import javax.annotation.Nullable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * @author Vladislav.Soroka
@@ -74,6 +73,7 @@ public class ImportMavenRepositoriesTask implements Runnable {
     }
 
     @Override
+    @RequiredReadAction
     public void run() {
         if (myProject.isDisposed()) {
             return;
@@ -134,19 +134,22 @@ public class ImportMavenRepositoriesTask implements Runnable {
             return;
         }
 
-        MavenRepositoriesHolder.getInstance(myProject).update(mavenRemoteRepositories);
+        MavenRepositoriesHolder repositoriesHolder = MavenRepositoriesHolder.getInstance(myProject);
+        MavenProjectIndicesManager projectIndicesManager = MavenProjectIndicesManager.getInstance(myProject);
 
-        MavenProjectIndicesManager.getInstance(myProject).scheduleUpdateIndicesList(indexes -> {
+        repositoriesHolder.update(mavenRemoteRepositories);
+
+        projectIndicesManager.scheduleUpdateIndicesList(indexes -> {
             for (MavenIndex mavenIndex : indexes) {
-                if (mavenIndex.getUpdateTimestamp() == -1
-                    && MavenRepositoriesHolder.getInstance(myProject).contains(mavenIndex.getRepositoryId())) {
-                    MavenProjectIndicesManager.getInstance(myProject).scheduleUpdate(Collections.singletonList(mavenIndex));
+                if (mavenIndex.getUpdateTimestamp() == -1 && repositoriesHolder.contains(mavenIndex.getRepositoryId())) {
+                    projectIndicesManager.scheduleUpdate(Collections.singletonList(mavenIndex));
                 }
             }
         });
     }
 
     @Nonnull
+    @RequiredReadAction
     private static Collection<? extends GrClosableBlock> findClosableBlocks(
         @Nonnull final PsiElement element,
         @Nonnull final String... blockNames
@@ -160,16 +163,19 @@ public class ImportMavenRepositoriesTask implements Runnable {
                 }
 
                 GrExpression expression = call.getInvokedExpression();
-                return expression != null && ArrayUtil.contains(expression.getText(), blockNames) ? call.getClosureArguments()[0] : null;
+                //noinspection RequiredXAction
+                return expression != null && ArrayUtil.contains(expression.getText(), blockNames)
+                    ? call.getClosureArguments()[0]
+                    : null;
             }
         );
     }
 
     @Nonnull
+    @RequiredReadAction
     private static Collection<? extends MavenRemoteRepository> findMavenRemoteRepositories(@Nullable GrClosableBlock repositoriesBlock) {
         Set<MavenRemoteRepository> myRemoteRepositories = new HashSet<>();
-        for (GrMethodCall repo : PsiTreeUtil
-            .getChildrenOfTypeAsList(repositoriesBlock, GrMethodCall.class)) {
+        for (GrMethodCall repo : PsiTreeUtil.getChildrenOfTypeAsList(repositoriesBlock, GrMethodCall.class)) {
             if (repo.getInvokedExpression() == null) {
                 continue;
             }
@@ -242,14 +248,15 @@ public class ImportMavenRepositoriesTask implements Runnable {
     }
 
     @Nullable
+    @RequiredReadAction
     private static URI resolveUriFromSimpleExpression(@Nullable GrExpression expression) {
         if (expression == null) {
             return null;
         }
 
         try {
-            if (expression instanceof PsiLiteral) {
-                URI uri = new URI(String.valueOf(PsiLiteral.class.cast(expression).getValue()));
+            if (expression instanceof PsiLiteral literal) {
+                URI uri = new URI(String.valueOf(literal.getValue()));
                 if (uri.getScheme() != null && StringUtil.startsWith(uri.getScheme(), "http")) {
                     return uri;
                 }

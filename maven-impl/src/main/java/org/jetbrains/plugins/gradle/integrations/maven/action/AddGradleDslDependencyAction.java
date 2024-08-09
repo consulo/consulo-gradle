@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven.action;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
@@ -54,10 +55,11 @@ public class AddGradleDslDependencyAction extends CodeInsightAction {
     }
 
     @Override
+    @RequiredReadAction
     protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
-        if (file instanceof PsiCompiledElement || !GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) {
-            return false;
-        }
-        return !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName()) && file.getName().endsWith(GradleConstants.EXTENSION);
+        return !(file instanceof PsiCompiledElement)
+            && GroovyFileType.INSTANCE.equals(file.getFileType())
+            && !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName())
+            && file.getName().endsWith(GradleConstants.EXTENSION);
     }
 }

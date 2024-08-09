@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven.codeInsight;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.AllIcons;
 import consulo.gradle.codeInsight.AbstractGradleCompletionContributor;
@@ -57,27 +58,26 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
     private static final String VERSION_LABEL = "version";
     private static final String DEPENDENCIES_SCRIPT_BLOCK = "dependencies";
 
-    private static final ElementPattern<PsiElement> DEPENDENCIES_CALL_PATTERN = psiElement()
-        .inside(
-            true,
-            psiElement(GrMethodCallExpression.class).with(new PatternCondition<>("withInvokedExpressionText") {
-                @Override
-                public boolean accepts(@Nonnull GrMethodCallExpression expression, ProcessingContext context) {
-                    if (checkExpression(expression)) {
-                        return true;
-                    }
-                    return checkExpression(PsiTreeUtil.getParentOfType(expression, GrMethodCallExpression.class));
-                }
+    private static final ElementPattern<PsiElement> DEPENDENCIES_CALL_PATTERN = psiElement().inside(
+        true,
+        psiElement(GrMethodCallExpression.class).with(new PatternCondition<>("withInvokedExpressionText") {
+            @Override
+            @RequiredReadAction
+            public boolean accepts(@Nonnull GrMethodCallExpression expression, ProcessingContext context) {
+                return checkExpression(expression)
+                    || checkExpression(PsiTreeUtil.getParentOfType(expression, GrMethodCallExpression.class));
+            }
 
-                private boolean checkExpression(@Nullable GrMethodCallExpression expression) {
-                    if (expression == null) {
-                        return false;
-                    }
-                    GrExpression grExpression = expression.getInvokedExpression();
-                    return grExpression != null && DEPENDENCIES_SCRIPT_BLOCK.equals(grExpression.getText());
+            @RequiredReadAction
+            private boolean checkExpression(@Nullable GrMethodCallExpression expression) {
+                if (expression == null) {
+                    return false;
                 }
-            })
-        );
+                GrExpression grExpression = expression.getInvokedExpression();
+                return grExpression != null && DEPENDENCIES_SCRIPT_BLOCK.equals(grExpression.getText());
+            }
+        })
+    );
 
     private static final ElementPattern<PsiElement> IN_MAP_DEPENDENCY_NOTATION = psiElement()
         .and(AbstractGradleCompletionContributor.GRADLE_FILE_PATTERN)
@@ -95,13 +95,10 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
         //    compile group: 'com.google.code.guice', name: 'guice', version: '1.0'
         //    runtime([group:'junit', name:'junit-dep', version:'4.7'])
         //    compile(group:'junit', name:'junit-dep', version:'4.7')
-        extend(CompletionType.BASIC, IN_MAP_DEPENDENCY_NOTATION, new CompletionProvider() {
-            @Override
-            public void addCompletions(
-                @Nonnull CompletionParameters params,
-                ProcessingContext context,
-                @Nonnull final CompletionResultSet result
-            ) {
+        extend(
+            CompletionType.BASIC,
+            IN_MAP_DEPENDENCY_NOTATION,
+            (params, context, result) -> {
                 result.stopHere();
 
                 final PsiElement parent = params.getPosition().getParent().getParent();
@@ -149,7 +146,7 @@ public class MavenDependenciesGradleCompletionContributor extends AbstractGradle
                     }
                 }
             }
-        });
+        );
 
         // group:name:version notation
         // e.g.:

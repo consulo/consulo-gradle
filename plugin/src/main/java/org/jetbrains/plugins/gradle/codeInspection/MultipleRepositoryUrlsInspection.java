@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.codeInspection;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
@@ -75,6 +76,7 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
 
     private static class MyVisitor extends BaseInspectionVisitor {
         @Override
+        @RequiredReadAction
         public void visitClosure(GrClosableBlock closure) {
             PsiFile file = closure.getContainingFile();
             if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) {
@@ -114,6 +116,7 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
     }
 
     @Nonnull
+    @RequiredReadAction
     static List<GrCallExpression> findUrlCallExpressions(@Nonnull GrClosableBlock closure) {
         GrCallExpression[] applicationStatements = PsiTreeUtil.getChildrenOfType(closure, GrCallExpression.class);
         if (applicationStatements == null) {

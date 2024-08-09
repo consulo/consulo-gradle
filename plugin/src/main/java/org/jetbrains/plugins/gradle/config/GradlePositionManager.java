@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.config;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.util.*;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
@@ -71,15 +72,19 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
         myLibraryManager = manager;
     }
 
+    @Override
     public boolean isAppropriateRuntimeName(@Nonnull final String runtimeName) {
         return runtimeName.startsWith(SCRIPT_CLOSURE_PREFIX) || GRADLE_CLASS_PATTERN.matcher(runtimeName).matches();
     }
 
+    @Override
     public boolean isAppropriateScriptFile(@Nonnull final GroovyFile scriptFile) {
-        return GroovyScriptUtil.isSpecificScriptFile((GroovyFile)scriptFile, GradleScriptType.INSTANCE);
+        return GroovyScriptUtil.isSpecificScriptFile(scriptFile, GradleScriptType.INSTANCE);
     }
 
     @Nonnull
+    @Override
+    @RequiredReadAction
     public String getRuntimeScriptName(GroovyFile groovyFile) {
         VirtualFile virtualFile = groovyFile.getVirtualFile();
         if (virtualFile == null) {
@@ -97,7 +102,14 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
         return className == null ? "" : className;
     }
 
-    public PsiFile getExtraScriptIfNotFound(ReferenceType refType, @Nonnull String runtimeName, Project project, GlobalSearchScope scope) {
+    @Override
+    @RequiredReadAction
+    public PsiFile getExtraScriptIfNotFound(
+        @Nonnull ReferenceType refType,
+        @Nonnull String runtimeName,
+        @Nonnull Project project,
+        @Nonnull GlobalSearchScope scope
+    ) {
         String sourceFilePath = getScriptForClassName(refType);
         if (sourceFilePath == null) {
             return null;
@@ -130,7 +142,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
         return CachedValuesManager.getManager(project).getCachedValue(
             module,
             GRADLE_CLASS_LOADER,
-            ()-> CachedValueProvider.Result.create(createGradleClassLoader(module), ProjectRootManager.getInstance(project)),
+            () -> CachedValueProvider.Result.create(createGradleClassLoader(module), ProjectRootManager.getInstance(project)),
             false
         );
     }
@@ -146,7 +158,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
             return null;
         }
 
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
         final VirtualFile libDir = sdkHome.findChild("lib");
         assert libDir != null;
         for (final VirtualFile child : libDir.getChildren()) {
@@ -165,6 +177,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
             myModule = module;
         }
 
+        @Override
         public Result<Map<File, String>> compute() {
             final Map<File, String> result = ConcurrentFactoryMap.createMap(this::calcClassName);
             return Result.create(result, ProjectRootManager.getInstance(myModule.getProject()));

@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.gradle.action;
 
 import consulo.dataContext.DataContext;
-import consulo.language.editor.CommonDataKeys;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.util.lang.Pair;
@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
  */
 public abstract class AbstractGradleLinkedProjectAction extends AnAction {
     @Override
+    @RequiredUIAccess
     public void update(AnActionEvent e) {
         final Pair<Project, String> pair = deriveProjects(e.getDataContext());
         final boolean visible = pair != null;
@@ -32,6 +33,7 @@ public abstract class AbstractGradleLinkedProjectAction extends AnAction {
     }
 
     @Override
+    @RequiredUIAccess
     public void actionPerformed(AnActionEvent e) {
         final Project project = e.getData(Project.KEY);
         if (project == null) {
@@ -51,7 +53,7 @@ public abstract class AbstractGradleLinkedProjectAction extends AnAction {
             return null;
         }
 
-        final Project project = context.getData(CommonDataKeys.PROJECT);
+        final Project project = context.getData(Project.KEY);
         if (project == null) {
             return null;
         }

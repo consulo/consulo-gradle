@@ -17,6 +17,7 @@ package org.jetbrains.plugins.gradle.config;
 
 import com.intellij.java.language.impl.psi.NonClasspathDirectoriesScope;
 import com.intellij.java.language.psi.JavaPsiFacade;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.compiler.execution.CompileStepBeforeRun;
 import consulo.compiler.execution.CompileStepBeforeRunNoErrorCheck;
 import consulo.execution.CantRunException;
@@ -26,6 +27,7 @@ import consulo.execution.configuration.RunProfile;
 import consulo.execution.executor.Executor;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
+import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
 import consulo.ide.ServiceManager;
 import consulo.ide.impl.idea.openapi.externalSystem.psi.search.ExternalModuleBuildGlobalSearchScope;
@@ -42,8 +44,10 @@ import consulo.module.content.ModuleRootManager;
 import consulo.module.content.layer.OrderEnumerator;
 import consulo.module.content.layer.orderEntry.ModuleExtensionWithSdkOrderEntry;
 import consulo.module.content.layer.orderEntry.OrderEntry;
+import consulo.platform.Platform;
 import consulo.process.ExecutionException;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
@@ -52,7 +56,6 @@ import org.jetbrains.plugins.gradle.execution.GradleTaskLocation;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
-import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.impl.extensions.GroovyRunnableScriptType;
@@ -95,6 +98,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
     }
 
     @Override
+    @RequiredReadAction
     public boolean isConfigurationByLocation(@Nonnull GroovyScriptRunConfiguration existing, @Nonnull Location location) {
         final String params = existing.getScriptParameters();
         if (params == null) {
@@ -111,6 +115,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
     }
 
     @Override
+    @RequiredUIAccess
     public void tuneConfiguration(@Nonnull GroovyFile file, @Nonnull GroovyScriptRunConfiguration configuration, Location location) {
         List<String> tasks = getTasksTarget(location);
         if (tasks != null) {
@@ -124,6 +129,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
     }
 
     @Nullable
+    @RequiredReadAction
     private static List<String> getTasksTarget(Location location) {
         if (location instanceof GradleTaskLocation gradleTaskLocation) {
             return gradleTaskLocation.getTasks();
@@ -173,7 +179,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
 
             @Override
             public boolean isValidModule(@Nonnull Module module) {
-                GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
+                GradleInstallationManager libraryManager = module.getInstance(GradleInstallationManager.class);
                 return libraryManager.isGradleSdk(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
             }
 
@@ -218,6 +224,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
             }
 
             @Override
+            @RequiredReadAction
             public void configureCommandLine(
                 OwnJavaParameters params,
                 @Nullable Module module,
@@ -228,7 +235,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
                 final Project project = configuration.getProject();
                 String scriptParameters = configuration.getScriptParameters();
 
-                final GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
+                final GradleInstallationManager libraryManager = project.getInstance(GradleInstallationManager.class);
                 if (module == null) {
                     throw new CantRunException("Target module is undefined");
                 }
@@ -255,7 +262,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
                     }
                 }
 
-                final String userDefinedClasspath = System.getProperty("gradle.launcher.classpath");
+                final String userDefinedClasspath = Platform.current().jvm().getRuntimeProperty("gradle.launcher.classpath");
                 if (StringUtil.isNotEmpty(userDefinedClasspath)) {
                     params.getClassPath().add(userDefinedClasspath);
                 }
@@ -267,7 +274,6 @@ public class GradleScriptType extends GroovyRunnableScriptType {
                 }
 
                 params.getVMParametersList().addParametersString(configuration.getVMParameters());
-
 
                 params.getVMParametersList().add("-Dgradle.home=" + FileUtil.toSystemDependentName(gradleHome.getPath()));
 
@@ -286,8 +292,9 @@ public class GradleScriptType extends GroovyRunnableScriptType {
     }
 
     @Nonnull
+    @RequiredReadAction
     private static String findMainClass(VirtualFile gradleHome, VirtualFile script, Project project) {
-        final String userDefined = System.getProperty("gradle.launcher.class");
+        final String userDefined = Platform.current().jvm().getRuntimeProperty("gradle.launcher.class");
         if (StringUtil.isNotEmpty(userDefined)) {
             return userDefined;
         }
@@ -312,7 +319,8 @@ public class GradleScriptType extends GroovyRunnableScriptType {
         }
 
         final PsiFile grFile = PsiManager.getInstance(project).findFile(script);
-        if (grFile != null && JavaPsiFacade.getInstance(project).findClass("org.gradle.BootstrapMain", grFile.getResolveScope()) != null) {
+        if (grFile != null
+            && JavaPsiFacade.getInstance(project).findClass("org.gradle.BootstrapMain", grFile.getResolveScope()) != null) {
             return "org.gradle.BootstrapMain";
         }
 
@@ -320,6 +328,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
     }
 
     @Override
+    @RequiredReadAction
     public GlobalSearchScope patchResolveScope(@Nonnull GroovyFile file, @Nonnull GlobalSearchScope baseScope) {
         if (!FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) {
             return baseScope;
@@ -333,9 +342,8 @@ public class GradleScriptType extends GroovyRunnableScriptType {
         Project project = module.getProject();
         GlobalSearchScope result = GlobalSearchScope.EMPTY_SCOPE;
         for (OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries()) {
-            if (entry instanceof ModuleExtensionWithSdkOrderEntry) {
-                GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(project).getScopeForSdk((ModuleExtensionWithSdkOrderEntry)
-                    entry);
+            if (entry instanceof ModuleExtensionWithSdkOrderEntry moduleExtensionWithSdkOrderEntry) {
+                GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(project).getScopeForSdk(moduleExtensionWithSdkOrderEntry);
                 result = result.uniteWith(scopeForSdk);
             }
         }

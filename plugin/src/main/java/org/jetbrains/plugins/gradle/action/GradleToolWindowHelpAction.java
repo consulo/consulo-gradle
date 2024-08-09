@@ -2,6 +2,7 @@ package org.jetbrains.plugins.gradle.action;
 
 import consulo.dataContext.DataContext;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.ContextHelpAction;
 import consulo.gradle.GradleConstants;
@@ -12,6 +13,7 @@ import consulo.gradle.GradleConstants;
  */
 public class GradleToolWindowHelpAction extends ContextHelpAction {
     @Override
+    @RequiredUIAccess
     public void update(AnActionEvent event) {
         final Project project = event.getData(Project.KEY);
         if (project == null) {

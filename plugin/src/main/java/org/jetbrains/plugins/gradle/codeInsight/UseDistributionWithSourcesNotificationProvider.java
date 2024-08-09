@@ -122,44 +122,58 @@ public class UseDistributionWithSourcesNotificationProvider implements EditorNot
 
                 final EditorNotificationBuilder panel = supplier.get();
                 panel.withText(GradleLocalize.gradleNotificationsUseDistributionWithSources());
-                panel.withAction(GradleLocalize.gradleNotificationsHideTip(), (e) ->
-                {
-                    settings.setDisableWrapperSourceDistributionNotification(true);
-                    EditorNotifications.getInstance(module.getProject()).updateAllNotifications();
-                });
-                panel.withAction(GradleLocalize.gradleNotificationsApplySuggestion(), (e) ->
-                {
-                    updateDefaultWrapperConfiguration(rootProjectPath);
-                    EditorNotifications.getInstance(module.getProject()).updateAllNotifications();
-                    final ProjectDataManager projectDataManager = ServiceManager.getService(ProjectDataManager.class);
-                    ExternalSystemUtil.refreshProject(module.getProject(), GradleConstants.SYSTEM_ID, settings.getExternalProjectPath(), new
-                        ExternalProjectRefreshCallback() {
-                            @Override
-                            public void onSuccess(@Nullable final DataNode<ProjectData> externalProject) {
-                                if (externalProject == null) {
-                                    return;
-                                }
-                                ExternalSystemApiUtil.executeProjectChangeAction(true, new DisposeAwareProjectChange(module.getProject()) {
-                                    @RequiredUIAccess
-                                    @Override
-                                    public void execute() {
-                                        ProjectRootManager.getInstance(module.getProject()).mergeRootsChangesDuring(
-                                            () -> projectDataManager.importData(
-                                                externalProject.getKey(),
-                                                Collections.singleton(externalProject),
-                                                module.getProject(),
-                                                true
-                                            )
-                                        );
+                panel.withAction(
+                    GradleLocalize.gradleNotificationsHideTip(),
+                    e -> {
+                        settings.setDisableWrapperSourceDistributionNotification(true);
+                        EditorNotifications.getInstance(module.getProject()).updateAllNotifications();
+                    }
+                );
+                panel.withAction(
+                    GradleLocalize.gradleNotificationsApplySuggestion(),
+                    e -> {
+                        updateDefaultWrapperConfiguration(rootProjectPath);
+                        final Project project = module.getProject();
+                        EditorNotifications.getInstance(project).updateAllNotifications();
+                        final ProjectDataManager projectDataManager = project.getInstance(ProjectDataManager.class);
+                        ExternalSystemUtil.refreshProject(
+                            project,
+                            GradleConstants.SYSTEM_ID,
+                            settings.getExternalProjectPath(),
+                            new ExternalProjectRefreshCallback() {
+                                @Override
+                                public void onSuccess(@Nullable final DataNode<ProjectData> externalProject) {
+                                    if (externalProject == null) {
+                                        return;
                                     }
-                                });
-                            }
+                                    ExternalSystemApiUtil.executeProjectChangeAction(
+                                        true,
+                                        new DisposeAwareProjectChange(project) {
+                                            @RequiredUIAccess
+                                            @Override
+                                            public void execute() {
+                                                ProjectRootManager.getInstance(project).mergeRootsChangesDuring(
+                                                    () -> projectDataManager.importData(
+                                                        externalProject.getKey(),
+                                                        Collections.singleton(externalProject),
+                                                        project,
+                                                        true
+                                                    )
+                                                );
+                                            }
+                                        }
+                                    );
+                                }
 
-                            @Override
-                            public void onFailure(@Nonnull String errorMessage, @Nullable String errorDetails) {
-                            }
-                        }, true, ProgressExecutionMode.START_IN_FOREGROUND_ASYNC);
-                });
+                                @Override
+                                public void onFailure(@Nonnull String errorMessage, @Nullable String errorDetails) {
+                                }
+                            },
+                            true,
+                            ProgressExecutionMode.START_IN_FOREGROUND_ASYNC
+                        );
+                    }
+                );
                 return panel;
             }
         }

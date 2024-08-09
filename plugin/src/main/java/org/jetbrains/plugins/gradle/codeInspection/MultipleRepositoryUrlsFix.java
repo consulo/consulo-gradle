@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.codeInspection;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -44,6 +45,7 @@ public class MultipleRepositoryUrlsFix extends GroovyFix {
     }
 
     @Override
+    @RequiredWriteAction
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
         List<GrCallExpression> statements = MultipleRepositoryUrlsInspection.findUrlCallExpressions(myClosure);
         if (statements.size() <= 1) {

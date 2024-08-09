@@ -15,7 +15,7 @@ import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import javax.annotation.Nonnull;
 
 /**
- * Forces the IntelliJ IDEA to open {@link GradleSettings#getLinkedExternalProjectPath() linked gradle project} at the editor
+ * Forces the Consulo to open {@link GradleSettings#getLinkedExternalProjectPath() linked gradle project} at the editor
  * <p/>
  * Not thread-safe.
  *
