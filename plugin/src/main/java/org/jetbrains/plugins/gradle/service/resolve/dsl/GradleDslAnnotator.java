@@ -39,30 +39,39 @@ import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.ca
  * @since 9/25/13
  */
 public class GradleDslAnnotator implements Annotator {
-  @Override
-  public void annotate(@Nonnull PsiElement element, @Nonnull AnnotationHolder holder) {
-    if (element instanceof GrReferenceExpression) {
-      GrReferenceExpression referenceExpression = (GrReferenceExpression)element;
-      final GrExpression qualifier = ResolveUtil.getSelfOrWithQualifier(referenceExpression);
-      if (qualifier == null) return;
-      if (qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)qualifier).resolve() instanceof PsiClass) return;
+    @Override
+    public void annotate(@Nonnull PsiElement element, @Nonnull AnnotationHolder holder) {
+        if (element instanceof GrReferenceExpression referenceExpression) {
+            final GrExpression qualifier = ResolveUtil.getSelfOrWithQualifier(referenceExpression);
+            if (qualifier == null) {
+                return;
+            }
+            if (qualifier instanceof GrReferenceExpression qualifierRefExpr && qualifierRefExpr.resolve() instanceof PsiClass) {
+                return;
+            }
 
-      PsiType psiType = GradleResolverUtil.getTypeOf(qualifier);
-      if (psiType == null) return;
-      if (InheritanceUtil.isInheritor(psiType, GradleCommonClassNames.GRADLE_API_NAMED_DOMAIN_OBJECT_COLLECTION)) {
-        final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(element.getProject());
-        PsiClass defaultGroovyMethodsClass =
-          psiManager.findClassWithCache(GroovyCommonClassNames.DEFAULT_GROOVY_METHODS, element.getResolveScope());
-        if (canBeMethodOf(referenceExpression.getReferenceName(), defaultGroovyMethodsClass)) return;
+            PsiType psiType = GradleResolverUtil.getTypeOf(qualifier);
+            if (psiType == null) {
+                return;
+            }
+            if (InheritanceUtil.isInheritor(psiType, GradleCommonClassNames.GRADLE_API_NAMED_DOMAIN_OBJECT_COLLECTION)) {
+                final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(element.getProject());
+                PsiClass defaultGroovyMethodsClass =
+                    psiManager.findClassWithCache(GroovyCommonClassNames.DEFAULT_GROOVY_METHODS, element.getResolveScope());
+                if (canBeMethodOf(referenceExpression.getReferenceName(), defaultGroovyMethodsClass)) {
+                    return;
+                }
 
-        PsiClass containerClass = psiManager.findClassWithCache(psiType.getCanonicalText(), element.getResolveScope());
-        if (canBeMethodOf(referenceExpression.getReferenceName(), containerClass)) return;
+                PsiClass containerClass = psiManager.findClassWithCache(psiType.getCanonicalText(), element.getResolveScope());
+                if (canBeMethodOf(referenceExpression.getReferenceName(), containerClass)) {
+                    return;
+                }
 
-        PsiElement nameElement = referenceExpression.getReferenceNameElement();
-        if (nameElement != null) {
-          holder.createInfoAnnotation(nameElement, null).setTextAttributes(GroovySyntaxHighlighter.MAP_KEY);
+                PsiElement nameElement = referenceExpression.getReferenceNameElement();
+                if (nameElement != null) {
+                    holder.createInfoAnnotation(nameElement, null).setTextAttributes(GroovySyntaxHighlighter.MAP_KEY);
+                }
+            }
         }
-      }
     }
-  }
 }

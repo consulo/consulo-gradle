@@ -34,58 +34,67 @@ import javax.annotation.Nullable;
  */
 @ExtensionImpl
 public class NamedDomainObjectCollectionTypeEnhancer extends GrReferenceTypeEnhancer {
-  @Override
-  public PsiType getReferenceType(GrReferenceExpression ref, @Nullable PsiElement resolved) {
-    if (resolved != null) return null;
+    @Override
+    public PsiType getReferenceType(GrReferenceExpression ref, @Nullable PsiElement resolved) {
+        if (resolved != null) {
+            return null;
+        }
 
-    GrExpression qualifierExpression = ref.getQualifierExpression();
-    if (qualifierExpression == null) return null;
+        GrExpression qualifierExpression = ref.getQualifierExpression();
+        if (qualifierExpression == null) {
+            return null;
+        }
 
-    PsiType namedDomainCollectionType = GradleResolverUtil.getTypeOf(qualifierExpression);
+        PsiType namedDomainCollectionType = GradleResolverUtil.getTypeOf(qualifierExpression);
 
-    if (!GroovyPsiManager.isInheritorCached(namedDomainCollectionType, GradleCommonClassNames.GRADLE_API_NAMED_DOMAIN_OBJECT_COLLECTION)) {
-      return null;
+        if (!GroovyPsiManager.isInheritorCached(
+            namedDomainCollectionType,
+            GradleCommonClassNames.GRADLE_API_NAMED_DOMAIN_OBJECT_COLLECTION
+        )) {
+            return null;
+        }
+
+        PsiElement qResolved;
+
+        if (qualifierExpression instanceof GrReferenceExpression referenceExpression) {
+            qResolved = referenceExpression.resolve();
+        }
+        else if (qualifierExpression instanceof GrMethodCall methodCall) {
+            qResolved = methodCall.resolveMethod();
+        }
+        else {
+            return null;
+        }
+
+        String key = ref.getReferenceName();
+        if (key == null) {
+            return null;
+        }
+
+        for (GroovyMapContentProvider provider : GroovyMapContentProvider.EP_NAME.getExtensions()) {
+            PsiType type = provider.getValueType(qualifierExpression, qResolved, key);
+            if (type != null) {
+                return type;
+            }
+        }
+
+        if (namedDomainCollectionType instanceof PsiClassReferenceType) {
+            final PsiClassReferenceType referenceType = (PsiClassReferenceType)namedDomainCollectionType;
+            final String fqName = referenceType.getCanonicalText();
+            if (GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER.equals(fqName)) {
+                final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
+                return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_SOURCE_SET, ref.getResolveScope());
+            }
+            else if (GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER.equals(fqName)) {
+                final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
+                return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_CONFIGURATION, ref.getResolveScope());
+            }
+            else if (GradleCommonClassNames.GRADLE_API_TASK_CONTAINER.equals(fqName)) {
+                final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
+                return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_TASK, ref.getResolveScope());
+            }
+        }
+
+        return null;
     }
-
-    PsiElement qResolved;
-
-    if (qualifierExpression instanceof GrReferenceExpression) {
-      qResolved = ((GrReferenceExpression)qualifierExpression).resolve();
-    }
-    else if (qualifierExpression instanceof GrMethodCall) {
-      qResolved = ((GrMethodCall)qualifierExpression).resolveMethod();
-    }
-    else {
-      return null;
-    }
-
-    String key = ref.getReferenceName();
-    if (key == null) return null;
-
-    for (GroovyMapContentProvider provider : GroovyMapContentProvider.EP_NAME.getExtensions()) {
-      PsiType type = provider.getValueType(qualifierExpression, qResolved, key);
-      if (type != null) {
-        return type;
-      }
-    }
-
-    if (namedDomainCollectionType instanceof PsiClassReferenceType) {
-      final PsiClassReferenceType referenceType = (PsiClassReferenceType)namedDomainCollectionType;
-      final String fqName = referenceType.getCanonicalText();
-      if (GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER.equals(fqName)) {
-        final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
-        return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_SOURCE_SET, ref.getResolveScope());
-      }
-      else if (GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER.equals(fqName)) {
-        final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
-        return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_CONFIGURATION, ref.getResolveScope());
-      }
-      else if (GradleCommonClassNames.GRADLE_API_TASK_CONTAINER.equals(fqName)) {
-        final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
-        return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_TASK, ref.getResolveScope());
-      }
-    }
-
-    return null;
-  }
 }

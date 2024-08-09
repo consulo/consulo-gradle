@@ -29,15 +29,15 @@ import java.util.Set;
  */
 @ExtensionImpl
 public class GradleUnresolvedReferenceFilter extends GroovyUnresolvedHighlightFilter {
+    private final static Set<String> IGNORE_SET = Set.of(
+        GradleCommonClassNames.GRADLE_API_TASK,
+        GradleCommonClassNames.GRADLE_API_SOURCE_SET,
+        GradleCommonClassNames.GRADLE_API_CONFIGURATION
+    );
 
-  private final static Set<String> IGNORE_SET = Set.of(
-    GradleCommonClassNames.GRADLE_API_TASK,
-    GradleCommonClassNames.GRADLE_API_SOURCE_SET,
-    GradleCommonClassNames.GRADLE_API_CONFIGURATION);
-
-  @Override
-  public boolean isReject(@Nonnull GrReferenceExpression expression) {
-    final PsiType psiType = GradleResolverUtil.getTypeOf(expression);
-    return psiType != null && IGNORE_SET.contains(psiType.getCanonicalText());
-  }
+    @Override
+    public boolean isReject(@Nonnull GrReferenceExpression expression) {
+        final PsiType psiType = GradleResolverUtil.getTypeOf(expression);
+        return psiType != null && IGNORE_SET.contains(psiType.getCanonicalText());
+    }
 }

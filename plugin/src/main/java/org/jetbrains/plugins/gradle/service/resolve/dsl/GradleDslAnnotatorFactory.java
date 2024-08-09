@@ -15,15 +15,15 @@ import javax.annotation.Nullable;
  */
 @ExtensionImpl
 public class GradleDslAnnotatorFactory implements AnnotatorFactory {
-  @Nullable
-  @Override
-  public Annotator createAnnotator() {
-    return new GradleDslAnnotator();
-  }
+    @Nullable
+    @Override
+    public Annotator createAnnotator() {
+        return new GradleDslAnnotator();
+    }
 
-  @Nonnull
-  @Override
-  public Language getLanguage() {
-    return GroovyLanguage.INSTANCE;
-  }
+    @Nonnull
+    @Override
+    public Language getLanguage() {
+        return GroovyLanguage.INSTANCE;
+    }
 }

@@ -34,17 +34,19 @@ import java.util.List;
 @ExtensionAPI(ComponentScope.APPLICATION)
 public interface GradleTaskManagerExtension {
 
-  ExtensionPointName<GradleTaskManagerExtension> EP_NAME = ExtensionPointName.create(GradleTaskManagerExtension.class);
+    ExtensionPointName<GradleTaskManagerExtension> EP_NAME = ExtensionPointName.create(GradleTaskManagerExtension.class);
 
-  boolean executeTasks(@Nonnull final ExternalSystemTaskId id,
-                       @Nonnull final List<String> taskNames,
-                       @Nonnull String projectPath,
-                       @Nullable final GradleExecutionSettings settings,
-                       @Nonnull final List<String> vmOptions,
-                       @Nonnull final List<String> scriptParameters,
-                       @Nullable final String debuggerSetup,
-                       @Nonnull final ExternalSystemTaskNotificationListener listener) throws ExternalSystemException;
+    boolean executeTasks(
+        @Nonnull final ExternalSystemTaskId id,
+        @Nonnull final List<String> taskNames,
+        @Nonnull String projectPath,
+        @Nullable final GradleExecutionSettings settings,
+        @Nonnull final List<String> vmOptions,
+        @Nonnull final List<String> scriptParameters,
+        @Nullable final String debuggerSetup,
+        @Nonnull final ExternalSystemTaskNotificationListener listener
+    ) throws ExternalSystemException;
 
-  boolean cancelTask(@Nonnull ExternalSystemTaskId id, @Nonnull ExternalSystemTaskNotificationListener listener)
-    throws ExternalSystemException;
+    boolean cancelTask(@Nonnull ExternalSystemTaskId id, @Nonnull ExternalSystemTaskNotificationListener listener)
+        throws ExternalSystemException;
 }

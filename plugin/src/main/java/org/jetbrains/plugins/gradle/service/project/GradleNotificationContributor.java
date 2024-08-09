@@ -13,8 +13,8 @@ import java.util.function.Consumer;
  */
 @ExtensionImpl
 public class GradleNotificationContributor implements NotificationGroupContributor {
-  @Override
-  public void contribute(@Nonnull Consumer<NotificationGroup> consumer) {
-    consumer.accept(GradleNotification.NOTIFICATION_GROUP);
-  }
+    @Override
+    public void contribute(@Nonnull Consumer<NotificationGroup> consumer) {
+        consumer.accept(GradleNotification.NOTIFICATION_GROUP);
+    }
 }

@@ -23,7 +23,7 @@ import consulo.annotation.component.ExtensionImpl;
  */
 @ExtensionImpl
 public class GradleBuildScriptContributor extends GradleSimpleContributor {
-  public GradleBuildScriptContributor() {
-    super("buildscript", GradleCommonClassNames.GRADLE_API_SCRIPT_HANDLER);
-  }
+    public GradleBuildScriptContributor() {
+        super("buildscript", GradleCommonClassNames.GRADLE_API_SCRIPT_HANDLER);
+    }
 }

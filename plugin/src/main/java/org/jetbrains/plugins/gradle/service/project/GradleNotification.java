@@ -38,27 +38,31 @@ import javax.annotation.Nullable;
 @ServiceImpl
 @Singleton
 public class GradleNotification {
-  public static final NotificationGroup NOTIFICATION_GROUP = NotificationGroup.balloonGroup("Gradle Notification Group");
+    public static final NotificationGroup NOTIFICATION_GROUP = NotificationGroup.balloonGroup("Gradle Notification Group");
 
-  @Nonnull
-  private final Project myProject;
+    @Nonnull
+    private final Project myProject;
 
-  @Nonnull
-  public static GradleNotification getInstance(@Nonnull Project project) {
-    return ServiceManager.getService(project, GradleNotification.class);
-  }
+    @Nonnull
+    public static GradleNotification getInstance(@Nonnull Project project) {
+        return ServiceManager.getService(project, GradleNotification.class);
+    }
 
-  @Inject
-  public GradleNotification(@Nonnull Project project) {
-    myProject = project;
-  }
+    @Inject
+    public GradleNotification(@Nonnull Project project) {
+        myProject = project;
+    }
 
-  public void showBalloon(@Nonnull final String title,
-                          @Nonnull final String message,
-                          @Nonnull final NotificationType type,
-                          @Nullable final NotificationListener listener) {
-    AppUIUtil.invokeLaterIfProjectAlive(myProject,
-                                        () -> NOTIFICATION_GROUP.createNotification(title, message, type, listener).notify(myProject));
-  }
+    public void showBalloon(
+        @Nonnull final String title,
+        @Nonnull final String message,
+        @Nonnull final NotificationType type,
+        @Nullable final NotificationListener listener
+    ) {
+        AppUIUtil.invokeLaterIfProjectAlive(
+            myProject,
+            () -> NOTIFICATION_GROUP.createNotification(title, message, type, listener).notify(myProject)
+        );
+    }
 }
 

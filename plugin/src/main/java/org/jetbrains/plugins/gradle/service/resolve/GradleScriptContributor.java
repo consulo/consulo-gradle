@@ -42,55 +42,57 @@ import java.util.Set;
  */
 @ExtensionImpl
 public class GradleScriptContributor extends NonCodeMembersContributor {
+    public final static Set<String> BUILD_PROJECT_SCRIPT_BLOCKS = ContainerUtil.newHashSet(
+        "project",
+        "configure",
+        "subprojects",
+        "allprojects",
+        "buildscript"
+    );
 
-  public final static Set<String> BUILD_PROJECT_SCRIPT_BLOCKS = ContainerUtil.newHashSet(
-    "project",
-    "configure",
-    "subprojects",
-    "allprojects",
-    "buildscript"
-  );
+    @Override
+    public void processDynamicElements(
+        @Nonnull PsiType qualifierType,
+        PsiClass aClass,
+        PsiScopeProcessor processor,
+        PsiElement place,
+        ResolveState state
+    ) {
+        if (place == null) {
+            return;
+        }
 
+        if (!(aClass instanceof GroovyScriptClass)) {
+            return;
+        }
 
-  @Override
-  public void processDynamicElements(@Nonnull PsiType qualifierType,
-                                     PsiClass aClass,
-                                     PsiScopeProcessor processor,
-                                     PsiElement place,
-                                     ResolveState state) {
-    if (place == null) {
-      return;
+        PsiFile file = aClass.getContainingFile();
+        if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)
+            || GradleConstants.SETTINGS_FILE_NAME.equals(file.getName())) {
+            return;
+        }
+
+        List<String> methodInfo = new ArrayList<>();
+        for (GrMethodCall current = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
+             current != null;
+             current = PsiTreeUtil.getParentOfType(current, GrMethodCall.class)) {
+            GrExpression expression = current.getInvokedExpression();
+            if (expression == null) {
+                continue;
+            }
+            String text = expression.getText();
+            if (text != null) {
+                methodInfo.add(text);
+            }
+        }
+
+        final String methodCall = ContainerUtil.getLastItem(methodInfo);
+        if (methodInfo.size() > 1 && BUILD_PROJECT_SCRIPT_BLOCKS.contains(methodCall)) {
+            methodInfo.remove(methodInfo.size() - 1);
+        }
+
+        for (GradleMethodContextContributor contributor : GradleMethodContextContributor.EP_NAME.getExtensions()) {
+            contributor.process(methodInfo, processor, state, place);
+        }
     }
-
-    if (!(aClass instanceof GroovyScriptClass)) {
-      return;
-    }
-
-    PsiFile file = aClass.getContainingFile();
-    if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)
-      || GradleConstants.SETTINGS_FILE_NAME.equals(file.getName())) return;
-
-    List<String> methodInfo = new ArrayList<>();
-    for (GrMethodCall current = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
-         current != null;
-         current = PsiTreeUtil.getParentOfType(current, GrMethodCall.class)) {
-      GrExpression expression = current.getInvokedExpression();
-      if (expression == null) {
-        continue;
-      }
-      String text = expression.getText();
-      if (text != null) {
-        methodInfo.add(text);
-      }
-    }
-
-    final String methodCall = ContainerUtil.getLastItem(methodInfo);
-    if (methodInfo.size() > 1 && BUILD_PROJECT_SCRIPT_BLOCKS.contains(methodCall)) {
-      methodInfo.remove(methodInfo.size() - 1);
-    }
-
-    for (GradleMethodContextContributor contributor : GradleMethodContextContributor.EP_NAME.getExtensions()) {
-      contributor.process(methodInfo, processor, state, place);
-    }
-  }
 }
