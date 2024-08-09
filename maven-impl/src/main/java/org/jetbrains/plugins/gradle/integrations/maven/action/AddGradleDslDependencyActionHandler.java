@@ -17,7 +17,7 @@ package org.jetbrains.plugins.gradle.integrations.maven.action;
 
 import consulo.application.ApplicationManager;
 import consulo.codeEditor.Editor;
-import consulo.gradle.GradleBundle;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.editor.util.LanguageEditorUtil;
@@ -63,7 +63,7 @@ class AddGradleDslDependencyActionHandler implements CodeInsightActionHandler {
             return;
         }
 
-        new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.text"), file) {
+        new WriteCommandAction.Simple(project, GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyText().get(), file) {
             @Override
             protected void run() {
                 GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);

@@ -21,6 +21,7 @@ import consulo.colorScheme.EditorColorsManager;
 import consulo.colorScheme.EditorColorsScheme;
 import consulo.colorScheme.EditorFontType;
 import consulo.document.Document;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.editor.util.LanguageEditorUtil;
@@ -34,7 +35,6 @@ import consulo.ui.ex.awt.ColoredListCellRenderer;
 import consulo.ui.ex.popup.JBPopup;
 import consulo.ui.ex.popup.JBPopupFactory;
 import consulo.util.lang.Pair;
-import consulo.gradle.GradleBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -64,7 +64,7 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
         }
 
         Consumer<Pair> runnable =
-            selected -> new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"), file) {
+            selected -> new WriteCommandAction.Simple(project, GradleLocalize.gradleCodeinsightActionApply_pluginText().get(), file) {
                 @Override
                 protected void run() {
                     if (selected == null) {
@@ -93,7 +93,7 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
             }.execute();
 
         JBPopup popup = JBPopupFactory.getInstance().createPopupChooserBuilder(List.of(myPlugins))
-            .setTitle(GradleBundle.message("gradle.codeInsight.action.apply_plugin.popup.title"))
+            .setTitle(GradleLocalize.gradleCodeinsightActionApply_pluginPopupTitle().get())
             .setNamerForFiltering(pair -> String.valueOf(pair.getFirst()))
             .setItemChosenCallback(runnable)
             .setRenderer(new ColoredListCellRenderer<Pair<String, String>>() {

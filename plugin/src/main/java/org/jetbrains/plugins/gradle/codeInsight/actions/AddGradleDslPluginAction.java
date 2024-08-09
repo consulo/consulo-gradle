@@ -21,6 +21,9 @@ import consulo.annotation.component.ActionRef;
 import consulo.annotation.component.ActionRefAnchor;
 import consulo.application.AllIcons;
 import consulo.codeEditor.Editor;
+import consulo.gradle.GradleConstants;
+import consulo.gradle.GradleDocumentationBundle;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.language.editor.action.CodeInsightAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiCompiledElement;
@@ -29,9 +32,6 @@ import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
-import consulo.gradle.GradleBundle;
-import consulo.gradle.GradleConstants;
-import consulo.gradle.GradleDocumentationBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.annotation.Nonnull;
@@ -47,8 +47,8 @@ public class AddGradleDslPluginAction extends CodeInsightAction {
     private final Pair[] myPlugins;
 
     public AddGradleDslPluginAction() {
-        getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.apply_plugin.description"));
-        getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"));
+        getTemplatePresentation().setDescriptionValue(GradleLocalize.gradleCodeinsightActionApply_pluginDescription());
+        getTemplatePresentation().setTextValue(GradleLocalize.gradleCodeinsightActionApply_pluginText());
         getTemplatePresentation().setIcon(AllIcons.Nodes.Plugin);
 
         final List<String> plugins = StringUtil.split(

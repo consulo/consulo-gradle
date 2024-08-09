@@ -7,9 +7,9 @@ import consulo.content.bundle.Sdk;
 import consulo.externalSystem.model.DataNode;
 import consulo.externalSystem.service.project.ProjectData;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
-import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.ide.impl.externalSystem.service.module.wizard.AbstractExternalModuleImportProvider;
 import consulo.ide.impl.externalSystem.service.module.wizard.ExternalModuleImportContext;
 import consulo.ide.impl.idea.openapi.externalSystem.service.project.manage.ProjectDataManager;
@@ -46,7 +46,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
     @Nonnull
     @Override
     public String getName() {
-        return GradleBundle.message("gradle.name");
+        return GradleLocalize.gradleName().get();
     }
 
     @Nullable

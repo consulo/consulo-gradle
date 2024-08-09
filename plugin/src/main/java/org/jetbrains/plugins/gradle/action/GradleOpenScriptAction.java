@@ -2,6 +2,7 @@ package org.jetbrains.plugins.gradle.action;
 
 import consulo.application.dumb.DumbAware;
 import consulo.fileEditor.FileEditorManager;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.logging.Logger;
 import consulo.navigation.OpenFileDescriptor;
 import consulo.navigation.OpenFileDescriptorFactory;
@@ -10,7 +11,6 @@ import consulo.ui.ex.action.AnActionEvent;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import consulo.gradle.GradleBundle;
 
 import javax.annotation.Nonnull;
 
@@ -26,8 +26,8 @@ public class GradleOpenScriptAction extends AbstractGradleLinkedProjectAction im
     private static final Logger LOG = Logger.getInstance(GradleOpenScriptAction.class);
 
     public GradleOpenScriptAction() {
-        getTemplatePresentation().setText(GradleBundle.message("gradle.action.open.script.text"));
-        getTemplatePresentation().setDescription(GradleBundle.message("gradle.action.open.script.description"));
+        getTemplatePresentation().setTextValue(GradleLocalize.gradleActionOpenScriptText());
+        getTemplatePresentation().setDescriptionValue(GradleLocalize.gradleActionOpenScriptDescription());
     }
 
     @Override

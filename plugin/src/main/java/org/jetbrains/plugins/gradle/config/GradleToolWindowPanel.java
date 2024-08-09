@@ -1,6 +1,7 @@
 package org.jetbrains.plugins.gradle.config;
 
 import consulo.component.messagebus.MessageBusConnection;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.project.Project;
 import consulo.ui.ex.action.ActionGroup;
 import consulo.ui.ex.action.ActionManager;
@@ -9,7 +10,6 @@ import consulo.ui.ex.awt.*;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 import org.jetbrains.plugins.gradle.ui.RichTextControlBuilder;
-import consulo.gradle.GradleBundle;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -92,7 +92,7 @@ public abstract class GradleToolWindowPanel extends SimpleToolWindowPanel {
         builder.setBackgroundColor(payloadControl.getBackground());
         builder.setForegroundColor(UIUtil.getInactiveTextColor());
         builder.setFont(payloadControl.getFont());
-        builder.setText(GradleBundle.message("gradle.toolwindow.text.no.linked.project"));
+        builder.setText(GradleLocalize.gradleToolwindowTextNoLinkedProject().get());
         final JComponent noLinkedProjectControl = builder.build();
         myContent.add(noLinkedProjectControl, NON_LINKED_CARD_NAME);
         update();

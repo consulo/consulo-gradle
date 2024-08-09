@@ -20,8 +20,8 @@ import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
 import consulo.application.AllIcons;
 import consulo.codeEditor.Editor;
-import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.language.editor.action.CodeInsightAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiCompiledElement;
@@ -42,8 +42,8 @@ public class AddGradleDslDependencyAction extends CodeInsightAction {
     static final ThreadLocal<List<MavenId>> TEST_THREAD_LOCAL = new ThreadLocal<>();
 
     public AddGradleDslDependencyAction() {
-        getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.description"));
-        getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.text"));
+        getTemplatePresentation().setDescriptionValue(GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyDescription());
+        getTemplatePresentation().setTextValue(GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyText());
         getTemplatePresentation().setIcon(AllIcons.Nodes.PpLib);
     }
 
