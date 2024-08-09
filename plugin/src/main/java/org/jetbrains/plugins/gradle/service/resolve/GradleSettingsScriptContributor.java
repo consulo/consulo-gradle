@@ -17,6 +17,7 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -36,12 +37,13 @@ import javax.annotation.Nonnull;
 @ExtensionImpl
 public class GradleSettingsScriptContributor extends NonCodeMembersContributor {
     @Override
+    @RequiredReadAction
     public void processDynamicElements(
         @Nonnull PsiType qualifierType,
         PsiClass aClass,
-        PsiScopeProcessor processor,
-        PsiElement place,
-        ResolveState state
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull PsiElement place,
+        @Nonnull ResolveState state
     ) {
         if (place == null) {
             return;

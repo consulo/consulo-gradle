@@ -1,13 +1,16 @@
 package org.jetbrains.plugins.gradle.service;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
+import consulo.gradle.setting.DistributionType;
 import consulo.module.Module;
 import consulo.module.ModuleManager;
 import consulo.module.content.layer.OrderEnumerator;
+import consulo.platform.Platform;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
@@ -23,7 +26,6 @@ import org.gradle.util.internal.DistributionLocator;
 import org.gradle.wrapper.PathAssembler;
 import org.gradle.wrapper.WrapperConfiguration;
 import org.jetbrains.annotations.NonNls;
-import consulo.gradle.setting.DistributionType;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleEnvironment;
@@ -34,11 +36,9 @@ import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -232,7 +232,7 @@ public class GradleInstallationManager {
         if (ref != null) {
             return ref.get();
         }
-        String path = System.getenv("PATH");
+        String path = Platform.current().os().getEnvironmentVariable("PATH");
         if (path == null) {
             return null;
         }
@@ -246,7 +246,7 @@ public class GradleInstallationManager {
                 if (startFile.isFile()) {
                     File candidate = dir.getParentFile();
                     if (isGradleSdkHome(candidate)) {
-                        myCachedGradleHomeFromPath = new Ref<File>(candidate);
+                        myCachedGradleHomeFromPath = new Ref<>(candidate);
                         return candidate;
                     }
                 }
@@ -262,7 +262,7 @@ public class GradleInstallationManager {
      */
     @Nullable
     public File getGradleHomeFromEnvProperty() {
-        String path = System.getenv(GRADLE_ENV_PROPERTY_NAME);
+        String path = Platform.current().os().getEnvironmentVariable(GRADLE_ENV_PROPERTY_NAME);
         if (path == null) {
             return null;
         }
@@ -388,16 +388,17 @@ public class GradleInstallationManager {
             return null;
         }
         final LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
-        return ContainerUtil.mapNotNull(files, new Function<File, VirtualFile>() {
-            @Override
-            public VirtualFile apply(File file) {
+        return ContainerUtil.mapNotNull(
+            files,
+            file -> {
                 final VirtualFile virtualFile = localFileSystem.refreshAndFindFileByIoFile(file);
                 return virtualFile != null ? ArchiveVfsUtil.getArchiveRootForLocalFile(virtualFile) : null;
             }
-        });
+        );
     }
 
     @Nullable
+    @RequiredReadAction
     public List<File> getClassRoots(@Nullable Project project, @Nullable String rootProjectPath) {
         if (project == null) {
             return null;
@@ -420,7 +421,7 @@ public class GradleInstallationManager {
     }
 
     private List<File> findGradleSdkClasspath(Project project, String rootProjectPath) {
-        List<File> result = new ArrayList<File>();
+        List<File> result = new ArrayList<>();
 
         if (StringUtil.isEmpty(rootProjectPath)) {
             return result;
@@ -499,12 +500,8 @@ public class GradleInstallationManager {
             return null;
         }
 
-        File[] distFiles = localDistribution.getDistributionDir().listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return f.isDirectory() && StringUtil.startsWith(f.getName(), "gradle-");
-            }
-        });
+        File[] distFiles =
+            localDistribution.getDistributionDir().listFiles(f -> f.isDirectory() && StringUtil.startsWith(f.getName(), "gradle-"));
 
         return distFiles == null || distFiles.length == 0 ? null : distFiles[0];
     }

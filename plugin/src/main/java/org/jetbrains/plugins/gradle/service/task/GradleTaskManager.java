@@ -21,19 +21,19 @@ import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.externalSystem.task.ExternalSystemTaskManager;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.gradle.GradleConstants;
+import consulo.gradle.service.project.GradleProjectResolverExtension;
+import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.ide.impl.idea.openapi.externalSystem.task.AbstractExternalSystemTaskManager;
+import consulo.platform.Platform;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.SystemProperties;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.ProjectConnection;
 import org.jetbrains.plugins.gradle.service.project.GradleExecutionHelper;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver;
-import consulo.gradle.service.project.GradleProjectResolverExtension;
-import consulo.gradle.setting.GradleExecutionSettings;
-import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -105,7 +105,8 @@ public class GradleTaskManager extends AbstractExternalSystemTaskManager<GradleE
                 try {
                     final File tempFile = FileUtil.createTempFile("init", ".gradle");
                     tempFile.deleteOnExit();
-                    FileUtil.writeToFile(tempFile, StringUtil.join(initScripts, SystemProperties.getLineSeparator()));
+                    String path = StringUtil.join(initScripts, Platform.current().os().lineSeparator().getSeparatorString());
+                    FileUtil.writeToFile(tempFile, path);
                     ContainerUtil.addAll(scriptParameters, GradleConstants.INIT_SCRIPT_CMD_OPTION, tempFile.getAbsolutePath());
                 }
                 catch (IOException e) {

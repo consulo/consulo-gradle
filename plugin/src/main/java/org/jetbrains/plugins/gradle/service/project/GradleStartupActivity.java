@@ -18,7 +18,10 @@ package org.jetbrains.plugins.gradle.service.project;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.WriteAction;
 import consulo.externalSystem.model.ExternalSystemDataKeys;
+import consulo.gradle.GradleBundle;
+import consulo.gradle.GradleConstants;
 import consulo.gradle.impl.importProvider.GradleModuleImportProvider;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.ide.impl.idea.ide.util.PropertiesComponent;
 import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.ide.moduleImport.ModuleImportContext;
@@ -40,13 +43,10 @@ import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import consulo.gradle.GradleBundle;
-import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.swing.event.HyperlinkEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Collections;
 
 /**
@@ -84,12 +84,12 @@ public class GradleStartupActivity implements PostStartupActivity {
         if (files != null && files.length != 0) {
             String message = String.format(
                 "%s<br>\n%s",
-                GradleBundle.message("gradle.notifications.unlinked.project.found.msg", IMPORT_EVENT_DESCRIPTION),
+                GradleLocalize.gradleNotificationsUnlinkedProjectFoundMsg(IMPORT_EVENT_DESCRIPTION).get(),
                 GradleBundle.message("gradle.notifications.do.not.show", DO_NOT_SHOW_EVENT_DESCRIPTION)
             );
 
             GradleNotification.getInstance(project).showBalloon(
-                GradleBundle.message("gradle.notifications.unlinked.project.found.title"),
+                GradleLocalize.gradleNotificationsUnlinkedProjectFoundTitle().get(),
                 message,
                 NotificationType.INFORMATION,
                 new NotificationListener.Adapter() {

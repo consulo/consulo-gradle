@@ -10,16 +10,15 @@ import consulo.externalSystem.model.project.ExternalModuleBuildClasspathPojo;
 import consulo.externalSystem.model.project.ExternalProjectBuildClasspathPojo;
 import consulo.externalSystem.setting.AbstractExternalSystemLocalSettings;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
-import consulo.ide.ServiceManager;
+import consulo.gradle.GradleConstants;
 import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemUtil;
-import consulo.ide.impl.idea.util.containers.ContainerUtil;
 import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.plugins.gradle.config.GradleClassFinder;
-import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,7 +50,7 @@ public class GradleBuildClasspathManager {
 
     @Nonnull
     public static GradleBuildClasspathManager getInstance(@Nonnull Project project) {
-        return ServiceManager.getService(project, GradleBuildClasspathManager.class);
+        return project.getInstance(GradleBuildClasspathManager.class);
     }
 
     public void reload() {

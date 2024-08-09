@@ -17,6 +17,7 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.externalSystem.model.execution.ExternalTaskPojo;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
@@ -27,7 +28,7 @@ import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
-import consulo.util.lang.Pair;
+import consulo.util.lang.Couple;
 import org.jetbrains.plugins.gradle.settings.GradleLocalSettings;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -53,33 +54,34 @@ import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.ca
 @ExtensionImpl
 public class GradleImplicitContributor implements GradleMethodContextContributor {
     private final static Map<String, String> BUILT_IN_TASKS = ContainerUtil.newHashMap(
-        new Pair<String, String>("assemble", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("build", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("buildDependents", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("buildNeeded", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("clean", GRADLE_API_TASKS_DELETE),
-        new Pair<String, String>("jar", GRADLE_API_TASKS_BUNDLING_JAR),
-        new Pair<String, String>("war", GRADLE_API_TASKS_BUNDLING_WAR),
-        new Pair<String, String>("classes", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("compileJava", GRADLE_API_TASKS_COMPILE_JAVA_COMPILE),
-        new Pair<String, String>("compileTestJava", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("processTestResources", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("testClasses", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("processResources", GRADLE_LANGUAGE_JVM_TASKS_PROCESS_RESOURCES),
-        new Pair<String, String>("setupBuild", GRADLE_BUILDSETUP_TASKS_SETUP_BUILD),
-        new Pair<String, String>("wrapper", GRADLE_API_TASKS_WRAPPER_WRAPPER),
-        new Pair<String, String>("javadoc", GRADLE_API_TASKS_JAVADOC_JAVADOC),
-        new Pair<String, String>("dependencies", GRADLE_API_TASKS_DIAGNOSTICS_DEPENDENCY_REPORT_TASK),
-        new Pair<String, String>("dependencyInsight", GRADLE_API_TASKS_DIAGNOSTICS_DEPENDENCY_INSIGHT_REPORT_TASK),
-        new Pair<String, String>("projects", GRADLE_API_TASKS_DIAGNOSTICS_PROJECT_REPORT_TASK),
-        new Pair<String, String>("properties", GRADLE_API_TASKS_DIAGNOSTICS_PROPERTY_REPORT_TASK),
-        new Pair<String, String>("tasks", GRADLE_API_TASKS_DIAGNOSTICS_TASK_REPORT_TASK),
-        new Pair<String, String>("check", GRADLE_API_DEFAULT_TASK),
-        new Pair<String, String>("test", GRADLE_API_TASKS_TESTING_TEST),
-        new Pair<String, String>("uploadArchives", GRADLE_API_TASKS_UPLOAD)
+        Couple.of("assemble", GRADLE_API_DEFAULT_TASK),
+        Couple.of("build", GRADLE_API_DEFAULT_TASK),
+        Couple.of("buildDependents", GRADLE_API_DEFAULT_TASK),
+        Couple.of("buildNeeded", GRADLE_API_DEFAULT_TASK),
+        Couple.of("clean", GRADLE_API_TASKS_DELETE),
+        Couple.of("jar", GRADLE_API_TASKS_BUNDLING_JAR),
+        Couple.of("war", GRADLE_API_TASKS_BUNDLING_WAR),
+        Couple.of("classes", GRADLE_API_DEFAULT_TASK),
+        Couple.of("compileJava", GRADLE_API_TASKS_COMPILE_JAVA_COMPILE),
+        Couple.of("compileTestJava", GRADLE_API_DEFAULT_TASK),
+        Couple.of("processTestResources", GRADLE_API_DEFAULT_TASK),
+        Couple.of("testClasses", GRADLE_API_DEFAULT_TASK),
+        Couple.of("processResources", GRADLE_LANGUAGE_JVM_TASKS_PROCESS_RESOURCES),
+        Couple.of("setupBuild", GRADLE_BUILDSETUP_TASKS_SETUP_BUILD),
+        Couple.of("wrapper", GRADLE_API_TASKS_WRAPPER_WRAPPER),
+        Couple.of("javadoc", GRADLE_API_TASKS_JAVADOC_JAVADOC),
+        Couple.of("dependencies", GRADLE_API_TASKS_DIAGNOSTICS_DEPENDENCY_REPORT_TASK),
+        Couple.of("dependencyInsight", GRADLE_API_TASKS_DIAGNOSTICS_DEPENDENCY_INSIGHT_REPORT_TASK),
+        Couple.of("projects", GRADLE_API_TASKS_DIAGNOSTICS_PROJECT_REPORT_TASK),
+        Couple.of("properties", GRADLE_API_TASKS_DIAGNOSTICS_PROPERTY_REPORT_TASK),
+        Couple.of("tasks", GRADLE_API_TASKS_DIAGNOSTICS_TASK_REPORT_TASK),
+        Couple.of("check", GRADLE_API_DEFAULT_TASK),
+        Couple.of("test", GRADLE_API_TASKS_TESTING_TEST),
+        Couple.of("uploadArchives", GRADLE_API_TASKS_UPLOAD)
     );
 
     @Override
+    @RequiredReadAction
     public void process(
         @Nonnull List<String> methodCallInfo,
         @Nonnull PsiScopeProcessor processor,
@@ -126,7 +128,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
             }
         }
 
-        if (place instanceof GrExpression && GradleResolverUtil.getTypeOf((GrExpression)place) == null) {
+        if (place instanceof GrExpression placeExpression && GradleResolverUtil.getTypeOf(placeExpression) == null) {
             GrClosableBlock closableBlock = GradleResolverUtil.findParent(place, GrClosableBlock.class);
             if (closableBlock != null && closableBlock.getParent() instanceof GrMethodCallExpression methodCallExpression) {
                 PsiType psiType = GradleResolverUtil.getTypeOf(methodCallExpression);
@@ -138,6 +140,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
         }
     }
 
+    @RequiredReadAction
     public static void processImplicitDeclarations(
         @Nonnull PsiScopeProcessor processor,
         @Nonnull ResolveState state,
@@ -149,6 +152,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
         }
     }
 
+    @RequiredReadAction
     private static void checkForAvailableTasks(
         int level,
         @Nullable String taskName,
@@ -196,6 +200,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
         }
     }
 
+    @RequiredReadAction
     private static void processTask(
         @Nonnull String taskName,
         @Nonnull String fqName,

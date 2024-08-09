@@ -29,7 +29,7 @@ import consulo.externalSystem.setting.AbstractExternalSystemLocalSettings;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
 import consulo.externalSystem.util.Order;
-import consulo.ide.ServiceManager;
+import consulo.gradle.GradleConstants;
 import consulo.ide.impl.idea.util.containers.ContainerUtil;
 import consulo.project.Project;
 import consulo.util.collection.FactoryMap;
@@ -39,7 +39,6 @@ import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -71,7 +70,7 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
             return;
         }
 
-        final GradleInstallationManager gradleInstallationManager = ServiceManager.getService(GradleInstallationManager.class);
+        final GradleInstallationManager gradleInstallationManager = project.getInstance(GradleInstallationManager.class);
 
         ExternalSystemManager<?, ?, ?, ?, ?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
         assert manager != null;
@@ -118,7 +117,7 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
                     continue;
                 }
 
-                final Set<String> buildClasspath = ContainerUtil.newLinkedHashSet();
+                final Set<String> buildClasspath = new LinkedHashSet<>();
                 BuildScriptClasspathData buildScriptClasspathData = node.getData();
                 for (BuildScriptClasspathData.ClasspathEntry classpathEntry : buildScriptClasspathData.getClasspathEntries()) {
                     for (String path : classpathEntry.getSourcesFile()) {
@@ -135,8 +134,8 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
                 if (projectBuildClasspathPojo == null) {
                     projectBuildClasspathPojo = new ExternalProjectBuildClasspathPojo(
                         moduleDataNode.getData().getExternalName(),
-                        ContainerUtil.<String>newArrayList(),
-                        ContainerUtil.<String, ExternalModuleBuildClasspathPojo>newHashMap()
+                        new ArrayList<>(),
+                        new HashMap<>()
                     );
                     localSettings.getProjectBuildClasspath().put(linkedExternalProjectPath, projectBuildClasspathPojo);
                 }

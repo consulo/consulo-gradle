@@ -20,24 +20,24 @@ import consulo.externalSystem.model.task.ExternalSystemTaskId;
 import consulo.externalSystem.model.task.ExternalSystemTaskNotificationEvent;
 import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import consulo.externalSystem.rt.model.ExternalSystemException;
-import consulo.ide.impl.idea.openapi.util.io.FileUtil;
+import consulo.gradle.GradleConstants;
+import consulo.gradle.setting.DistributionType;
+import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.ide.impl.idea.util.PathUtil;
-import consulo.ide.impl.idea.util.containers.ContainerUtil;
+import consulo.util.collection.ContainerUtil;
 import consulo.logging.Logger;
+import consulo.platform.Platform;
 import consulo.util.collection.ArrayUtil;
+import consulo.util.io.FileUtil;
 import consulo.util.io.StreamUtil;
 import consulo.util.lang.ExceptionUtil;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.SystemProperties;
 import org.gradle.process.internal.JvmOptions;
 import org.gradle.tooling.*;
 import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
 import org.gradle.tooling.internal.consumer.Distribution;
 import org.gradle.tooling.model.build.BuildEnvironment;
-import consulo.gradle.setting.DistributionType;
-import consulo.gradle.setting.GradleExecutionSettings;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.init.Init;
-import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleEnvironment;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
@@ -71,7 +71,7 @@ public class GradleExecutionHelper {
         @Nonnull List<String> extraJvmArgs
     ) {
         ModelBuilder<T> result = connection.model(modelType);
-        prepare(result, id, settings, listener, extraJvmArgs, ContainerUtil.<String>newArrayList(), connection);
+        prepare(result, id, settings, listener, extraJvmArgs, new ArrayList<>(), connection);
         return result;
     }
 
@@ -265,9 +265,14 @@ public class GradleExecutionHelper {
                         "').write wrapperPropertyFileLocation",
                     "}}",
                 };
-                FileUtil.writeToFile(tempFile, StringUtil.join(lines, SystemProperties.getLineSeparator()));
+                FileUtil.writeToFile(tempFile, StringUtil.join(lines, Platform.current().os().lineSeparator().getSeparatorString()));
 
-                BuildLauncher launcher = getBuildLauncher(id, connection, settings, listener, ContainerUtil.<String>newArrayList(),
+                BuildLauncher launcher = getBuildLauncher(
+                    id,
+                    connection,
+                    settings,
+                    listener,
+                    new ArrayList<>(),
                     ContainerUtil.newArrayList(
                         GradleConstants.INIT_SCRIPT_CMD_OPTION,
                         tempFile.getAbsolutePath()
@@ -275,7 +280,7 @@ public class GradleExecutionHelper {
                 );
                 launcher.forTasks("wrapper");
                 launcher.run();
-                String wrapperPropertyFile = FileUtil.loadFile(wrapperPropertyFileLocation);
+                String wrapperPropertyFile = consulo.ide.impl.idea.openapi.util.io.FileUtil.loadFile(wrapperPropertyFileLocation);
                 settings.setWrapperPropertyFile(wrapperPropertyFile);
             }
             catch (IOException e) {
@@ -460,7 +465,7 @@ public class GradleExecutionHelper {
     }
 
     private static void replaceTestCommandOptionWithInitScript(@Nonnull List<String> args) {
-        Set<String> testIncludePatterns = ContainerUtil.newLinkedHashSet();
+        Set<String> testIncludePatterns = new LinkedHashSet<>();
         Iterator<String> it = args.iterator();
         while (it.hasNext()) {
             final String next = it.next();

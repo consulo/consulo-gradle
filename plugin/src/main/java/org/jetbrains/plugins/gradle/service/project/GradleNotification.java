@@ -18,7 +18,6 @@ package org.jetbrains.plugins.gradle.service.project;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
-import consulo.ide.ServiceManager;
 import consulo.project.Project;
 import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationType;
@@ -45,7 +44,7 @@ public class GradleNotification {
 
     @Nonnull
     public static GradleNotification getInstance(@Nonnull Project project) {
-        return ServiceManager.getService(project, GradleNotification.class);
+        return project.getInstance(GradleNotification.class);
     }
 
     @Inject

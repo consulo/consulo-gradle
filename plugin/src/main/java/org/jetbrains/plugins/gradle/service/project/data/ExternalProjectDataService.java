@@ -15,12 +15,10 @@
  */
 package org.jetbrains.plugins.gradle.service.project.data;
 
-import consulo.application.CommonBundle;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.Task;
 import consulo.application.util.ConcurrentFactoryMap;
-import consulo.application.util.function.Computable;
-import consulo.externalSystem.ExternalSystemBundle;
+import consulo.externalSystem.localize.ExternalSystemLocalize;
 import consulo.externalSystem.model.DataNode;
 import consulo.externalSystem.model.Key;
 import consulo.externalSystem.model.ProjectKeys;
@@ -38,9 +36,11 @@ import consulo.externalSystem.util.Order;
 import consulo.ide.impl.idea.openapi.externalSystem.service.internal.ExternalSystemResolveProjectTask;
 import consulo.ide.impl.idea.openapi.externalSystem.service.notification.ExternalSystemNotificationManager;
 import consulo.ide.impl.idea.openapi.externalSystem.service.project.manage.ProjectDataManager;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.module.Module;
 import consulo.module.content.ProjectRootManager;
+import consulo.platform.base.localize.CommonLocalize;
 import consulo.project.Project;
 import consulo.ui.ex.awt.Messages;
 import consulo.ui.ex.awt.UIUtil;
@@ -54,7 +54,6 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * @author Vladislav.Soroka
@@ -85,6 +84,7 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
         return KEY;
     }
 
+    @Override
     public void importData(
         @Nonnull final Collection<DataNode<ExternalProject>> toImport,
         @Nonnull final Project project,
@@ -134,7 +134,7 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Available projects paths: " + ContainerUtil.map(
                         ExternalSystemApiUtil.getSettings(project, projectSystemId).getLinkedProjectsSettings(),
-                        (Function<ExternalProjectSettings, String>)settings -> settings.getExternalProjectPath()
+                        ExternalProjectSettings::getExternalProjectPath
                     ));
                 }
                 return false;
@@ -152,35 +152,33 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
             // ask a user for the project import if auto-import is disabled
             if (!projectSettings.isUseAutoImport()) {
                 String message = String.format(
-                    "Project '%s' require synchronization with %s configuration. \nImport the project?", projectName,
-                    projectSystemId.getReadableName()
+                    "Project '%s' require synchronization with %s configuration. \nImport the project?",
+                    projectName,
+                    projectSystemId.getDisplayName()
                 );
                 int returnValue = Messages.showOkCancelDialog(
                     message,
                     "Import Project",
-                    CommonBundle.getOkButtonText(),
-                    CommonBundle.getCancelButtonText(),
-                    Messages.getQuestionIcon()
+                    CommonLocalize.buttonOk().get(),
+                    CommonLocalize.buttonCancel().get(),
+                    UIUtil.getQuestionIcon()
                 );
                 if (returnValue != Messages.OK) {
                     return false;
                 }
             }
 
-            final String title =
-                ExternalSystemBundle.message("progress.import.text", linkedProjectPath, projectSystemId.getReadableName());
-            new Task.Modal(project, title, false) {
+            final LocalizeValue title =
+                ExternalSystemLocalize.progressImportText(linkedProjectPath, projectSystemId.getDisplayName());
+            new Task.Modal(project, title.get(), false) {
                 @Override
                 public void run(@Nonnull ProgressIndicator indicator) {
                     if (project.isDisposed()) {
                         return;
                     }
 
-                    ExternalSystemNotificationManager.getInstance(project).clearNotifications(
-                        null,
-                        NotificationSource.PROJECT_SYNC,
-                        projectSystemId
-                    );
+                    ExternalSystemNotificationManager.getInstance(project)
+                        .clearNotifications(null, NotificationSource.PROJECT_SYNC, projectSystemId);
                     ExternalSystemResolveProjectTask task =
                         new ExternalSystemResolveProjectTask(projectSystemId, project, linkedProjectPath, false);
                     task.execute(indicator, ExternalSystemTaskNotificationListener.EP_NAME.getExtensions());

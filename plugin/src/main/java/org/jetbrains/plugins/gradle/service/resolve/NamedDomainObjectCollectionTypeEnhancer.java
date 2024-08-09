@@ -81,17 +81,14 @@ public class NamedDomainObjectCollectionTypeEnhancer extends GrReferenceTypeEnha
         if (namedDomainCollectionType instanceof PsiClassReferenceType) {
             final PsiClassReferenceType referenceType = (PsiClassReferenceType)namedDomainCollectionType;
             final String fqName = referenceType.getCanonicalText();
-            if (GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER.equals(fqName)) {
-                final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
-                return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_SOURCE_SET, ref.getResolveScope());
-            }
-            else if (GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER.equals(fqName)) {
-                final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
-                return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_CONFIGURATION, ref.getResolveScope());
-            }
-            else if (GradleCommonClassNames.GRADLE_API_TASK_CONTAINER.equals(fqName)) {
-                final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
-                return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_TASK, ref.getResolveScope());
+            final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(ref.getProject());
+            switch (fqName) {
+                case GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER:
+                    return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_SOURCE_SET, ref.getResolveScope());
+                case GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER:
+                    return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_CONFIGURATION, ref.getResolveScope());
+                case GradleCommonClassNames.GRADLE_API_TASK_CONTAINER:
+                    return psiManager.createTypeByFQClassName(GradleCommonClassNames.GRADLE_API_TASK, ref.getResolveScope());
             }
         }
 

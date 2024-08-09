@@ -24,6 +24,7 @@ import consulo.externalSystem.ui.awt.PaintAwarePanel;
 import consulo.fileChooser.FileChooserDescriptor;
 import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.gradle.setting.DistributionType;
 import consulo.ide.ServiceManager;
 import consulo.ide.impl.idea.openapi.externalSystem.model.settings.LocationSettingType;
@@ -37,7 +38,6 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.*;
 import consulo.ui.ex.awt.util.Alarm;
 import consulo.ui.ex.awtUnsafe.TargetAWT;
-import consulo.ui.image.Image;
 import consulo.ui.util.LabeledBuilder;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
@@ -91,6 +91,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
     }
 
     @Override
+    @RequiredUIAccess
     protected void fillExtraControls(@Nonnull Disposable uiDisposable, @Nonnull PaintAwarePanel content, int indentLevel) {
         content.setPaintCallback(graphics -> showBalloonIfNecessary());
 
@@ -108,7 +109,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
             }
         });
 
-        myGradleHomeLabel = new JBLabel(GradleBundle.message("gradle.settings.text.home.path"));
+        myGradleHomeLabel = new JBLabel(GradleLocalize.gradleSettingsTextHomePath().get());
         initGradleHome();
 
         initControls();
@@ -157,19 +158,19 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
             }
         };
 
-        myUseWrapperButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.default_wrapper.configured"));
+        myUseWrapperButton = new JBRadioButton(GradleLocalize.gradleSettingsTextUseDefault_wrapperConfigured().get());
         myUseWrapperButton.addActionListener(listener);
-        myUseWrapperWithVerificationButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.customizable_wrapper"));
+        myUseWrapperWithVerificationButton = new JBRadioButton(GradleLocalize.gradleSettingsTextUseCustomizable_wrapper().get());
         myUseWrapperWithVerificationButton.addActionListener(listener);
-        myUseWrapperVerificationLabel = new JBLabel(GradleBundle.message("gradle.settings.text.wrapper.customization.compatibility"));
+        myUseWrapperVerificationLabel = new JBLabel(GradleLocalize.gradleSettingsTextWrapperCustomizationCompatibility().get());
         myUseWrapperVerificationLabel.setFont(UIUtil.getLabelFont(UIUtil.FontSize.MINI));
-        myUseWrapperVerificationLabel.setIcon((Image)AllIcons.General.BalloonInformation);
+        myUseWrapperVerificationLabel.setIcon(AllIcons.General.BalloonInformation);
 
-        myUseLocalDistributionButton = new JBRadioButton(GradleBundle.message("gradle.settings.text.use.local.distribution"));
+        myUseLocalDistributionButton = new JBRadioButton(GradleLocalize.gradleSettingsTextUseLocalDistribution().get());
         myUseLocalDistributionButton.addActionListener(listener);
 
         myUseBundledDistributionButton =
-            new JBRadioButton(GradleBundle.message("gradle.settings.text.use.bundled.distribution", GradleVersion.current().getVersion()));
+            new JBRadioButton(GradleLocalize.gradleSettingsTextUseBundledDistribution(GradleVersion.current().getVersion()).get());
         myUseBundledDistributionButton.addActionListener(listener);
         myUseBundledDistributionButton.setEnabled(false);
 
@@ -187,7 +188,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 
         myGradleHomePathField.addBrowseFolderListener(
             "",
-            GradleBundle.message("gradle.settings.text.home.path"),
+            GradleLocalize.gradleSettingsTextHomePath().get(),
             null,
             fileChooserDescriptor,
             TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT,
@@ -221,7 +222,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
             else if (!myInstallationManager.isGradleSdkHome(new File(gradleHomePath))) {
                 myGradleHomeSettingType = LocationSettingType.EXPLICIT_INCORRECT;
                 new DelayedBalloonInfo(NotificationType.ERROR, myGradleHomeSettingType, 0).run();
-                throw new ConfigurationException(GradleBundle.message("gradle.home.setting.type.explicit.incorrect", gradleHomePath));
+                throw new ConfigurationException(GradleLocalize.gradleHomeSettingTypeExplicitIncorrect(gradleHomePath).get());
             }
         }
         return true;
@@ -341,13 +342,13 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
             myUseWrapperButton.setEnabled(true);
             myUseWrapperButton.setSelected(true);
             myGradleHomePathField.setEnabled(false);
-            myUseWrapperButton.setText(GradleBundle.message("gradle.settings.text.use.default_wrapper.configured"));
+            myUseWrapperButton.setText(GradleLocalize.gradleSettingsTextUseDefault_wrapperConfigured().get());
         }
         else {
             myUseWrapperButton.setEnabled(false);
             myUseLocalDistributionButton.setSelected(true);
             myGradleHomePathField.setEnabled(true);
-            myUseWrapperButton.setText(GradleBundle.message("gradle.settings.text.use.default_wrapper.not_configured"));
+            myUseWrapperButton.setText(GradleLocalize.gradleSettingsTextUseDefault_wrapperNot_configured().get());
         }
 
         if (getInitialSettings().getDistributionType() == null) {

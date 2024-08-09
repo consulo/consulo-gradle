@@ -51,9 +51,9 @@ public class GradleConfigurationsNonCodeMembersContributor extends NonCodeMember
     public void processDynamicElements(
         @Nonnull PsiType qualifierType,
         PsiClass aClass,
-        PsiScopeProcessor processor,
-        PsiElement place,
-        ResolveState state
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull PsiElement place,
+        @Nonnull ResolveState state
     ) {
         if (place == null || aClass == null) {
             return;

@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
+import consulo.platform.Platform;
 import org.gradle.initialization.BuildCancellationToken;
 import org.gradle.initialization.layout.BuildLayoutFactory;
 import org.gradle.internal.classpath.ClassPath;
@@ -143,7 +144,7 @@ public class DistributionFactoryExt extends DistributionFactory {
                     locationDisplayName
                 ));
             }
-            Set<File> files = new LinkedHashSet<File>();
+            Set<File> files = new LinkedHashSet<>();
             //noinspection ConstantConditions
             for (File file : libDir.listFiles()) {
                 if (file.getName().endsWith(".jar")) {
@@ -180,7 +181,7 @@ public class DistributionFactoryExt extends DistributionFactory {
                 final DistributionInstaller installer = new DistributionInstaller(progressLoggerFactory, progressListener, clock);
                 File installDir;
                 try {
-                    cancellationToken.addCallback(() -> installer.cancel());
+                    cancellationToken.addCallback(installer::cancel);
                     installDir = installer.install(
                         determineRealUserHomeDir(connectionParameters),
                         determineRootDir(connectionParameters),
@@ -218,14 +219,7 @@ public class DistributionFactoryExt extends DistributionFactory {
 
         private static Map<String, String> determineSystemProperties(ConnectionParameters connectionParameters) {
             Map<String, String> systemProperties = new HashMap<>();
-
-            for (Map.Entry<Object, Object> objectEntry : System.getProperties().entrySet()) {
-                systemProperties.put(
-                    objectEntry.getKey().toString(),
-                    objectEntry.getValue() == null ? null : objectEntry.getValue().toString()
-                );
-            }
-
+            systemProperties.putAll(Platform.current().jvm().getRuntimeProperties());
             systemProperties.putAll(SystemPropertiesHandler.getSystemProperties(
                 new File(determineRootDir(connectionParameters), "gradle.properties")
             ));

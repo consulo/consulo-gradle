@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.service.resolve;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.ide.impl.idea.util.containers.ContainerUtil;
+import consulo.util.collection.ContainerUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;

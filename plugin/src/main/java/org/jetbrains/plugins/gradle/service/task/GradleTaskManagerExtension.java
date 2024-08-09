@@ -33,7 +33,6 @@ import java.util.List;
  */
 @ExtensionAPI(ComponentScope.APPLICATION)
 public interface GradleTaskManagerExtension {
-
     ExtensionPointName<GradleTaskManagerExtension> EP_NAME = ExtensionPointName.create(GradleTaskManagerExtension.class);
 
     boolean executeTasks(

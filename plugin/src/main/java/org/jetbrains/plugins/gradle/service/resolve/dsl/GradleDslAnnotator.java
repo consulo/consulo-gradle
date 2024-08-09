@@ -20,6 +20,7 @@ import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.InheritanceUtil;
 import consulo.language.editor.annotation.AnnotationHolder;
 import consulo.language.editor.annotation.Annotator;
+import consulo.language.editor.annotation.HighlightSeverity;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames;
 import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
@@ -69,7 +70,8 @@ public class GradleDslAnnotator implements Annotator {
 
                 PsiElement nameElement = referenceExpression.getReferenceNameElement();
                 if (nameElement != null) {
-                    holder.createInfoAnnotation(nameElement, null).setTextAttributes(GroovySyntaxHighlighter.MAP_KEY);
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(GroovySyntaxHighlighter.MAP_KEY);
                 }
             }
         }

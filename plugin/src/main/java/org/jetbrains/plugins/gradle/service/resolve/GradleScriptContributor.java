@@ -17,8 +17,9 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.ide.impl.idea.util.containers.ContainerUtil;
+import consulo.util.collection.ContainerUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.resolve.PsiScopeProcessor;
@@ -42,7 +43,7 @@ import java.util.Set;
  */
 @ExtensionImpl
 public class GradleScriptContributor extends NonCodeMembersContributor {
-    public final static Set<String> BUILD_PROJECT_SCRIPT_BLOCKS = ContainerUtil.newHashSet(
+    public final static Set<String> BUILD_PROJECT_SCRIPT_BLOCKS = Set.of(
         "project",
         "configure",
         "subprojects",
@@ -51,12 +52,13 @@ public class GradleScriptContributor extends NonCodeMembersContributor {
     );
 
     @Override
+    @RequiredReadAction
     public void processDynamicElements(
         @Nonnull PsiType qualifierType,
         PsiClass aClass,
-        PsiScopeProcessor processor,
-        PsiElement place,
-        ResolveState state
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull PsiElement place,
+        @Nonnull ResolveState state
     ) {
         if (place == null) {
             return;

@@ -21,13 +21,17 @@ import consulo.externalSystem.ui.awt.ExternalSystemUiUtil;
 import consulo.externalSystem.ui.awt.PaintAwarePanel;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.fileChooser.FileChooserDescriptor;
+import consulo.gradle.GradleConstants;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.ide.impl.idea.openapi.externalSystem.model.settings.LocationSettingType;
-import consulo.ui.ex.awt.*;
+import consulo.platform.Platform;
+import consulo.ui.ex.awt.JBLabel;
+import consulo.ui.ex.awt.JBTextField;
+import consulo.ui.ex.awt.TextComponentAccessor;
+import consulo.ui.ex.awt.TextFieldWithBrowseButton;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
-import consulo.gradle.GradleBundle;
-import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,12 +64,12 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
 
     @Override
     public void fillUi(@Nonnull PaintAwarePanel canvas, int indentLevel) {
-        myServiceDirectoryLabel = new JBLabel(GradleBundle.message("gradle.settings.text.service.dir.path"));
+        myServiceDirectoryLabel = new JBLabel(GradleLocalize.gradleSettingsTextServiceDirPath().get());
         preparePathControl();
         canvas.add(myServiceDirectoryLabel, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
         canvas.add(myServiceDirectoryPathField, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
 
-        myGradleVmOptionsLabel = new JBLabel(GradleBundle.message("gradle.settings.text.vm.options"));
+        myGradleVmOptionsLabel = new JBLabel(GradleLocalize.gradleSettingsTextVmOptions().get());
         canvas.add(myGradleVmOptionsLabel, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
         myGradleVmOptionsField = new JBTextField();
         canvas.add(myGradleVmOptionsField, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
@@ -80,7 +84,7 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
         myServiceDirectoryPathField = new TextFieldWithBrowseButton();
         myServiceDirectoryPathField.addBrowseFolderListener(
             "",
-            GradleBundle.message("gradle.settings.title.service.dir.path"),
+            GradleLocalize.gradleSettingsTitleServiceDirPath().get(),
             null,
             new FileChooserDescriptor(false, true, false, false, false, false),
             TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT,
@@ -121,9 +125,9 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
     }
 
     private void deduceServiceDirectoryIfPossible() {
-        String path = System.getenv().get(GradleConstants.SYSTEM_DIRECTORY_PATH_KEY);
+        String path = Platform.current().os().getEnvironmentVariable(GradleConstants.SYSTEM_DIRECTORY_PATH_KEY);
         if (StringUtil.isEmpty(path)) {
-            path = new File(System.getProperty("user.home"), ".gradle").getAbsolutePath();
+            path = new File(Platform.current().jvm().getRuntimeProperty("user.home"), ".gradle").getAbsolutePath();
         }
         myServiceDirectoryPathField.setText(path);
         myServiceDirectoryPathField.getTextField().setForeground(LocationSettingType.DEDUCED.getColor());

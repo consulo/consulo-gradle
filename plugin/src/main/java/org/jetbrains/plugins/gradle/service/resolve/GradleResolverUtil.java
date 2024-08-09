@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.RecursionManager;
 import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.psi.PsiElement;
@@ -77,6 +78,7 @@ public class GradleResolverUtil {
         }
     }
 
+    @RequiredReadAction
     public static void addImplicitVariable(
         @Nonnull PsiScopeProcessor processor,
         @Nonnull ResolveState state,
@@ -258,7 +260,7 @@ public class GradleResolverUtil {
         if (expression == null) {
             return null;
         }
-        return RecursionManager.doPreventingRecursion(expression, true, () -> expression.getNominalType());
+        return RecursionManager.doPreventingRecursion(expression, true, expression::getNominalType);
     }
 
     public static boolean isLShiftElement(@Nullable PsiElement psiElement) {
