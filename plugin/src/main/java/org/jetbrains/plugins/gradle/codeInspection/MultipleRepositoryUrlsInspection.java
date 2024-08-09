@@ -42,85 +42,97 @@ import java.util.List;
  */
 @ExtensionImpl
 public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
-
-  @Nonnull
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new MyVisitor();
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
-
-  @Nonnull
-  @Override
-  public String[] getGroupPath() {
-    return new String[] {"Gradle"};
-  }
-
-  @Override
-  protected String buildErrorString(Object... args) {
-    return GradleInspectionBundle.message("multiple.repository.urls", args);
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return GradleInspectionBundle.message("multiple.repository.urls");
-  }
-
-  private static class MyVisitor extends BaseInspectionVisitor {
+    @Nonnull
     @Override
-    public void visitClosure(GrClosableBlock closure) {
-      PsiFile file = closure.getContainingFile();
-      if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) return;
-
-      super.visitClosure(closure);
-      GrMethodCall mavenMethodCall = PsiTreeUtil.getParentOfType(closure, GrMethodCall.class);
-      if (mavenMethodCall == null) return;
-      GrExpression mavenMethodExpression = mavenMethodCall.getInvokedExpression();
-      if (mavenMethodExpression == null ||
-          !ArrayUtil.contains(mavenMethodExpression.getText(), "maven", "ivy")) {
-        return;
-      }
-
-      GrMethodCall repositoryMethodCall = PsiTreeUtil.getParentOfType(mavenMethodCall, GrMethodCall.class);
-      if (repositoryMethodCall == null) return;
-      GrExpression repositoryMethodExpression = repositoryMethodCall.getInvokedExpression();
-      if (repositoryMethodExpression == null || !repositoryMethodExpression.getText().equals("repositories")) return;
-
-      List<GrCallExpression> statements = findUrlCallExpressions(closure);
-      if (statements.size() > 1) {
-        registerError(closure);
-
-        registerError(closure, GradleInspectionBundle.message("multiple.repository.urls"),
-                      new LocalQuickFix[]{new MultipleRepositoryUrlsFix(closure, mavenMethodExpression.getText())},
-                      ProblemHighlightType.GENERIC_ERROR);
-      }
+    protected BaseInspectionVisitor buildVisitor() {
+        return new MyVisitor();
     }
-  }
 
-  @Nonnull
-  static List<GrCallExpression> findUrlCallExpressions(@Nonnull GrClosableBlock closure) {
-    GrCallExpression[] applicationStatements = PsiTreeUtil.getChildrenOfType(closure, GrCallExpression.class);
-    if (applicationStatements == null) return Collections.emptyList();
+    @Nls
+    @Nonnull
+    @Override
+    public String getGroupDisplayName() {
+        return PROBABLE_BUGS;
+    }
 
-    List<GrCallExpression> statements = new ArrayList<>();
-    for (GrCallExpression statement : applicationStatements) {
-      GrReferenceExpression[] referenceExpressions = PsiTreeUtil.getChildrenOfType(statement, GrReferenceExpression.class);
-      if (referenceExpressions == null) continue;
-      for (GrReferenceExpression expression : referenceExpressions) {
-        String expressionText = expression.getText();
-        if ("url".equals(expressionText) || "setUrl".equals(expressionText)) {
-          statements.add(statement);
+    @Nonnull
+    @Override
+    public String[] getGroupPath() {
+        return new String[]{"Gradle"};
+    }
+
+    @Override
+    protected String buildErrorString(Object... args) {
+        return GradleInspectionBundle.message("multiple.repository.urls", args);
+    }
+
+    @Nls
+    @Nonnull
+    @Override
+    public String getDisplayName() {
+        return GradleInspectionBundle.message("multiple.repository.urls");
+    }
+
+    private static class MyVisitor extends BaseInspectionVisitor {
+        @Override
+        public void visitClosure(GrClosableBlock closure) {
+            PsiFile file = closure.getContainingFile();
+            if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) {
+                return;
+            }
+
+            super.visitClosure(closure);
+            GrMethodCall mavenMethodCall = PsiTreeUtil.getParentOfType(closure, GrMethodCall.class);
+            if (mavenMethodCall == null) {
+                return;
+            }
+            GrExpression mavenMethodExpression = mavenMethodCall.getInvokedExpression();
+            if (mavenMethodExpression == null ||
+                !ArrayUtil.contains(mavenMethodExpression.getText(), "maven", "ivy")) {
+                return;
+            }
+
+            GrMethodCall repositoryMethodCall = PsiTreeUtil.getParentOfType(mavenMethodCall, GrMethodCall.class);
+            if (repositoryMethodCall == null) {
+                return;
+            }
+            GrExpression repositoryMethodExpression = repositoryMethodCall.getInvokedExpression();
+            if (repositoryMethodExpression == null || !repositoryMethodExpression.getText().equals("repositories")) {
+                return;
+            }
+
+            List<GrCallExpression> statements = findUrlCallExpressions(closure);
+            if (statements.size() > 1) {
+                registerError(closure);
+
+                registerError(closure, GradleInspectionBundle.message("multiple.repository.urls"),
+                    new LocalQuickFix[]{new MultipleRepositoryUrlsFix(closure, mavenMethodExpression.getText())},
+                    ProblemHighlightType.GENERIC_ERROR
+                );
+            }
         }
-      }
     }
-    return statements;
-  }
+
+    @Nonnull
+    static List<GrCallExpression> findUrlCallExpressions(@Nonnull GrClosableBlock closure) {
+        GrCallExpression[] applicationStatements = PsiTreeUtil.getChildrenOfType(closure, GrCallExpression.class);
+        if (applicationStatements == null) {
+            return Collections.emptyList();
+        }
+
+        List<GrCallExpression> statements = new ArrayList<>();
+        for (GrCallExpression statement : applicationStatements) {
+            GrReferenceExpression[] referenceExpressions = PsiTreeUtil.getChildrenOfType(statement, GrReferenceExpression.class);
+            if (referenceExpressions == null) {
+                continue;
+            }
+            for (GrReferenceExpression expression : referenceExpressions) {
+                String expressionText = expression.getText();
+                if ("url".equals(expressionText) || "setUrl".equals(expressionText)) {
+                    statements.add(statement);
+                }
+            }
+        }
+        return statements;
+    }
 }

@@ -44,39 +44,40 @@ import java.util.List;
  */
 @ActionImpl(id = "AddGradleDslPluginAction", parents = @ActionParentRef(value = @ActionRef(id = "GenerateGroup"), anchor = ActionRefAnchor.FIRST))
 public class AddGradleDslPluginAction extends CodeInsightAction {
-  private final Pair[] myPlugins;
+    private final Pair[] myPlugins;
 
-  public AddGradleDslPluginAction() {
-    getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.apply_plugin.description"));
-    getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"));
-    getTemplatePresentation().setIcon(AllIcons.Nodes.Plugin);
+    public AddGradleDslPluginAction() {
+        getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.apply_plugin.description"));
+        getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"));
+        getTemplatePresentation().setIcon(AllIcons.Nodes.Plugin);
 
-    final List<String> plugins = StringUtil.split(
-      "java,groovy,idea,eclipse,scala,antlr,application,ear,jetty,maven,osgi,war,announce," +
-      "build-announcements,checkstyle,codenarc,eclipse-wtp,findbugs,jdepend,pmd,project-report,signing,sonar", ",");
+        final List<String> plugins = StringUtil.split(
+            "java,groovy,idea,eclipse,scala,antlr,application,ear,jetty,maven,osgi,war,announce," +
+                "build-announcements,checkstyle,codenarc,eclipse-wtp,findbugs,jdepend,pmd,project-report,signing,sonar", ",");
 
-    myPlugins = new Pair[plugins.size()];
-    ContainerUtil.map2Array(plugins, myPlugins, o -> createPluginKey(o));
-    Arrays.sort(myPlugins, (o1, o2) -> String.valueOf(o1.getFirst()).compareTo(String.valueOf(o2.getFirst())));
-  }
+        myPlugins = new Pair[plugins.size()];
+        ContainerUtil.map2Array(plugins, myPlugins, o -> createPluginKey(o));
+        Arrays.sort(myPlugins, (o1, o2) -> String.valueOf(o1.getFirst()).compareTo(String.valueOf(o2.getFirst())));
+    }
 
-  @Nonnull
-  @Override
-  protected CodeInsightActionHandler getHandler() {
-    return new AddGradleDslPluginActionHandler(myPlugins);
-  }
+    @Nonnull
+    @Override
+    protected CodeInsightActionHandler getHandler() {
+        return new AddGradleDslPluginActionHandler(myPlugins);
+    }
 
-  @Override
-  protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
-    if (file instanceof PsiCompiledElement) return false;
-    if (!GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) return false;
-    return !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName()) && file.getName().endsWith(GradleConstants.EXTENSION);
-  }
+    @Override
+    protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
+        if (file instanceof PsiCompiledElement || !GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) {
+            return false;
+        }
+        return !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName()) && file.getName().endsWith(GradleConstants.EXTENSION);
+    }
 
-  @Nonnull
-  private static Pair<String, String> createPluginKey(@Nonnull String pluginName) {
-    String description = GradleDocumentationBundle.messageOrDefault(
-      String.format("gradle.documentation.org.gradle.api.Project.apply.plugin.%s.non-html", pluginName), "");
-    return Pair.create(pluginName, description);
-  }
+    @Nonnull
+    private static Pair<String, String> createPluginKey(@Nonnull String pluginName) {
+        String description = GradleDocumentationBundle.messageOrDefault(
+            String.format("gradle.documentation.org.gradle.api.Project.apply.plugin.%s.non-html", pluginName), "");
+        return Pair.create(pluginName, description);
+    }
 }

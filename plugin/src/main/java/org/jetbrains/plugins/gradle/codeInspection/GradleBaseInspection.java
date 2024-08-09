@@ -24,9 +24,9 @@ import javax.annotation.Nonnull;
  * @since 11/21/13
  */
 public abstract class GradleBaseInspection extends BaseInspection {
-  @Nonnull
-  @Override
-  public String[] getGroupPath() {
-    return new String[]{"Gradle", getGroupDisplayName()};
-  }
+    @Nonnull
+    @Override
+    public String[] getGroupPath() {
+        return new String[]{"Gradle", getGroupDisplayName()};
+    }
 }

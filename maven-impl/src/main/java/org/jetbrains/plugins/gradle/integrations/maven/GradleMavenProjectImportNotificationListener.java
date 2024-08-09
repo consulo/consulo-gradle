@@ -33,14 +33,15 @@ import javax.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GradleMavenProjectImportNotificationListener extends ExternalSystemTaskNotificationListenerAdapter {
-
-  @Override
-  public void onSuccess(@Nonnull ExternalSystemTaskId id) {
-    if (GradleConstants.SYSTEM_ID.getId().equals(id.getProjectSystemId().getId())
-      && id.getType() == ExternalSystemTaskType.RESOLVE_PROJECT) {
-      final Project project = id.findProject();
-      if (project == null) return;
-      Application.get().invokeLater(new ImportMavenRepositoriesTask(project));
+    @Override
+    public void onSuccess(@Nonnull ExternalSystemTaskId id) {
+        if (GradleConstants.SYSTEM_ID.getId().equals(id.getProjectSystemId().getId())
+            && id.getType() == ExternalSystemTaskType.RESOLVE_PROJECT) {
+            final Project project = id.findProject();
+            if (project == null) {
+                return;
+            }
+            Application.get().invokeLater(new ImportMavenRepositoriesTask(project));
+        }
     }
-  }
 }

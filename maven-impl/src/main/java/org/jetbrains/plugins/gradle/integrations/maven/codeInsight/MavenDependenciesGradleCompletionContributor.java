@@ -52,125 +52,142 @@ import static consulo.language.pattern.PlatformPatterns.psiElement;
  */
 @ExtensionImpl
 public class MavenDependenciesGradleCompletionContributor extends AbstractGradleCompletionContributor {
-  private static final String GROUP_LABEL = "group";
-  private static final String NAME_LABEL = "name";
-  private static final String VERSION_LABEL = "version";
-  private static final String DEPENDENCIES_SCRIPT_BLOCK = "dependencies";
+    private static final String GROUP_LABEL = "group";
+    private static final String NAME_LABEL = "name";
+    private static final String VERSION_LABEL = "version";
+    private static final String DEPENDENCIES_SCRIPT_BLOCK = "dependencies";
 
-  private static final ElementPattern<PsiElement> DEPENDENCIES_CALL_PATTERN = psiElement()
-    .inside(true, psiElement(GrMethodCallExpression.class).with(new PatternCondition<GrMethodCallExpression>("withInvokedExpressionText") {
-      @Override
-      public boolean accepts(@Nonnull GrMethodCallExpression expression, ProcessingContext context) {
-        if (checkExpression(expression)) return true;
-        return checkExpression(PsiTreeUtil.getParentOfType(expression, GrMethodCallExpression.class));
-      }
+    private static final ElementPattern<PsiElement> DEPENDENCIES_CALL_PATTERN = psiElement()
+        .inside(
+            true,
+            psiElement(GrMethodCallExpression.class).with(new PatternCondition<>("withInvokedExpressionText") {
+                @Override
+                public boolean accepts(@Nonnull GrMethodCallExpression expression, ProcessingContext context) {
+                    if (checkExpression(expression)) {
+                        return true;
+                    }
+                    return checkExpression(PsiTreeUtil.getParentOfType(expression, GrMethodCallExpression.class));
+                }
 
-      private boolean checkExpression(@Nullable GrMethodCallExpression expression) {
-        if (expression == null) return false;
-        GrExpression grExpression = expression.getInvokedExpression();
-        return grExpression != null && DEPENDENCIES_SCRIPT_BLOCK.equals(grExpression.getText());
-      }
-    }));
+                private boolean checkExpression(@Nullable GrMethodCallExpression expression) {
+                    if (expression == null) {
+                        return false;
+                    }
+                    GrExpression grExpression = expression.getInvokedExpression();
+                    return grExpression != null && DEPENDENCIES_SCRIPT_BLOCK.equals(grExpression.getText());
+                }
+            })
+        );
 
-  private static final ElementPattern<PsiElement> IN_MAP_DEPENDENCY_NOTATION = psiElement()
-    .and(AbstractGradleCompletionContributor.GRADLE_FILE_PATTERN)
-    .withParent(GrLiteral.class)
-    .withSuperParent(2, psiElement(GrNamedArgument.class))
-    .and(DEPENDENCIES_CALL_PATTERN);
+    private static final ElementPattern<PsiElement> IN_MAP_DEPENDENCY_NOTATION = psiElement()
+        .and(AbstractGradleCompletionContributor.GRADLE_FILE_PATTERN)
+        .withParent(GrLiteral.class)
+        .withSuperParent(2, psiElement(GrNamedArgument.class))
+        .and(DEPENDENCIES_CALL_PATTERN);
 
-  private static final ElementPattern<PsiElement> IN_METHOD_DEPENDENCY_NOTATION = psiElement()
-    .and(AbstractGradleCompletionContributor.GRADLE_FILE_PATTERN)
-    .and(DEPENDENCIES_CALL_PATTERN);
+    private static final ElementPattern<PsiElement> IN_METHOD_DEPENDENCY_NOTATION = psiElement()
+        .and(AbstractGradleCompletionContributor.GRADLE_FILE_PATTERN)
+        .and(DEPENDENCIES_CALL_PATTERN);
 
-  public MavenDependenciesGradleCompletionContributor() {
-    // map-style notation:
-    // e.g.:
-    //    compile group: 'com.google.code.guice', name: 'guice', version: '1.0'
-    //    runtime([group:'junit', name:'junit-dep', version:'4.7'])
-    //    compile(group:'junit', name:'junit-dep', version:'4.7')
-    extend(CompletionType.BASIC, IN_MAP_DEPENDENCY_NOTATION, new CompletionProvider() {
-      @Override
-      public void addCompletions(@Nonnull CompletionParameters params,
-                                 ProcessingContext context,
-                                 @Nonnull final CompletionResultSet result) {
-        result.stopHere();
+    public MavenDependenciesGradleCompletionContributor() {
+        // map-style notation:
+        // e.g.:
+        //    compile group: 'com.google.code.guice', name: 'guice', version: '1.0'
+        //    runtime([group:'junit', name:'junit-dep', version:'4.7'])
+        //    compile(group:'junit', name:'junit-dep', version:'4.7')
+        extend(CompletionType.BASIC, IN_MAP_DEPENDENCY_NOTATION, new CompletionProvider() {
+            @Override
+            public void addCompletions(
+                @Nonnull CompletionParameters params,
+                ProcessingContext context,
+                @Nonnull final CompletionResultSet result
+            ) {
+                result.stopHere();
 
-        final PsiElement parent = params.getPosition().getParent().getParent();
-        if (!(parent instanceof GrNamedArgument) || !(parent.getParent() instanceof GrNamedArgumentsOwner)) {
-          return;
-        }
+                final PsiElement parent = params.getPosition().getParent().getParent();
+                if (!(parent instanceof GrNamedArgument) || !(parent.getParent() instanceof GrNamedArgumentsOwner)) {
+                    return;
+                }
 
-        final GrNamedArgument namedArgument = (GrNamedArgument)parent;
-        if (GROUP_LABEL.equals(namedArgument.getLabelName())) {
-          MavenProjectIndicesManager m = MavenProjectIndicesManager.getInstance(namedArgument.getProject());
-          for (String groupId : m.getGroupIds()) {
-            LookupElement builder = LookupElementBuilder.create(groupId).withIcon(AllIcons.Nodes.PpLib);
-            result.addElement(builder);
-          }
-        }
-        else if (NAME_LABEL.equals(namedArgument.getLabelName())) {
-          String groupId = findNamedArgumentValue((GrNamedArgumentsOwner)namedArgument.getParent(), GROUP_LABEL);
-          if (groupId == null) return;
+                final GrNamedArgument namedArgument = (GrNamedArgument)parent;
+                if (GROUP_LABEL.equals(namedArgument.getLabelName())) {
+                    MavenProjectIndicesManager m = MavenProjectIndicesManager.getInstance(namedArgument.getProject());
+                    for (String groupId : m.getGroupIds()) {
+                        LookupElement builder = LookupElementBuilder.create(groupId).withIcon(AllIcons.Nodes.PpLib);
+                        result.addElement(builder);
+                    }
+                }
+                else if (NAME_LABEL.equals(namedArgument.getLabelName())) {
+                    String groupId = findNamedArgumentValue((GrNamedArgumentsOwner)namedArgument.getParent(), GROUP_LABEL);
+                    if (groupId == null) {
+                        return;
+                    }
 
-          MavenProjectIndicesManager m = MavenProjectIndicesManager.getInstance(namedArgument.getProject());
-          for (String artifactId : m.getArtifactIds(groupId)) {
-            LookupElement builder = LookupElementBuilder.create(artifactId).withIcon(AllIcons.Nodes.PpLib);
-            result.addElement(builder);
-          }
-        }
-        else if (VERSION_LABEL.equals(namedArgument.getLabelName())) {
-          GrNamedArgumentsOwner namedArgumentsOwner = (GrNamedArgumentsOwner)namedArgument.getParent();
+                    MavenProjectIndicesManager m = MavenProjectIndicesManager.getInstance(namedArgument.getProject());
+                    for (String artifactId : m.getArtifactIds(groupId)) {
+                        LookupElement builder = LookupElementBuilder.create(artifactId).withIcon(AllIcons.Nodes.PpLib);
+                        result.addElement(builder);
+                    }
+                }
+                else if (VERSION_LABEL.equals(namedArgument.getLabelName())) {
+                    GrNamedArgumentsOwner namedArgumentsOwner = (GrNamedArgumentsOwner)namedArgument.getParent();
 
-          String groupId = findNamedArgumentValue(namedArgumentsOwner, GROUP_LABEL);
-          if (groupId == null) return;
+                    String groupId = findNamedArgumentValue(namedArgumentsOwner, GROUP_LABEL);
+                    if (groupId == null) {
+                        return;
+                    }
 
-          String artifactId = findNamedArgumentValue(namedArgumentsOwner, NAME_LABEL);
-          if (artifactId == null) return;
+                    String artifactId = findNamedArgumentValue(namedArgumentsOwner, NAME_LABEL);
+                    if (artifactId == null) {
+                        return;
+                    }
 
-          MavenProjectIndicesManager m = MavenProjectIndicesManager.getInstance(namedArgument.getProject());
-          for (String version : m.getVersions(groupId, artifactId)) {
-            LookupElement builder = LookupElementBuilder.create(version).withIcon(AllIcons.Nodes.PpLib);
-            result.addElement(builder);
-          }
-        }
-      }
-    });
+                    MavenProjectIndicesManager m = MavenProjectIndicesManager.getInstance(namedArgument.getProject());
+                    for (String version : m.getVersions(groupId, artifactId)) {
+                        LookupElement builder = LookupElementBuilder.create(version).withIcon(AllIcons.Nodes.PpLib);
+                        result.addElement(builder);
+                    }
+                }
+            }
+        });
 
-    // group:name:version notation
-    // e.g.:
-    //    compile 'junit:junit:4.11'
-    //    compile('junit:junit:4.11')
-    extend(CompletionType.BASIC, IN_METHOD_DEPENDENCY_NOTATION, new CompletionProvider() {
-      @Override
-      public void addCompletions(@Nonnull CompletionParameters params,
-                                 ProcessingContext context,
-                                 @Nonnull final CompletionResultSet result) {
-        result.stopHere();
+        // group:name:version notation
+        // e.g.:
+        //    compile 'junit:junit:4.11'
+        //    compile('junit:junit:4.11')
+        extend(
+            CompletionType.BASIC,
+            IN_METHOD_DEPENDENCY_NOTATION,
+            (params, context, result) -> {
+                result.stopHere();
 
-        final PsiElement parent = params.getPosition().getParent();
-        if (!(parent instanceof GrLiteral) || !(parent.getParent() instanceof GrArgumentList)) return;
+                final PsiElement parent = params.getPosition().getParent();
+                if (!(parent instanceof GrLiteral) || !(parent.getParent() instanceof GrArgumentList)) {
+                    return;
+                }
 
-        String searchText = CompletionUtilCore.findReferenceOrAlphanumericPrefix(params);
-        MavenArtifactSearcher searcher = new MavenArtifactSearcher();
-        List<MavenArtifactSearchResult> searchResults = searcher.search(params.getPosition().getProject(), searchText, 100);
-        for (MavenArtifactSearchResult searchResult : searchResults) {
-          for (MavenArtifactInfo artifactInfo : searchResult.versions) {
-            final StringBuilder buf = new StringBuilder();
-            MavenId.append(buf, artifactInfo.getGroupId());
-            MavenId.append(buf, artifactInfo.getArtifactId());
-            MavenId.append(buf, artifactInfo.getVersion());
+                String searchText = CompletionUtilCore.findReferenceOrAlphanumericPrefix(params);
+                MavenArtifactSearcher searcher = new MavenArtifactSearcher();
+                List<MavenArtifactSearchResult> searchResults =
+                    searcher.search(params.getPosition().getProject(), searchText, 100);
+                for (MavenArtifactSearchResult searchResult : searchResults) {
+                    for (MavenArtifactInfo artifactInfo : searchResult.versions) {
+                        final StringBuilder buf = new StringBuilder();
+                        MavenId.append(buf, artifactInfo.getGroupId());
+                        MavenId.append(buf, artifactInfo.getArtifactId());
+                        MavenId.append(buf, artifactInfo.getVersion());
 
-            LookupElement builder = LookupElementBuilder.create(buf.toString()).withIcon(AllIcons.Nodes.PpLib);
-            result.addElement(builder);
-          }
-        }
-      }
-    });
-  }
+                        LookupElement builder = LookupElementBuilder.create(buf.toString()).withIcon(AllIcons.Nodes.PpLib);
+                        result.addElement(builder);
+                    }
+                }
+            }
+        );
+    }
 
-  @Nonnull
-  @Override
-  public Language getLanguage() {
-    return GroovyLanguage.INSTANCE;
-  }
+    @Nonnull
+    @Override
+    public Language getLanguage() {
+        return GroovyLanguage.INSTANCE;
+    }
 }

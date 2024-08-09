@@ -22,24 +22,20 @@ import org.jetbrains.annotations.PropertyKey;
  * @author Vladislav.Soroka
  * @since 9/13/13
  */
-public class GradleInspectionBundle extends AbstractBundle
-{
-	private static final String BUNDLE = "org.jetbrains.plugins.gradle.codeInspection.GradleInspectionBundle";
+public class GradleInspectionBundle extends AbstractBundle {
+    private static final String BUNDLE = "org.jetbrains.plugins.gradle.codeInspection.GradleInspectionBundle";
 
-	private static final GradleInspectionBundle ourInstance = new GradleInspectionBundle();
+    private static final GradleInspectionBundle ourInstance = new GradleInspectionBundle();
 
-	private GradleInspectionBundle()
-	{
-		super(BUNDLE);
-	}
+    private GradleInspectionBundle() {
+        super(BUNDLE);
+    }
 
-	public static String message(@PropertyKey(resourceBundle = BUNDLE) String key)
-	{
-		return ourInstance.getMessage(key);
-	}
+    public static String message(@PropertyKey(resourceBundle = BUNDLE) String key) {
+        return ourInstance.getMessage(key);
+    }
 
-	public static String message(@PropertyKey(resourceBundle = BUNDLE) String key, Object... params)
-	{
-		return ourInstance.getMessage(key, params);
-	}
+    public static String message(@PropertyKey(resourceBundle = BUNDLE) String key, Object... params) {
+        return ourInstance.getMessage(key, params);
+    }
 }

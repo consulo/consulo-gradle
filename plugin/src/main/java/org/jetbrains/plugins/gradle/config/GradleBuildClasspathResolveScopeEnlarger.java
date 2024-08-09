@@ -34,19 +34,20 @@ import java.util.List;
  */
 @ExtensionImpl
 public class GradleBuildClasspathResolveScopeEnlarger extends ResolveScopeEnlarger {
-  @Override
-  public SearchScope getAdditionalResolveScope(@Nonnull VirtualFile file, Project project) {
-    String fileExtension = file.getExtension();
-    if (GroovyFileType.DEFAULT_EXTENSION.equals(fileExtension)) {
-      GradleClassFinder gradleClassFinder = project.getExtensionPoint(PsiElementFinder.class).findExtensionOrFail(GradleClassFinder.class);
+    @Override
+    public SearchScope getAdditionalResolveScope(@Nonnull VirtualFile file, Project project) {
+        String fileExtension = file.getExtension();
+        if (GroovyFileType.DEFAULT_EXTENSION.equals(fileExtension)) {
+            GradleClassFinder gradleClassFinder =
+                project.getExtensionPoint(PsiElementFinder.class).findExtensionOrFail(GradleClassFinder.class);
 
-      final List<VirtualFile> roots = gradleClassFinder.getClassRoots();
-      for (VirtualFile root : roots) {
-        if (VfsUtilCore.isAncestor(root, file, true)) {
-          return NonClasspathDirectoriesScope.compose(roots);
+            final List<VirtualFile> roots = gradleClassFinder.getClassRoots();
+            for (VirtualFile root : roots) {
+                if (VfsUtilCore.isAncestor(root, file, true)) {
+                    return NonClasspathDirectoriesScope.compose(roots);
+                }
+            }
         }
-      }
+        return null;
     }
-    return null;
-  }
 }

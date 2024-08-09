@@ -45,73 +45,80 @@ import java.util.function.Predicate;
  * @since 10/23/13
  */
 class AddGradleDslDependencyActionHandler implements CodeInsightActionHandler {
+    @Override
+    public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
+        if (!LanguageEditorUtil.checkModificationAllowed(editor)) {
+            return;
+        }
 
-  @Override
-  public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
-    if (!LanguageEditorUtil.checkModificationAllowed(editor)) return;
-
-    final List<MavenId> ids;
-    if (ApplicationManager.getApplication().isUnitTestMode()) {
-      ids = AddGradleDslDependencyAction.TEST_THREAD_LOCAL.get();
-    }
-    else {
-      ids = MavenArtifactSearchDialog.searchForArtifact(project, Collections.<MavenDomDependency>emptyList());
-    }
-
-    if (ids.isEmpty()) return;
-
-    new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.text"), file) {
-      @Override
-      protected void run() {
-        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-        List<GrMethodCall> closableBlocks = PsiTreeUtil.getChildrenOfTypeAsList(file, GrMethodCall.class);
-        GrCall dependenciesBlock = ContainerUtil.find(closableBlocks, new Predicate<GrMethodCall>() {
-          @Override
-          public boolean test(GrMethodCall call) {
-            GrExpression expression = call.getInvokedExpression();
-            return expression != null && "dependencies".equals(expression.getText());
-          }
-        });
-
-        if (dependenciesBlock == null) {
-          StringBuilder buf = new StringBuilder();
-          for (MavenId mavenId : ids) {
-            buf.append(String.format("compile '%s'\n", getMavenArtifactKey(mavenId)));
-          }
-          dependenciesBlock = (GrCall)factory.createStatementFromText("dependencies{\n" + buf + "}");
-          file.add(dependenciesBlock);
+        final List<MavenId> ids;
+        if (ApplicationManager.getApplication().isUnitTestMode()) {
+            ids = AddGradleDslDependencyAction.TEST_THREAD_LOCAL.get();
         }
         else {
-          GrClosableBlock closableBlock = ArrayUtil.getFirstElement(dependenciesBlock.getClosureArguments());
-          if (closableBlock != null) {
-            for (MavenId mavenId : ids) {
-              closableBlock.addStatementBefore(
-                factory.createStatementFromText(String.format("compile '%s'\n", getMavenArtifactKey(mavenId))), null);
-            }
-          }
+            ids = MavenArtifactSearchDialog.searchForArtifact(project, Collections.<MavenDomDependency>emptyList());
         }
-      }
-    }.execute();
-  }
 
-  @Override
-  public boolean startInWriteAction() {
-    return false;
-  }
+        if (ids.isEmpty()) {
+            return;
+        }
+
+        new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.text"), file) {
+            @Override
+            protected void run() {
+                GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+                List<GrMethodCall> closableBlocks = PsiTreeUtil.getChildrenOfTypeAsList(file, GrMethodCall.class);
+                GrCall dependenciesBlock = ContainerUtil.find(closableBlocks, new Predicate<GrMethodCall>() {
+                    @Override
+                    public boolean test(GrMethodCall call) {
+                        GrExpression expression = call.getInvokedExpression();
+                        return expression != null && "dependencies".equals(expression.getText());
+                    }
+                });
+
+                if (dependenciesBlock == null) {
+                    StringBuilder buf = new StringBuilder();
+                    for (MavenId mavenId : ids) {
+                        buf.append(String.format("compile '%s'\n", getMavenArtifactKey(mavenId)));
+                    }
+                    dependenciesBlock = (GrCall)factory.createStatementFromText("dependencies{\n" + buf + "}");
+                    file.add(dependenciesBlock);
+                }
+                else {
+                    GrClosableBlock closableBlock = ArrayUtil.getFirstElement(dependenciesBlock.getClosureArguments());
+                    if (closableBlock != null) {
+                        for (MavenId mavenId : ids) {
+                            closableBlock.addStatementBefore(
+                                factory.createStatementFromText(String.format("compile '%s'\n", getMavenArtifactKey(mavenId))),
+                                null
+                            );
+                        }
+                    }
+                }
+            }
+        }.execute();
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return false;
+    }
 
 
-  @Nonnull
-  private static String getMavenArtifactKey(MavenId mavenId) {
-    StringBuilder builder = new StringBuilder();
-    append(builder, mavenId.getGroupId());
-    append(builder, mavenId.getArtifactId());
-    append(builder, mavenId.getVersion());
+    @Nonnull
+    private static String getMavenArtifactKey(MavenId mavenId) {
+        StringBuilder builder = new StringBuilder();
+        append(builder, mavenId.getGroupId());
+        append(builder, mavenId.getArtifactId());
+        append(builder, mavenId.getVersion());
 
-    return builder.toString();
-  }
+        return builder.toString();
+    }
 
-  private static void append(StringBuilder builder, String part) {
-    if (builder.length() != 0) builder.append(':');
-    builder.append(part == null ? "" : part);
-  }
+    private static void append(StringBuilder builder, String part) {
+        if (builder.length() != 0) {
+            builder.append(':');
+        }
+        builder.append(part == null ? "" : part);
+    }
 }

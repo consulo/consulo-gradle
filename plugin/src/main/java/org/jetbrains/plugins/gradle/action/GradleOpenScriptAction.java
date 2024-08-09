@@ -23,26 +23,25 @@ import javax.annotation.Nonnull;
  * @since 1/31/12 5:16 PM
  */
 public class GradleOpenScriptAction extends AbstractGradleLinkedProjectAction implements DumbAware {
+    private static final Logger LOG = Logger.getInstance(GradleOpenScriptAction.class);
 
-  private static final Logger LOG = Logger.getInstance(GradleOpenScriptAction.class);
-
-  public GradleOpenScriptAction() {
-    getTemplatePresentation().setText(GradleBundle.message("gradle.action.open.script.text"));
-    getTemplatePresentation().setDescription(GradleBundle.message("gradle.action.open.script.description"));
-  }
-
-  @Override
-  protected void doUpdate(@Nonnull AnActionEvent event, @Nonnull Project project, @Nonnull String linkedProjectPath) {
-  }
-
-  @Override
-  protected void doActionPerformed(@Nonnull AnActionEvent event, @Nonnull Project project, @Nonnull String linkedProjectPath) {
-    final VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(linkedProjectPath);
-    if (virtualFile == null) {
-      LOG.warn(String.format("Can't obtain virtual file for the target file path: '%s'", linkedProjectPath));
-      return;
+    public GradleOpenScriptAction() {
+        getTemplatePresentation().setText(GradleBundle.message("gradle.action.open.script.text"));
+        getTemplatePresentation().setDescription(GradleBundle.message("gradle.action.open.script.description"));
     }
-    OpenFileDescriptor descriptor = OpenFileDescriptorFactory.getInstance(project).builder(virtualFile).build();
-    FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-  }
+
+    @Override
+    protected void doUpdate(@Nonnull AnActionEvent event, @Nonnull Project project, @Nonnull String linkedProjectPath) {
+    }
+
+    @Override
+    protected void doActionPerformed(@Nonnull AnActionEvent event, @Nonnull Project project, @Nonnull String linkedProjectPath) {
+        final VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(linkedProjectPath);
+        if (virtualFile == null) {
+            LOG.warn(String.format("Can't obtain virtual file for the target file path: '%s'", linkedProjectPath));
+            return;
+        }
+        OpenFileDescriptor descriptor = OpenFileDescriptorFactory.getInstance(project).builder(virtualFile).build();
+        FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+    }
 }

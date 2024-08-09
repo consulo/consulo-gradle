@@ -80,270 +80,275 @@ import java.util.regex.Pattern;
  * @author peter
  */
 public class GradleScriptType extends GroovyRunnableScriptType {
-  private static final Pattern MAIN_CLASS_NAME_PATTERN = Pattern.compile("\nSTARTER_MAIN_CLASS=(.*)\n");
+    private static final Pattern MAIN_CLASS_NAME_PATTERN = Pattern.compile("\nSTARTER_MAIN_CLASS=(.*)\n");
 
-  public static final GroovyScriptType INSTANCE = new GradleScriptType();
+    public static final GroovyScriptType INSTANCE = new GradleScriptType();
 
-  private GradleScriptType() {
-    super(GradleConstants.EXTENSION);
-  }
-
-  @Nonnull
-  @Override
-  public Image getScriptIcon() {
-    return GradleIconGroup.gradle();
-  }
-
-  @Override
-  public boolean isConfigurationByLocation(@Nonnull GroovyScriptRunConfiguration existing, @Nonnull Location location) {
-    final String params = existing.getScriptParameters();
-    if (params == null) {
-      return false;
+    private GradleScriptType() {
+        super(GradleConstants.EXTENSION);
     }
 
-    final List<String> tasks = getTasksTarget(location);
-    if (tasks == null) {
-      return false;
+    @Nonnull
+    @Override
+    public Image getScriptIcon() {
+        return GradleIconGroup.gradle();
     }
 
-    String s = StringUtil.join(tasks, " ");
-    return params.startsWith(s + " ") || params.equals(s);
-  }
-
-  @Override
-  public void tuneConfiguration(@Nonnull GroovyFile file, @Nonnull GroovyScriptRunConfiguration configuration, Location location) {
-    List<String> tasks = getTasksTarget(location);
-    if (tasks != null) {
-      String s = StringUtil.join(tasks, " ");
-      configuration.setScriptParameters(s);
-      configuration.setName("gradle:" + s);
-    }
-
-    RunManager.getInstance(file.getProject()).disableTasks(configuration, CompileStepBeforeRun.ID, CompileStepBeforeRunNoErrorCheck.ID);
-  }
-
-  @Nullable
-  private static List<String> getTasksTarget(Location location) {
-    if (location instanceof GradleTaskLocation) {
-      return ((GradleTaskLocation)location).getTasks();
-    }
-
-    PsiElement parent = location.getPsiElement();
-    while (parent.getParent() != null && !(parent.getParent() instanceof PsiFile)) {
-      parent = parent.getParent();
-    }
-
-    if (isCreateTaskMethod(parent)) {
-      final GrExpression[] arguments = ((GrMethodCallExpression)parent).getExpressionArguments();
-      if (arguments.length > 0 && arguments[0] instanceof GrLiteral && ((GrLiteral)arguments[0]).getValue() instanceof String) {
-        return Collections.singletonList((String)((GrLiteral)arguments[0]).getValue());
-      }
-    }
-    else if (parent instanceof GrApplicationStatement) {
-      PsiElement shiftExpression = parent.getChildren()[1].getChildren()[0];
-      if (GradleResolverUtil.isLShiftElement(shiftExpression)) {
-        PsiElement shiftiesChild = shiftExpression.getChildren()[0];
-        if (shiftiesChild instanceof GrReferenceExpression) {
-          return Collections.singletonList(shiftiesChild.getText());
+    @Override
+    public boolean isConfigurationByLocation(@Nonnull GroovyScriptRunConfiguration existing, @Nonnull Location location) {
+        final String params = existing.getScriptParameters();
+        if (params == null) {
+            return false;
         }
-        else if (shiftiesChild instanceof GrMethodCallExpression) {
-          return Collections.singletonList(shiftiesChild.getChildren()[0].getText());
+
+        final List<String> tasks = getTasksTarget(location);
+        if (tasks == null) {
+            return false;
         }
-      }
-      else if (shiftExpression instanceof GrMethodCallExpression) {
-        return Collections.singletonList(shiftExpression.getChildren()[0].getText());
-      }
+
+        String s = StringUtil.join(tasks, " ");
+        return params.startsWith(s + " ") || params.equals(s);
     }
 
-    return null;
-  }
-
-  private static boolean isCreateTaskMethod(PsiElement parent) {
-    return parent instanceof GrMethodCallExpression && PsiUtil.isMethodCall((GrMethodCallExpression)parent, "createTask");
-  }
-
-  @Override
-  public GroovyScriptRunner getRunner() {
-    return new GroovyScriptRunner() {
-      @Override
-      public boolean shouldRefreshAfterFinish() {
-        return true;
-      }
-
-      @Override
-      public boolean isValidModule(@Nonnull Module module) {
-        GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
-        return libraryManager.isGradleSdk(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
-      }
-
-      @Override
-      public boolean ensureRunnerConfigured(@Nullable Module module,
-                                            RunProfile profile,
-                                            Executor executor,
-                                            final Project project) throws ExecutionException {
-        if (project != null && profile instanceof GroovyScriptRunConfiguration) {
-          GroovyScriptRunConfiguration configuration = (GroovyScriptRunConfiguration)profile;
-          String parameters = configuration.getScriptParameters();
-          if (parameters != null) {
-            // TODO den implement
-            //            GradleTasksList list = GradleUtil.getToolWindowElement(GradleTasksList.class, project,
-            // ExternalSystemDataKeys.RECENT_TASKS_LIST);
-            //            if (list != null) {
-            //              ExternalSystemTaskDescriptor descriptor = new ExternalSystemTaskDescriptor(parameters, null);
-            //              descriptor.setExecutorId(executor.getId());
-            //              list.setFirst(descriptor);
-            //              GradleLocalSettings.getInstance(project).setRecentTasks(list.getModel().getTasks());
-            //            }
-          }
+    @Override
+    public void tuneConfiguration(@Nonnull GroovyFile file, @Nonnull GroovyScriptRunConfiguration configuration, Location location) {
+        List<String> tasks = getTasksTarget(location);
+        if (tasks != null) {
+            String s = StringUtil.join(tasks, " ");
+            configuration.setScriptParameters(s);
+            configuration.setName("gradle:" + s);
         }
-        final GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
-        // TODO den implement
-        //if (libraryManager.getGradleHome(module, project) == null) {
-        //  int result = 0;
-        //          int result = Messages.showOkCancelDialog(
-        //            ExternalSystemBundle.message("gradle.run.no.sdk.text"),
-        //            ExternalSystemBundle.message("gradle.run.no.sdk.title"),
-        //            GradleIcons.Gradle
-        //          );
-        //          if (result == 0) {
-        //            ShowSettingsUtil.getInstance().editConfigurable(project, new AbstractExternalProjectConfigurable(project));
-        //          }
-        //          if (libraryManager.getGradleHome(module, project) == null) {
-        //            return false;
-        //          }
-        //        }
-        return true;
-      }
 
-      @Override
-      public void configureCommandLine(OwnJavaParameters params,
-                                       @Nullable Module module,
-                                       boolean tests,
-                                       VirtualFile script,
-                                       GroovyScriptRunConfiguration configuration) throws CantRunException {
-        final Project project = configuration.getProject();
-        String scriptParameters = configuration.getScriptParameters();
+        RunManager.getInstance(file.getProject())
+            .disableTasks(configuration, CompileStepBeforeRun.ID, CompileStepBeforeRunNoErrorCheck.ID);
+    }
 
-        final GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
+    @Nullable
+    private static List<String> getTasksTarget(Location location) {
+        if (location instanceof GradleTaskLocation gradleTaskLocation) {
+            return gradleTaskLocation.getTasks();
+        }
+
+        PsiElement parent = location.getPsiElement();
+        while (parent.getParent() != null && !(parent.getParent() instanceof PsiFile)) {
+            parent = parent.getParent();
+        }
+
+        if (isCreateTaskMethod(parent)) {
+            final GrExpression[] arguments = ((GrMethodCallExpression)parent).getExpressionArguments();
+            if (arguments.length > 0 && arguments[0] instanceof GrLiteral literal && literal.getValue() instanceof String arg0) {
+                return Collections.singletonList(arg0);
+            }
+        }
+        else if (parent instanceof GrApplicationStatement) {
+            PsiElement shiftExpression = parent.getChildren()[1].getChildren()[0];
+            if (GradleResolverUtil.isLShiftElement(shiftExpression)) {
+                PsiElement shiftiesChild = shiftExpression.getChildren()[0];
+                if (shiftiesChild instanceof GrReferenceExpression) {
+                    return Collections.singletonList(shiftiesChild.getText());
+                }
+                else if (shiftiesChild instanceof GrMethodCallExpression) {
+                    return Collections.singletonList(shiftiesChild.getChildren()[0].getText());
+                }
+            }
+            else if (shiftExpression instanceof GrMethodCallExpression) {
+                return Collections.singletonList(shiftExpression.getChildren()[0].getText());
+            }
+        }
+
+        return null;
+    }
+
+    private static boolean isCreateTaskMethod(PsiElement parent) {
+        return parent instanceof GrMethodCallExpression callExpr && PsiUtil.isMethodCall(callExpr, "createTask");
+    }
+
+    @Override
+    public GroovyScriptRunner getRunner() {
+        return new GroovyScriptRunner() {
+            @Override
+            public boolean shouldRefreshAfterFinish() {
+                return true;
+            }
+
+            @Override
+            public boolean isValidModule(@Nonnull Module module) {
+                GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
+                return libraryManager.isGradleSdk(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
+            }
+
+            @Override
+            public boolean ensureRunnerConfigured(
+                @Nullable Module module,
+                RunProfile profile,
+                Executor executor,
+                final Project project
+            ) throws ExecutionException {
+                if (project != null && profile instanceof GroovyScriptRunConfiguration configuration) {
+                    String parameters = configuration.getScriptParameters();
+                    if (parameters != null) {
+                        // TODO den implement
+                        //            GradleTasksList list = GradleUtil.getToolWindowElement(GradleTasksList.class, project,
+                        // ExternalSystemDataKeys.RECENT_TASKS_LIST);
+                        //            if (list != null) {
+                        //              ExternalSystemTaskDescriptor descriptor = new ExternalSystemTaskDescriptor(parameters, null);
+                        //              descriptor.setExecutorId(executor.getId());
+                        //              list.setFirst(descriptor);
+                        //              GradleLocalSettings.getInstance(project).setRecentTasks(list.getModel().getTasks());
+                        //            }
+                    }
+                }
+                final GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
+                // TODO den implement
+                //if (libraryManager.getGradleHome(module, project) == null) {
+                //  int result = 0;
+                //          int result = Messages.showOkCancelDialog(
+                //            ExternalSystemBundle.message("gradle.run.no.sdk.text"),
+                //            ExternalSystemBundle.message("gradle.run.no.sdk.title"),
+                //            GradleIcons.Gradle
+                //          );
+                //          if (result == 0) {
+                //            ShowSettingsUtil.getInstance().editConfigurable(project, new AbstractExternalProjectConfigurable(project));
+                //          }
+                //          if (libraryManager.getGradleHome(module, project) == null) {
+                //            return false;
+                //          }
+                //        }
+                return true;
+            }
+
+            @Override
+            public void configureCommandLine(
+                OwnJavaParameters params,
+                @Nullable Module module,
+                boolean tests,
+                VirtualFile script,
+                GroovyScriptRunConfiguration configuration
+            ) throws CantRunException {
+                final Project project = configuration.getProject();
+                String scriptParameters = configuration.getScriptParameters();
+
+                final GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
+                if (module == null) {
+                    throw new CantRunException("Target module is undefined");
+                }
+                String rootProjectPath =
+                    ExternalSystemApiUtil.getExtensionSystemOption(module, ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
+                if (StringUtil.isEmpty(rootProjectPath)) {
+                    throw new CantRunException(String.format("Module '%s' is not backed by gradle", module.getName()));
+                }
+                final VirtualFile gradleHome = libraryManager.getGradleHome(module, project, rootProjectPath);
+                if (gradleHome == null) {
+                    throw new CantRunException("Gradle home can not be found");
+                }
+
+                params.setMainClass(findMainClass(gradleHome, script, project));
+
+                final File[] groovyJars = GroovyConfigUtils.getGroovyAllJars(gradleHome.getPath() + "/lib/");
+                if (groovyJars.length > 0) {
+                    params.getClassPath().add(groovyJars[0].getAbsolutePath());
+                }
+                else {
+                    final VirtualFile groovyJar = findGroovyJar(module);
+                    if (groovyJar != null) {
+                        params.getClassPath().add(groovyJar);
+                    }
+                }
+
+                final String userDefinedClasspath = System.getProperty("gradle.launcher.classpath");
+                if (StringUtil.isNotEmpty(userDefinedClasspath)) {
+                    params.getClassPath().add(userDefinedClasspath);
+                }
+                else {
+                    final Collection<VirtualFile> roots = libraryManager.getClassRoots(project);
+                    if (roots != null) {
+                        params.getClassPath().addVirtualFiles(roots);
+                    }
+                }
+
+                params.getVMParametersList().addParametersString(configuration.getVMParameters());
+
+
+                params.getVMParametersList().add("-Dgradle.home=" + FileUtil.toSystemDependentName(gradleHome.getPath()));
+
+                setToolsJar(params);
+
+                final String scriptPath = configuration.getScriptPath();
+                if (scriptPath == null) {
+                    throw new CantRunException("Target script is undefined");
+                }
+                params.getProgramParametersList().add("--build-file");
+                params.getProgramParametersList().add(FileUtil.toSystemDependentName(scriptPath));
+                params.getProgramParametersList().addParametersString(configuration.getProgramParameters());
+                params.getProgramParametersList().addParametersString(scriptParameters);
+            }
+        };
+    }
+
+    @Nonnull
+    private static String findMainClass(VirtualFile gradleHome, VirtualFile script, Project project) {
+        final String userDefined = System.getProperty("gradle.launcher.class");
+        if (StringUtil.isNotEmpty(userDefined)) {
+            return userDefined;
+        }
+
+        VirtualFile launcher = gradleHome.findFileByRelativePath("bin/gradle");
+        if (launcher == null) {
+            launcher = gradleHome.findFileByRelativePath("bin/gradle.bat");
+        }
+        if (launcher != null) {
+            try {
+                final String text = StringUtil.convertLineSeparators(VfsUtilCore.loadText(launcher));
+                final Matcher matcher = MAIN_CLASS_NAME_PATTERN.matcher(text);
+                if (matcher.find()) {
+                    String candidate = matcher.group(1);
+                    if (StringUtil.isNotEmpty(candidate)) {
+                        return candidate;
+                    }
+                }
+            }
+            catch (IOException ignored) {
+            }
+        }
+
+        final PsiFile grFile = PsiManager.getInstance(project).findFile(script);
+        if (grFile != null && JavaPsiFacade.getInstance(project).findClass("org.gradle.BootstrapMain", grFile.getResolveScope()) != null) {
+            return "org.gradle.BootstrapMain";
+        }
+
+        return "org.gradle.launcher.GradleMain";
+    }
+
+    @Override
+    public GlobalSearchScope patchResolveScope(@Nonnull GroovyFile file, @Nonnull GlobalSearchScope baseScope) {
+        if (!FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) {
+            return baseScope;
+        }
+
+        final Module module = ModuleUtilCore.findModuleForPsiElement(file);
         if (module == null) {
-          throw new CantRunException("Target module is undefined");
-        }
-        String rootProjectPath = ExternalSystemApiUtil.getExtensionSystemOption(module, ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
-        if (StringUtil.isEmpty(rootProjectPath)) {
-          throw new CantRunException(String.format("Module '%s' is not backed by gradle", module.getName()));
-        }
-        final VirtualFile gradleHome = libraryManager.getGradleHome(module, project, rootProjectPath);
-        if (gradleHome == null) {
-          throw new CantRunException("Gradle home can not be found");
+            return GlobalSearchScope.EMPTY_SCOPE;
         }
 
-        params.setMainClass(findMainClass(gradleHome, script, project));
-
-        final File[] groovyJars = GroovyConfigUtils.getGroovyAllJars(gradleHome.getPath() + "/lib/");
-        if (groovyJars.length > 0) {
-          params.getClassPath().add(groovyJars[0].getAbsolutePath());
-        }
-        else {
-          final VirtualFile groovyJar = findGroovyJar(module);
-          if (groovyJar != null) {
-            params.getClassPath().add(groovyJar);
-          }
+        Project project = module.getProject();
+        GlobalSearchScope result = GlobalSearchScope.EMPTY_SCOPE;
+        for (OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries()) {
+            if (entry instanceof ModuleExtensionWithSdkOrderEntry) {
+                GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(project).getScopeForSdk((ModuleExtensionWithSdkOrderEntry)
+                    entry);
+                result = result.uniteWith(scopeForSdk);
+            }
         }
 
-        final String userDefinedClasspath = System.getProperty("gradle.launcher.classpath");
-        if (StringUtil.isNotEmpty(userDefinedClasspath)) {
-          params.getClassPath().add(userDefinedClasspath);
-        }
-        else {
-          final Collection<VirtualFile> roots = libraryManager.getClassRoots(project);
-          if (roots != null) {
-            params.getClassPath().addVirtualFiles(roots);
-          }
+        String modulePath = ExternalSystemApiUtil.getExternalProjectPath(module);
+        if (modulePath == null) {
+            return result;
         }
 
-        params.getVMParametersList().addParametersString(configuration.getVMParameters());
+        final Collection<VirtualFile> files = GradleBuildClasspathManager.getInstance(project).getModuleClasspathEntries(modulePath);
 
+        result = new ExternalModuleBuildGlobalSearchScope(project, result.uniteWith(new NonClasspathDirectoriesScope(files)), modulePath);
 
-        params.getVMParametersList().add("-Dgradle.home=" + FileUtil.toSystemDependentName(gradleHome.getPath()));
-
-        setToolsJar(params);
-
-        final String scriptPath = configuration.getScriptPath();
-        if (scriptPath == null) {
-          throw new CantRunException("Target script is undefined");
-        }
-        params.getProgramParametersList().add("--build-file");
-        params.getProgramParametersList().add(FileUtil.toSystemDependentName(scriptPath));
-        params.getProgramParametersList().addParametersString(configuration.getProgramParameters());
-        params.getProgramParametersList().addParametersString(scriptParameters);
-      }
-    };
-  }
-
-  @Nonnull
-  private static String findMainClass(VirtualFile gradleHome, VirtualFile script, Project project) {
-    final String userDefined = System.getProperty("gradle.launcher.class");
-    if (StringUtil.isNotEmpty(userDefined)) {
-      return userDefined;
+        return result;
     }
-
-    VirtualFile launcher = gradleHome.findFileByRelativePath("bin/gradle");
-    if (launcher == null) {
-      launcher = gradleHome.findFileByRelativePath("bin/gradle.bat");
-    }
-    if (launcher != null) {
-      try {
-        final String text = StringUtil.convertLineSeparators(VfsUtilCore.loadText(launcher));
-        final Matcher matcher = MAIN_CLASS_NAME_PATTERN.matcher(text);
-        if (matcher.find()) {
-          String candidate = matcher.group(1);
-          if (StringUtil.isNotEmpty(candidate)) {
-            return candidate;
-          }
-        }
-      }
-      catch (IOException ignored) {
-      }
-    }
-
-    final PsiFile grFile = PsiManager.getInstance(project).findFile(script);
-    if (grFile != null && JavaPsiFacade.getInstance(project).findClass("org.gradle.BootstrapMain", grFile.getResolveScope()) != null) {
-      return "org.gradle.BootstrapMain";
-    }
-
-    return "org.gradle.launcher.GradleMain";
-  }
-
-  @Override
-  public GlobalSearchScope patchResolveScope(@Nonnull GroovyFile file, @Nonnull GlobalSearchScope baseScope) {
-    if (!FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)) {
-      return baseScope;
-    }
-
-    final Module module = ModuleUtilCore.findModuleForPsiElement(file);
-    if (module == null) {
-      return GlobalSearchScope.EMPTY_SCOPE;
-    }
-
-    Project project = module.getProject();
-    GlobalSearchScope result = GlobalSearchScope.EMPTY_SCOPE;
-    for (OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries()) {
-      if (entry instanceof ModuleExtensionWithSdkOrderEntry) {
-        GlobalSearchScope scopeForSdk = LibraryScopeCache.getInstance(project).getScopeForSdk((ModuleExtensionWithSdkOrderEntry)
-                                                                                                entry);
-        result = result.uniteWith(scopeForSdk);
-      }
-    }
-
-    String modulePath = ExternalSystemApiUtil.getExternalProjectPath(module);
-    if (modulePath == null) {
-      return result;
-    }
-
-    final Collection<VirtualFile> files = GradleBuildClasspathManager.getInstance(project).getModuleClasspathEntries(modulePath);
-
-    result = new ExternalModuleBuildGlobalSearchScope(project, result.uniteWith(new NonClasspathDirectoriesScope(files)), modulePath);
-
-    return result;
-  }
 }

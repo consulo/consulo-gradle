@@ -51,70 +51,78 @@ import java.util.function.Consumer;
  * @since 10/24/13
  */
 class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
-  private final Pair[] myPlugins;
+    private final Pair[] myPlugins;
 
-  public AddGradleDslPluginActionHandler(Pair[] plugins) {
-    myPlugins = plugins;
-  }
+    public AddGradleDslPluginActionHandler(Pair[] plugins) {
+        myPlugins = plugins;
+    }
 
-  @Override
-  public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
-    if (!LanguageEditorUtil.checkModificationAllowed(editor)) return;
-
-    Consumer<Pair> runnable =
-      selected -> new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"), file) {
-        @Override
-        protected void run() {
-          if (selected == null) return;
-          GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-          GrStatement grStatement = factory.createStatementFromText(
-            String.format("apply plugin: '%s'", selected.getFirst()), null);
-
-          PsiElement anchor = file.findElementAt(editor.getCaretModel().getOffset());
-          PsiElement currentElement = PsiTreeUtil.getParentOfType(anchor, GrClosableBlock.class, GroovyFile.class);
-          if (currentElement != null) {
-            currentElement.addAfter(grStatement, anchor);
-          }
-          else {
-            file.addAfter(grStatement, file.findElementAt(editor.getCaretModel().getOffset() - 1));
-          }
-          PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
-          Document document = documentManager.getDocument(file);
-          if (document != null) {
-            documentManager.commitDocument(document);
-          }
+    @Override
+    public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
+        if (!LanguageEditorUtil.checkModificationAllowed(editor)) {
+            return;
         }
-      }.execute();
 
-    JBPopup popup = JBPopupFactory.getInstance().createPopupChooserBuilder(List.of(myPlugins))
-                                  .setTitle(GradleBundle.message("gradle.codeInsight.action.apply_plugin.popup.title"))
-                                  .setNamerForFiltering(pair -> String.valueOf(pair.getFirst()))
-                                  .setItemChosenCallback(runnable)
-                                  .setRenderer(new ColoredListCellRenderer<Pair<String, String>>() {
+        Consumer<Pair> runnable =
+            selected -> new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"), file) {
+                @Override
+                protected void run() {
+                    if (selected == null) {
+                        return;
+                    }
+                    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+                    GrStatement grStatement = factory.createStatementFromText(
+                        String.format("apply plugin: '%s'", selected.getFirst()),
+                        null
+                    );
 
-                                    @Override
-                                    protected void customizeCellRenderer(@Nonnull JList<? extends Pair<String, String>> list,
-                                                                         Pair<String, String> descriptor,
-                                                                         int index,
-                                                                         boolean selected,
-                                                                         boolean hasFocus) {
-                                      EditorColorsScheme scheme = EditorColorsManager.getInstance().getGlobalScheme();
-                                      Font font = scheme.getFont(EditorFontType.PLAIN);
-                                      setFont(font);
+                    PsiElement anchor = file.findElementAt(editor.getCaretModel().getOffset());
+                    PsiElement currentElement = PsiTreeUtil.getParentOfType(anchor, GrClosableBlock.class, GroovyFile.class);
+                    if (currentElement != null) {
+                        currentElement.addAfter(grStatement, anchor);
+                    }
+                    else {
+                        file.addAfter(grStatement, file.findElementAt(editor.getCaretModel().getOffset() - 1));
+                    }
+                    PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
+                    Document document = documentManager.getDocument(file);
+                    if (document != null) {
+                        documentManager.commitDocument(document);
+                    }
+                }
+            }.execute();
 
-                                      append(String.valueOf(descriptor.getFirst()));
+        JBPopup popup = JBPopupFactory.getInstance().createPopupChooserBuilder(List.of(myPlugins))
+            .setTitle(GradleBundle.message("gradle.codeInsight.action.apply_plugin.popup.title"))
+            .setNamerForFiltering(pair -> String.valueOf(pair.getFirst()))
+            .setItemChosenCallback(runnable)
+            .setRenderer(new ColoredListCellRenderer<Pair<String, String>>() {
 
-                                      String description = String.valueOf(descriptor.getSecond());
-                                      append(description, SimpleTextAttributes.GRAY_ATTRIBUTES);
-                                    }
-                                  })
-                                  .createPopup();
+                @Override
+                protected void customizeCellRenderer(
+                    @Nonnull JList<? extends Pair<String, String>> list,
+                    Pair<String, String> descriptor,
+                    int index,
+                    boolean selected,
+                    boolean hasFocus
+                ) {
+                    EditorColorsScheme scheme = EditorColorsManager.getInstance().getGlobalScheme();
+                    Font font = scheme.getFont(EditorFontType.PLAIN);
+                    setFont(font);
 
-    EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
-  }
+                    append(String.valueOf(descriptor.getFirst()));
 
-  @Override
-  public boolean startInWriteAction() {
-    return false;
-  }
+                    String description = String.valueOf(descriptor.getSecond());
+                    append(description, SimpleTextAttributes.GRAY_ATTRIBUTES);
+                }
+            })
+            .createPopup();
+
+        EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return false;
+    }
 }

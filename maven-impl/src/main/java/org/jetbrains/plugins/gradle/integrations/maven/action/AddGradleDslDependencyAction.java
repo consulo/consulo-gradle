@@ -39,24 +39,25 @@ import java.util.List;
  */
 @ActionImpl(id = "Gradle.AddGradleDslDependencyAction", parents = @ActionParentRef(value = @ActionRef(id = "GenerateGroup")))
 public class AddGradleDslDependencyAction extends CodeInsightAction {
-  static final ThreadLocal<List<MavenId>> TEST_THREAD_LOCAL = new ThreadLocal<List<MavenId>>();
+    static final ThreadLocal<List<MavenId>> TEST_THREAD_LOCAL = new ThreadLocal<>();
 
-  public AddGradleDslDependencyAction() {
-    getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.description"));
-    getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.text"));
-    getTemplatePresentation().setIcon(AllIcons.Nodes.PpLib);
-  }
+    public AddGradleDslDependencyAction() {
+        getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.description"));
+        getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.text"));
+        getTemplatePresentation().setIcon(AllIcons.Nodes.PpLib);
+    }
 
-  @Nonnull
-  @Override
-  protected CodeInsightActionHandler getHandler() {
-    return new AddGradleDslDependencyActionHandler();
-  }
+    @Nonnull
+    @Override
+    protected CodeInsightActionHandler getHandler() {
+        return new AddGradleDslDependencyActionHandler();
+    }
 
-  @Override
-  protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
-    if (file instanceof PsiCompiledElement) return false;
-    if (!GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) return false;
-    return !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName()) && file.getName().endsWith(GradleConstants.EXTENSION);
-  }
+    @Override
+    protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
+        if (file instanceof PsiCompiledElement || !GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) {
+            return false;
+        }
+        return !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName()) && file.getName().endsWith(GradleConstants.EXTENSION);
+    }
 }
