@@ -18,6 +18,7 @@ package org.jetbrains.plugins.gradle.config;
 import com.intellij.java.language.impl.psi.NonClasspathDirectoriesScope;
 import com.intellij.java.language.psi.JavaPsiFacade;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.Application;
 import consulo.compiler.execution.CompileStepBeforeRun;
 import consulo.compiler.execution.CompileStepBeforeRunNoErrorCheck;
 import consulo.execution.CantRunException;
@@ -179,7 +180,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
 
             @Override
             public boolean isValidModule(@Nonnull Module module) {
-                GradleInstallationManager libraryManager = module.getInstance(GradleInstallationManager.class);
+                GradleInstallationManager libraryManager = module.getApplication().getInstance(GradleInstallationManager.class);
                 return libraryManager.isGradleSdk(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
             }
 
@@ -204,7 +205,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
                         //            }
                     }
                 }
-                final GradleInstallationManager libraryManager = ServiceManager.getService(GradleInstallationManager.class);
+                final GradleInstallationManager libraryManager = Application.get().getInstance(GradleInstallationManager.class);
                 // TODO den implement
                 //if (libraryManager.getGradleHome(module, project) == null) {
                 //  int result = 0;
@@ -235,7 +236,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
                 final Project project = configuration.getProject();
                 String scriptParameters = configuration.getScriptParameters();
 
-                final GradleInstallationManager libraryManager = project.getInstance(GradleInstallationManager.class);
+                final GradleInstallationManager libraryManager = project.getApplication().getInstance(GradleInstallationManager.class);
                 if (module == null) {
                     throw new CantRunException("Target module is undefined");
                 }
