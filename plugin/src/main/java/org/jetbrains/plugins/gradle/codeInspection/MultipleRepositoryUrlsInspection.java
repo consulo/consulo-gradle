@@ -17,6 +17,7 @@ package org.jetbrains.plugins.gradle.codeInspection;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
+import consulo.gradle.codeInspection.localize.GradleInspectionLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiFile;
@@ -64,14 +65,14 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
 
     @Override
     protected String buildErrorString(Object... args) {
-        return GradleInspectionBundle.message("multiple.repository.urls", args);
+        return GradleInspectionLocalize.multipleRepositoryUrls().get();
     }
 
     @Nls
     @Nonnull
     @Override
     public String getDisplayName() {
-        return GradleInspectionBundle.message("multiple.repository.urls");
+        return GradleInspectionLocalize.multipleRepositoryUrls().get();
     }
 
     private static class MyVisitor extends BaseInspectionVisitor {
@@ -107,7 +108,9 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
             if (statements.size() > 1) {
                 registerError(closure);
 
-                registerError(closure, GradleInspectionBundle.message("multiple.repository.urls"),
+                registerError(
+                    closure,
+                    GradleInspectionLocalize.multipleRepositoryUrls().get(),
                     new LocalQuickFix[]{new MultipleRepositoryUrlsFix(closure, mavenMethodExpression.getText())},
                     ProblemHighlightType.GENERIC_ERROR
                 );

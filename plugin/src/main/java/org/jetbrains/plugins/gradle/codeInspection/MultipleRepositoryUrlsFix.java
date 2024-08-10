@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.gradle.codeInspection;
 
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.gradle.codeInspection.localize.GradleInspectionLocalize;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -79,6 +80,6 @@ public class MultipleRepositoryUrlsFix extends GroovyFix {
     @Nonnull
     @Override
     public String getName() {
-        return GradleInspectionBundle.message("multiple.repository.urls.fix.name");
+        return GradleInspectionLocalize.multipleRepositoryUrlsFixName().get();
     }
 }
