@@ -18,6 +18,7 @@ package org.jetbrains.plugins.gradle.service.resolve.dsl;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.annotation.AnnotationHolder;
 import consulo.language.editor.annotation.Annotator;
 import consulo.language.editor.annotation.HighlightSeverity;
@@ -41,6 +42,7 @@ import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.ca
  */
 public class GradleDslAnnotator implements Annotator {
     @Override
+    @RequiredReadAction
     public void annotate(@Nonnull PsiElement element, @Nonnull AnnotationHolder holder) {
         if (element instanceof GrReferenceExpression referenceExpression) {
             final GrExpression qualifier = ResolveUtil.getSelfOrWithQualifier(referenceExpression);
@@ -71,7 +73,8 @@ public class GradleDslAnnotator implements Annotator {
                 PsiElement nameElement = referenceExpression.getReferenceNameElement();
                 if (nameElement != null) {
                     holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                        .textAttributes(GroovySyntaxHighlighter.MAP_KEY);
+                        .textAttributes(GroovySyntaxHighlighter.MAP_KEY)
+                        .create();
                 }
             }
         }
