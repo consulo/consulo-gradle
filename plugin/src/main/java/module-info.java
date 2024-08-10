@@ -27,6 +27,4 @@ open module org.jetbrains.plugins.gradle {
     // TODO remove in future
     requires consulo.ide.impl;
     requires java.desktop;
-
-    exports consulo.gradle.codeInspection.localize;
 }
