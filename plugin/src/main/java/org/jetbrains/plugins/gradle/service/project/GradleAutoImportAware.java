@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * @author Denis Zhdanov
- * @since 6/8/13 3:49 PM
+ * @since 2013-06-08
  */
 public class GradleAutoImportAware implements ExternalSystemAutoImportAware {
     @Nullable

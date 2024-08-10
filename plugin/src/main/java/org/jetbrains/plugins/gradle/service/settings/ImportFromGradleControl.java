@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
- * @since 4/30/13 4:58 PM
+ * @since 2013-04-30
  */
 public class ImportFromGradleControl
     extends AbstractImportFromExternalSystemControl<GradleProjectSettings, GradleSettingsListener, GradleSettings> {

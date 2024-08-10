@@ -29,18 +29,19 @@ import javax.annotation.Nonnull;
  * {@link GradleMavenProjectImportNotificationListener} listens for Gradle project import events.
  *
  * @author Vladislav.Soroka
- * @since 10/28/13
+ * @since 2013-10-28
  */
 @ExtensionImpl
 public class GradleMavenProjectImportNotificationListener extends ExternalSystemTaskNotificationListenerAdapter {
-
-  @Override
-  public void onSuccess(@Nonnull ExternalSystemTaskId id) {
-    if (GradleConstants.SYSTEM_ID.getId().equals(id.getProjectSystemId().getId())
-      && id.getType() == ExternalSystemTaskType.RESOLVE_PROJECT) {
-      final Project project = id.findProject();
-      if (project == null) return;
-      Application.get().invokeLater(new ImportMavenRepositoriesTask(project));
+    @Override
+    public void onSuccess(@Nonnull ExternalSystemTaskId id) {
+        if (GradleConstants.SYSTEM_ID.getId().equals(id.getProjectSystemId().getId())
+            && id.getType() == ExternalSystemTaskType.RESOLVE_PROJECT) {
+            final Project project = id.findProject();
+            if (project == null) {
+                return;
+            }
+            Application.get().invokeLater(new ImportMavenRepositoriesTask(project));
+        }
     }
-  }
 }

@@ -57,7 +57,7 @@ import java.util.Map;
 
 /**
  * @author Vladislav.Soroka
- * @since 7/17/2014
+ * @since 2014-07-17
  */
 @Order(ExternalSystemConstants.BUILTIN_SERVICE_ORDER)
 public class ExternalProjectDataService implements ProjectDataService<ExternalProject, Project> {

@@ -41,7 +41,7 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.
 
 /**
  * @author Vladislav.Soroka
- * @since 8/30/13
+ * @since 2013-08-30
  */
 @ExtensionImpl
 public class GradleConfigurationsNonCodeMembersContributor extends NonCodeMembersContributor {

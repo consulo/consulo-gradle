@@ -27,34 +27,36 @@ import java.util.Set;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/28/13
+ * @since 2013-10-28
  */
 @Singleton
 @ServiceAPI(ComponentScope.PROJECT)
 @ServiceImpl
 public class MavenRepositoriesHolder {
-  private volatile Set<MavenRemoteRepository> myRemoteRepositories;
+    private volatile Set<MavenRemoteRepository> myRemoteRepositories;
 
-  public MavenRepositoriesHolder() {
-    myRemoteRepositories = new HashSet<>();
-  }
-
-  public static MavenRepositoriesHolder getInstance(Project project) {
-    return project.getInstance(MavenRepositoriesHolder.class);
-  }
-
-  public void update(Set<MavenRemoteRepository> remoteRepositories) {
-    myRemoteRepositories = new HashSet<>(remoteRepositories);
-  }
-
-  public Set<MavenRemoteRepository> getRemoteRepositories() {
-    return myRemoteRepositories;
-  }
-
-  public boolean contains(String repositoryId) {
-    for (MavenRemoteRepository repository : myRemoteRepositories) {
-      if (repository.getId().equals(repositoryId)) return true;
+    public MavenRepositoriesHolder() {
+        myRemoteRepositories = new HashSet<>();
     }
-    return false;
-  }
+
+    public static MavenRepositoriesHolder getInstance(Project project) {
+        return project.getInstance(MavenRepositoriesHolder.class);
+    }
+
+    public void update(Set<MavenRemoteRepository> remoteRepositories) {
+        myRemoteRepositories = new HashSet<>(remoteRepositories);
+    }
+
+    public Set<MavenRemoteRepository> getRemoteRepositories() {
+        return myRemoteRepositories;
+    }
+
+    public boolean contains(String repositoryId) {
+        for (MavenRemoteRepository repository : myRemoteRepositories) {
+            if (repository.getId().equals(repositoryId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

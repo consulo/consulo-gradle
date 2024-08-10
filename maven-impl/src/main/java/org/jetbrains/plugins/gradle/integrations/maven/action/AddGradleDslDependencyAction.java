@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.gradle.integrations.maven.action;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
 import consulo.application.AllIcons;
 import consulo.codeEditor.Editor;
-import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.language.editor.action.CodeInsightAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiCompiledElement;
@@ -35,28 +36,30 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/23/13
+ * @since 2013-10-23
  */
 @ActionImpl(id = "Gradle.AddGradleDslDependencyAction", parents = @ActionParentRef(value = @ActionRef(id = "GenerateGroup")))
 public class AddGradleDslDependencyAction extends CodeInsightAction {
-  static final ThreadLocal<List<MavenId>> TEST_THREAD_LOCAL = new ThreadLocal<List<MavenId>>();
+    static final ThreadLocal<List<MavenId>> TEST_THREAD_LOCAL = new ThreadLocal<>();
 
-  public AddGradleDslDependencyAction() {
-    getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.description"));
-    getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.add_maven_dependency.text"));
-    getTemplatePresentation().setIcon(AllIcons.Nodes.PpLib);
-  }
+    public AddGradleDslDependencyAction() {
+        getTemplatePresentation().setDescriptionValue(GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyDescription());
+        getTemplatePresentation().setTextValue(GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyText());
+        getTemplatePresentation().setIcon(AllIcons.Nodes.PpLib);
+    }
 
-  @Nonnull
-  @Override
-  protected CodeInsightActionHandler getHandler() {
-    return new AddGradleDslDependencyActionHandler();
-  }
+    @Nonnull
+    @Override
+    protected CodeInsightActionHandler getHandler() {
+        return new AddGradleDslDependencyActionHandler();
+    }
 
-  @Override
-  protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
-    if (file instanceof PsiCompiledElement) return false;
-    if (!GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) return false;
-    return !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName()) && file.getName().endsWith(GradleConstants.EXTENSION);
-  }
+    @Override
+    @RequiredReadAction
+    protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
+        return !(file instanceof PsiCompiledElement)
+            && GroovyFileType.INSTANCE.equals(file.getFileType())
+            && !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName())
+            && file.getName().endsWith(GradleConstants.EXTENSION);
+    }
 }

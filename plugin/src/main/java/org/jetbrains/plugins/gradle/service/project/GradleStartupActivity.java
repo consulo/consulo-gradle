@@ -51,7 +51,7 @@ import java.util.Collections;
 
 /**
  * @author Vladislav.Soroka
- * @since 12/10/13
+ * @since 2013-12-10
  */
 @ExtensionImpl
 public class GradleStartupActivity implements PostStartupActivity {

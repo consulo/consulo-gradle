@@ -45,7 +45,7 @@ import java.util.function.Function;
 
 /**
  * @author Denis Zhdanov
- * @since 3/14/13 5:09 PM
+ * @since 2013-03-14
  */
 public class GradleTaskManager extends AbstractExternalSystemTaskManager<GradleExecutionSettings> implements
     ExternalSystemTaskManager<GradleExecutionSettings> {

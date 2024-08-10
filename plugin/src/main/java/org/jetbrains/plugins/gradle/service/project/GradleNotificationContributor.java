@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 /**
  * @author VISTALL
- * @since 31/03/2023
+ * @since 2023-03-31
  */
 @ExtensionImpl
 public class GradleNotificationContributor implements NotificationGroupContributor {

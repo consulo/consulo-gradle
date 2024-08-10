@@ -37,7 +37,7 @@ import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.ca
 
 /**
  * @author Vladislav.Soroka
- * @since 9/25/13
+ * @since 2013-09-25
  */
 public class GradleDslAnnotator implements Annotator {
     @Override

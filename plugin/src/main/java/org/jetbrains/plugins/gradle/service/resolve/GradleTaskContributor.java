@@ -40,7 +40,7 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 9/9/13
+ * @since 2013-09-09
  */
 @ExtensionImpl
 public class GradleTaskContributor implements GradleMethodContextContributor {

@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.codeInspection;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -32,44 +33,52 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 11/21/13
+ * @since 2013-11-21
  */
 public class MultipleRepositoryUrlsFix extends GroovyFix {
-  private final GrClosableBlock myClosure;
-  private final String myRepoType;
+    private final GrClosableBlock myClosure;
+    private final String myRepoType;
 
-  public MultipleRepositoryUrlsFix(@Nonnull GrClosableBlock closure, @Nonnull String repoType) {
-    myClosure = closure;
-    myRepoType = repoType;
-  }
-
-  @Override
-  protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-    List<GrCallExpression> statements = MultipleRepositoryUrlsInspection.findUrlCallExpressions(myClosure);
-    if (statements.size() <= 1) return;
-    statements.remove(0);
-
-    List<PsiElement> elements = new ArrayList<PsiElement>(statements);
-    for (GrCallExpression statement : statements) {
-      PsiElement newLineCandidate = statement.getNextSibling();
-      if (PsiUtil.isNewLine(newLineCandidate)) {
-        elements.add(newLineCandidate);
-      }
+    public MultipleRepositoryUrlsFix(@Nonnull GrClosableBlock closure, @Nonnull String repoType) {
+        myClosure = closure;
+        myRepoType = repoType;
     }
 
-    myClosure.removeElements(elements.toArray(new PsiElement[elements.size()]));
-    GrClosableBlock closableBlock = PsiTreeUtil.getParentOfType(myClosure, GrClosableBlock.class);
-    if (closableBlock == null) return;
+    @Override
+    @RequiredWriteAction
+    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+        List<GrCallExpression> statements = MultipleRepositoryUrlsInspection.findUrlCallExpressions(myClosure);
+        if (statements.size() <= 1) {
+            return;
+        }
+        statements.remove(0);
 
-    GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(project);
-    for (GrCallExpression statement : statements) {
-      closableBlock.addStatementBefore(elementFactory.createStatementFromText(myRepoType + '{' + statement.getText() + '}'), null);
+        List<PsiElement> elements = new ArrayList<>(statements);
+        for (GrCallExpression statement : statements) {
+            PsiElement newLineCandidate = statement.getNextSibling();
+            if (PsiUtil.isNewLine(newLineCandidate)) {
+                elements.add(newLineCandidate);
+            }
+        }
+
+        myClosure.removeElements(elements.toArray(new PsiElement[elements.size()]));
+        GrClosableBlock closableBlock = PsiTreeUtil.getParentOfType(myClosure, GrClosableBlock.class);
+        if (closableBlock == null) {
+            return;
+        }
+
+        GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(project);
+        for (GrCallExpression statement : statements) {
+            closableBlock.addStatementBefore(
+                elementFactory.createStatementFromText(myRepoType + '{' + statement.getText() + '}'),
+                null
+            );
+        }
     }
-  }
 
-  @Nonnull
-  @Override
-  public String getName() {
-    return GradleInspectionBundle.message("multiple.repository.urls.fix.name");
-  }
+    @Nonnull
+    @Override
+    public String getName() {
+        return GradleInspectionBundle.message("multiple.repository.urls.fix.name");
+    }
 }

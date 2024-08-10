@@ -30,7 +30,7 @@ import java.net.UnknownHostException;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/16/13
+ * @since 2013-10-16
  */
 public class BaseProjectImportErrorHandler extends AbstractProjectImportErrorHandler {
     private static final Logger LOG = Logger.getInstance(BaseProjectImportErrorHandler.class);

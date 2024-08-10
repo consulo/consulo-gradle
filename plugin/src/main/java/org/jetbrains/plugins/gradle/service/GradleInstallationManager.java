@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * Thread-safe.
  *
  * @author Denis Zhdanov
- * @since 8/4/11 11:06 AM
+ * @since 2011-08-04
  */
 @ServiceAPI(ComponentScope.APPLICATION)
 @ServiceImpl

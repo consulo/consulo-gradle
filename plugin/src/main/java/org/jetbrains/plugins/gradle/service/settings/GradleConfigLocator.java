@@ -22,7 +22,7 @@ import java.util.List;
  * That's why we need to provide special code which maps that directory to exact config file.
  *
  * @author Denis Zhdanov
- * @since 7/16/13 3:43 PM
+ * @since 2013-07-16
  */
 @ExtensionImpl
 public class GradleConfigLocator implements ExternalSystemConfigLocator {

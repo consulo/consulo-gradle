@@ -25,14 +25,13 @@ import java.util.Set;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/25/13
+ * @since 2013-10-25
  */
 @ExtensionImpl
 public class GradleMavenRepositoryProvider implements MavenRepositoryProvider {
-
-  @Nonnull
-  @Override
-  public Set<MavenRemoteRepository> getRemoteRepositories(@Nonnull Project project) {
-    return MavenRepositoriesHolder.getInstance(project).getRemoteRepositories();
-  }
+    @Nonnull
+    @Override
+    public Set<MavenRemoteRepository> getRemoteRepositories(@Nonnull Project project) {
+        return MavenRepositoriesHolder.getInstance(project).getRemoteRepositories();
+    }
 }

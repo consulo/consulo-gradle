@@ -43,7 +43,7 @@ import java.util.List;
  * is expected to be backed by corresponding implementation of the current interface.
  *
  * @author Denis Zhdanov
- * @since 7/23/13 7:32 PM
+ * @since 2013-07-23
  */
 @ExtensionAPI(ComponentScope.APPLICATION)
 public interface GradleMethodContextContributor {

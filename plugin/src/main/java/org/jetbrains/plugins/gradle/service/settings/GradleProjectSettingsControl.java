@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Denis Zhdanov
- * @since 4/24/13 1:45 PM
+ * @since 2013-04-24
  */
 public class GradleProjectSettingsControl extends AbstractExternalProjectSettingsControl<GradleProjectSettings> {
     private static final long BALLOON_DELAY_MILLIS = TimeUnit.SECONDS.toMillis(1);

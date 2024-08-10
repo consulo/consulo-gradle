@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 /**
  * @author Denis Zhdanov
- * @since 23.05.13 17:56
+ * @since 2013-05-23
  */
 @ExtensionImpl
 public class GradleExternalTaskConfigurationType extends AbstractExternalSystemTaskConfigurationType {

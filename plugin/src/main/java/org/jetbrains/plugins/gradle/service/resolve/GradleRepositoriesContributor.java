@@ -19,7 +19,7 @@ import consulo.annotation.component.ExtensionImpl;
 
 /**
  * @author Denis Zhdanov
- * @since 8/14/13 12:56 PM
+ * @since 2013-08-14
  */
 @ExtensionImpl
 public class GradleRepositoriesContributor extends GradleSimpleContributor {

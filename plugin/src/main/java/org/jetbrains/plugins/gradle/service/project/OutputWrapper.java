@@ -10,7 +10,7 @@ import java.io.OutputStream;
 
 /**
  * @author Denis Zhdanov
- * @since 23.05.13 15:50
+ * @since 2013-05-23
  */
 public class OutputWrapper extends OutputStream {
     @Nonnull

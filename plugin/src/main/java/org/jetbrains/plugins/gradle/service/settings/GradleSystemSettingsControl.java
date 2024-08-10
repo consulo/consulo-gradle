@@ -44,7 +44,7 @@ import java.io.File;
  * a global one).
  *
  * @author Denis Zhdanov
- * @since 4/28/13 11:06 AM
+ * @since 2013-04-28
  */
 public class GradleSystemSettingsControl implements ExternalSystemSettingsControl<GradleSettings> {
     @Nonnull

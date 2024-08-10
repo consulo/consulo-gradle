@@ -46,7 +46,7 @@ import java.util.Arrays;
 
 /**
  * @author Vladislav.Soroka
- * @since 8/30/13
+ * @since 2013-08-30
  */
 public class GradleResolverUtil {
     public static int getGrMethodArumentsCount(@Nonnull GrArgumentList args) {

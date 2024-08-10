@@ -15,23 +15,25 @@
  */
 package org.jetbrains.plugins.gradle.codeInsight.actions;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
 import consulo.annotation.component.ActionRefAnchor;
 import consulo.application.AllIcons;
 import consulo.codeEditor.Editor;
+import consulo.gradle.GradleConstants;
+import consulo.gradle.GradleDocumentationBundle;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.language.editor.action.CodeInsightAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiCompiledElement;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Couple;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
-import consulo.gradle.GradleBundle;
-import consulo.gradle.GradleConstants;
-import consulo.gradle.GradleDocumentationBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.annotation.Nonnull;
@@ -40,43 +42,52 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/22/13
+ * @since 2013-10-22
  */
-@ActionImpl(id = "AddGradleDslPluginAction", parents = @ActionParentRef(value = @ActionRef(id = "GenerateGroup"), anchor = ActionRefAnchor.FIRST))
+@ActionImpl(
+    id = "AddGradleDslPluginAction",
+    parents = @ActionParentRef(value = @ActionRef(id = "GenerateGroup"), anchor = ActionRefAnchor.FIRST)
+)
 public class AddGradleDslPluginAction extends CodeInsightAction {
-  private final Pair[] myPlugins;
+    private final Pair[] myPlugins;
 
-  public AddGradleDslPluginAction() {
-    getTemplatePresentation().setDescription(GradleBundle.message("gradle.codeInsight.action.apply_plugin.description"));
-    getTemplatePresentation().setText(GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"));
-    getTemplatePresentation().setIcon(AllIcons.Nodes.Plugin);
+    public AddGradleDslPluginAction() {
+        getTemplatePresentation().setDescriptionValue(GradleLocalize.gradleCodeinsightActionApply_pluginDescription());
+        getTemplatePresentation().setTextValue(GradleLocalize.gradleCodeinsightActionApply_pluginText());
+        getTemplatePresentation().setIcon(AllIcons.Nodes.Plugin);
 
-    final List<String> plugins = StringUtil.split(
-      "java,groovy,idea,eclipse,scala,antlr,application,ear,jetty,maven,osgi,war,announce," +
-      "build-announcements,checkstyle,codenarc,eclipse-wtp,findbugs,jdepend,pmd,project-report,signing,sonar", ",");
+        final List<String> plugins = StringUtil.split(
+            "java,groovy,idea,eclipse,scala,antlr,application,ear,jetty,maven,osgi,war,announce," +
+                "build-announcements,checkstyle,codenarc,eclipse-wtp,findbugs,jdepend,pmd,project-report,signing,sonar",
+            ","
+        );
 
-    myPlugins = new Pair[plugins.size()];
-    ContainerUtil.map2Array(plugins, myPlugins, o -> createPluginKey(o));
-    Arrays.sort(myPlugins, (o1, o2) -> String.valueOf(o1.getFirst()).compareTo(String.valueOf(o2.getFirst())));
-  }
+        myPlugins = new Pair[plugins.size()];
+        ContainerUtil.map2Array(plugins, myPlugins, AddGradleDslPluginAction::createPluginKey);
+        Arrays.sort(myPlugins, (o1, o2) -> String.valueOf(o1.getFirst()).compareTo(String.valueOf(o2.getFirst())));
+    }
 
-  @Nonnull
-  @Override
-  protected CodeInsightActionHandler getHandler() {
-    return new AddGradleDslPluginActionHandler(myPlugins);
-  }
+    @Nonnull
+    @Override
+    protected CodeInsightActionHandler getHandler() {
+        return new AddGradleDslPluginActionHandler(myPlugins);
+    }
 
-  @Override
-  protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
-    if (file instanceof PsiCompiledElement) return false;
-    if (!GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) return false;
-    return !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName()) && file.getName().endsWith(GradleConstants.EXTENSION);
-  }
+    @Override
+    @RequiredReadAction
+    protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
+        return !(file instanceof PsiCompiledElement)
+            && GroovyFileType.INSTANCE.equals(file.getFileType())
+            && !GradleConstants.SETTINGS_FILE_NAME.equals(file.getName())
+            && file.getName().endsWith(GradleConstants.EXTENSION);
+    }
 
-  @Nonnull
-  private static Pair<String, String> createPluginKey(@Nonnull String pluginName) {
-    String description = GradleDocumentationBundle.messageOrDefault(
-      String.format("gradle.documentation.org.gradle.api.Project.apply.plugin.%s.non-html", pluginName), "");
-    return Pair.create(pluginName, description);
-  }
+    @Nonnull
+    private static Couple<String> createPluginKey(@Nonnull String pluginName) {
+        String description = GradleDocumentationBundle.messageOrDefault(
+            String.format("gradle.documentation.org.gradle.api.Project.apply.plugin.%s.non-html", pluginName),
+            ""
+        );
+        return Couple.of(pluginName, description);
+    }
 }
