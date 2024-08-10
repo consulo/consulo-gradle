@@ -1,4 +1,6 @@
+/.consulo
+!/.consulo/codeStyleSettings.xml
+!/.consulo/runConfigurations
 /out
 /dep
-.consulo/
 target/
