@@ -1,34 +1,30 @@
 /**
  * @author VISTALL
- * @since 31/03/2023
+ * @since 2023-03-31
  */
 open module org.jetbrains.plugins.gradle {
-  requires consulo.ide.api;
+    requires com.google.gson;
+    requires com.intellij.properties;
 
-  requires consulo.java.execution.api;
-  requires consulo.java.execution.impl;
-  requires com.intellij.properties;
-  requires org.intellij.groovy.psi;
-  requires org.intellij.groovy;
+    requires consulo.ide.api;
+    requires consulo.internal.jdi;
+    requires consulo.java.execution.api;
+    requires consulo.java.execution.impl;
+    requires consulo.util.nodep;
 
-  requires org.jetbrains.plugins.gradle.api;
+    requires gradle.all;
+    requires kryo;
+    requires minlog;
+    requires objenesis;
 
-  requires consulo.internal.jdi;
+    requires org.apache.groovy;
+    requires org.intellij.groovy;
+    requires org.intellij.groovy.psi;
+    requires org.jetbrains.plugins.gradle.api;
+    requires org.jetbrains.plugins.gradle.tooling;
+    requires org.jetbrains.plugins.gradle.tooling.impl;
 
-  requires com.google.gson;
-  requires org.apache.groovy;
-
-  requires consulo.util.nodep;
-
-  requires gradle.all;
-  requires kryo;
-  requires minlog;
-  requires objenesis;
-
-  requires org.jetbrains.plugins.gradle.tooling;
-  requires org.jetbrains.plugins.gradle.tooling.impl;
-
-  // TODO remove in future
-  requires consulo.ide.impl;
-  requires java.desktop;
+    // TODO remove in future
+    requires consulo.ide.impl;
+    requires java.desktop;
 }

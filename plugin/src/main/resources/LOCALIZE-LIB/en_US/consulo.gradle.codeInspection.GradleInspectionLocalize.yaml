@@ -1,0 +1,6 @@
+group.other:
+    text: Other
+multiple.repository.urls:
+    text: Multiple repository urls
+multiple.repository.urls.fix.name:
+    text: Replace multiple repository urls with separate repository blocks

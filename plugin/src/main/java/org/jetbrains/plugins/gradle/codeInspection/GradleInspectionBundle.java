@@ -15,13 +15,19 @@
  */
 package org.jetbrains.plugins.gradle.codeInspection;
 
+import consulo.annotation.DeprecationInfo;
+import consulo.annotation.internal.MigratedExtensionsTo;
 import consulo.component.util.localize.AbstractBundle;
+import consulo.gradle.codeInspection.localize.GradleInspectionLocalize;
 import org.jetbrains.annotations.PropertyKey;
 
 /**
  * @author Vladislav.Soroka
  * @since 2013-09-13
  */
+@Deprecated
+@DeprecationInfo("GradleInspectionLocalize")
+@MigratedExtensionsTo(GradleInspectionLocalize.class)
 public class GradleInspectionBundle extends AbstractBundle {
     private static final String BUNDLE = "org.jetbrains.plugins.gradle.codeInspection.GradleInspectionBundle";
 
