@@ -18,7 +18,8 @@ package org.jetbrains.plugins.gradle.codeInspection;
 import consulo.annotation.DeprecationInfo;
 import consulo.annotation.internal.MigratedExtensionsTo;
 import consulo.component.util.localize.AbstractBundle;
-import consulo.gradle.codeInspection.localize.GradleInspectionLocalize;import org.jetbrains.annotations.PropertyKey;
+import consulo.gradle.codeInspection.localize.GradleInspectionLocalize;
+import org.jetbrains.annotations.PropertyKey;
 
 /**
  * @author Vladislav.Soroka
