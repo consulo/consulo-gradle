@@ -17,8 +17,9 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.ide.impl.idea.util.containers.ContainerUtil;
+import consulo.util.collection.ContainerUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.resolve.PsiScopeProcessor;
@@ -38,59 +39,62 @@ import java.util.Set;
 
 /**
  * @author Denis Zhdanov
- * @since 7/23/13 4:21 PM
+ * @since 2013-07-23
  */
 @ExtensionImpl
 public class GradleScriptContributor extends NonCodeMembersContributor {
+    public final static Set<String> BUILD_PROJECT_SCRIPT_BLOCKS = Set.of(
+        "project",
+        "configure",
+        "subprojects",
+        "allprojects",
+        "buildscript"
+    );
 
-  public final static Set<String> BUILD_PROJECT_SCRIPT_BLOCKS = ContainerUtil.newHashSet(
-    "project",
-    "configure",
-    "subprojects",
-    "allprojects",
-    "buildscript"
-  );
+    @Override
+    @RequiredReadAction
+    public void processDynamicElements(
+        @Nonnull PsiType qualifierType,
+        PsiClass aClass,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull PsiElement place,
+        @Nonnull ResolveState state
+    ) {
+        if (place == null) {
+            return;
+        }
 
+        if (!(aClass instanceof GroovyScriptClass)) {
+            return;
+        }
 
-  @Override
-  public void processDynamicElements(@Nonnull PsiType qualifierType,
-                                     PsiClass aClass,
-                                     PsiScopeProcessor processor,
-                                     PsiElement place,
-                                     ResolveState state) {
-    if (place == null) {
-      return;
+        PsiFile file = aClass.getContainingFile();
+        if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)
+            || GradleConstants.SETTINGS_FILE_NAME.equals(file.getName())) {
+            return;
+        }
+
+        List<String> methodInfo = new ArrayList<>();
+        for (GrMethodCall current = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
+             current != null;
+             current = PsiTreeUtil.getParentOfType(current, GrMethodCall.class)) {
+            GrExpression expression = current.getInvokedExpression();
+            if (expression == null) {
+                continue;
+            }
+            String text = expression.getText();
+            if (text != null) {
+                methodInfo.add(text);
+            }
+        }
+
+        final String methodCall = ContainerUtil.getLastItem(methodInfo);
+        if (methodInfo.size() > 1 && BUILD_PROJECT_SCRIPT_BLOCKS.contains(methodCall)) {
+            methodInfo.remove(methodInfo.size() - 1);
+        }
+
+        for (GradleMethodContextContributor contributor : GradleMethodContextContributor.EP_NAME.getExtensions()) {
+            contributor.process(methodInfo, processor, state, place);
+        }
     }
-
-    if (!(aClass instanceof GroovyScriptClass)) {
-      return;
-    }
-
-    PsiFile file = aClass.getContainingFile();
-    if (file == null || !FileUtil.extensionEquals(file.getName(), GradleConstants.EXTENSION)
-      || GradleConstants.SETTINGS_FILE_NAME.equals(file.getName())) return;
-
-    List<String> methodInfo = new ArrayList<>();
-    for (GrMethodCall current = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
-         current != null;
-         current = PsiTreeUtil.getParentOfType(current, GrMethodCall.class)) {
-      GrExpression expression = current.getInvokedExpression();
-      if (expression == null) {
-        continue;
-      }
-      String text = expression.getText();
-      if (text != null) {
-        methodInfo.add(text);
-      }
-    }
-
-    final String methodCall = ContainerUtil.getLastItem(methodInfo);
-    if (methodInfo.size() > 1 && BUILD_PROJECT_SCRIPT_BLOCKS.contains(methodCall)) {
-      methodInfo.remove(methodInfo.size() - 1);
-    }
-
-    for (GradleMethodContextContributor contributor : GradleMethodContextContributor.EP_NAME.getExtensions()) {
-      contributor.process(methodInfo, processor, state, place);
-    }
-  }
 }

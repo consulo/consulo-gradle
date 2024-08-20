@@ -31,97 +31,109 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 8/29/13
+ * @since 2013-08-29
  */
 @ExtensionImpl
 public class GradleSourceSetsContributor implements GradleMethodContextContributor {
-  @Nonnull
-  public static GradleSourceSetsContributor getInstance() {
-    return EP_NAME.findExtension(GradleSourceSetsContributor.class);
-  }
-
-  static final String SOURCE_SETS = "sourceSets";
-  private static final String CONFIGURE_CLOSURE_METHOD = "configure";
-  private static final int SOURCE_SET_CONTAINER_LEVEL = 1;
-  private static final int SOURCE_SET_LEVEL = 2;
-  private static final int SOURCE_DIRECTORY_LEVEL = 3;
-  private static final int SOURCE_DIRECTORY_CLOSURE_LEVEL = 4;
-
-  @Override
-  public void process(@Nonnull List<String> methodCallInfo,
-                      @Nonnull PsiScopeProcessor processor,
-                      @Nonnull ResolveState state,
-                      @Nonnull PsiElement place) {
-    if (methodCallInfo.isEmpty()) {
-      return;
-    }
-    String methodCall = ContainerUtil.getLastItem(methodCallInfo);
-    if (methodCall == null) {
-      return;
+    @Nonnull
+    public static GradleSourceSetsContributor getInstance() {
+        return EP_NAME.findExtension(GradleSourceSetsContributor.class);
     }
 
-    if (methodCallInfo.size() > 1 && "sourceSets".equals(place.getText()) && place instanceof GrReferenceExpressionImpl) {
-      GradleResolverUtil
-        .addImplicitVariable(processor, state, (GrReferenceExpressionImpl)place, GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER);
-    }
+    static final String SOURCE_SETS = "sourceSets";
+    private static final String CONFIGURE_CLOSURE_METHOD = "configure";
+    private static final int SOURCE_SET_CONTAINER_LEVEL = 1;
+    private static final int SOURCE_SET_LEVEL = 2;
+    private static final int SOURCE_DIRECTORY_LEVEL = 3;
+    private static final int SOURCE_DIRECTORY_CLOSURE_LEVEL = 4;
 
-    if (methodCallInfo.size() > 1 && methodCall.equals("project")) {
-      methodCallInfo.remove(methodCallInfo.size() - 1);
-      methodCall = ContainerUtil.getLastItem(methodCallInfo);
-    }
+    @Override
+    public void process(
+        @Nonnull List<String> methodCallInfo,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    ) {
+        if (methodCallInfo.isEmpty()) {
+            return;
+        }
+        String methodCall = ContainerUtil.getLastItem(methodCallInfo);
+        if (methodCall == null) {
+            return;
+        }
 
-    if (methodCall == null || methodCallInfo.size() > SOURCE_DIRECTORY_CLOSURE_LEVEL || !StringUtil.startsWith(methodCall, SOURCE_SETS)) {
-      return;
-    }
+        if (methodCallInfo.size() > 1 && "sourceSets".equals(place.getText()) && place instanceof GrReferenceExpressionImpl placeRefExpr) {
+            GradleResolverUtil.addImplicitVariable(
+                processor,
+                state,
+                placeRefExpr,
+                GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER
+            );
+        }
 
-    String configureClosureClazz = null;
-    String contributorClass = null;
+        if (methodCallInfo.size() > 1 && methodCall.equals("project")) {
+            methodCallInfo.remove(methodCallInfo.size() - 1);
+            methodCall = ContainerUtil.getLastItem(methodCallInfo);
+        }
 
-    boolean isRootRelated = StringUtil.startsWith(methodCall, SOURCE_SETS + '.');
+        if (methodCall == null || methodCallInfo.size() > SOURCE_DIRECTORY_CLOSURE_LEVEL
+            || !StringUtil.startsWith(methodCall, SOURCE_SETS)) {
+            return;
+        }
 
-    if (methodCallInfo.size() == SOURCE_SET_CONTAINER_LEVEL) {
-      configureClosureClazz = GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER;
-      if (place instanceof GrReferenceExpressionImpl) {
-        String varClazz = StringUtil.startsWith(methodCall, SOURCE_SETS + '.')
-          ? GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER
-          : GradleCommonClassNames.GRADLE_API_SOURCE_SET;
-        GradleResolverUtil.addImplicitVariable(processor, state, (GrReferenceExpressionImpl)place, varClazz);
-      }
-      else {
-        contributorClass = GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER;
-      }
-    }
-    else if (methodCallInfo.size() == SOURCE_SET_LEVEL) {
-      configureClosureClazz = GradleCommonClassNames.GRADLE_API_SOURCE_SET;
-      contributorClass = GradleCommonClassNames.GRADLE_API_SOURCE_SET;
-    }
-    else if (methodCallInfo.size() == SOURCE_DIRECTORY_LEVEL) {
-      GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-      PsiClass psiClass = psiManager.findClassWithCache(GradleCommonClassNames.GRADLE_API_SOURCE_SET, place.getResolveScope());
-      configureClosureClazz =
-        GradleResolverUtil.canBeMethodOf(place.getText(), psiClass) ? null : GradleCommonClassNames.GRADLE_API_SOURCE_DIRECTORY_SET;
-      contributorClass = GradleCommonClassNames.GRADLE_API_SOURCE_DIRECTORY_SET;
-    }
-    else if (methodCallInfo.size() == SOURCE_DIRECTORY_CLOSURE_LEVEL) {
-      contributorClass = GradleCommonClassNames.GRADLE_API_SOURCE_DIRECTORY_SET;
-    }
+        String configureClosureClazz = null;
+        String contributorClass = null;
 
-    if (configureClosureClazz != null && !isRootRelated) {
-      final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-      GrLightMethodBuilder methodWithClosure =
-        GradleResolverUtil
-          .createMethodWithClosure(CONFIGURE_CLOSURE_METHOD, configureClosureClazz, null, place, psiManager);
-      if (methodWithClosure != null) {
-        processor.execute(methodWithClosure, state);
-      }
+        boolean isRootRelated = StringUtil.startsWith(methodCall, SOURCE_SETS + '.');
+
+        if (methodCallInfo.size() == SOURCE_SET_CONTAINER_LEVEL) {
+            configureClosureClazz = GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER;
+            if (place instanceof GrReferenceExpressionImpl) {
+                String varClazz = StringUtil.startsWith(methodCall, SOURCE_SETS + '.')
+                    ? GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER
+                    : GradleCommonClassNames.GRADLE_API_SOURCE_SET;
+                GradleResolverUtil.addImplicitVariable(processor, state, (GrReferenceExpressionImpl)place, varClazz);
+            }
+            else {
+                contributorClass = GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER;
+            }
+        }
+        else if (methodCallInfo.size() == SOURCE_SET_LEVEL) {
+            configureClosureClazz = GradleCommonClassNames.GRADLE_API_SOURCE_SET;
+            contributorClass = GradleCommonClassNames.GRADLE_API_SOURCE_SET;
+        }
+        else if (methodCallInfo.size() == SOURCE_DIRECTORY_LEVEL) {
+            GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+            PsiClass psiClass = psiManager.findClassWithCache(GradleCommonClassNames.GRADLE_API_SOURCE_SET, place.getResolveScope());
+            configureClosureClazz = GradleResolverUtil.canBeMethodOf(place.getText(), psiClass)
+                ? null
+                : GradleCommonClassNames.GRADLE_API_SOURCE_DIRECTORY_SET;
+            contributorClass = GradleCommonClassNames.GRADLE_API_SOURCE_DIRECTORY_SET;
+        }
+        else if (methodCallInfo.size() == SOURCE_DIRECTORY_CLOSURE_LEVEL) {
+            contributorClass = GradleCommonClassNames.GRADLE_API_SOURCE_DIRECTORY_SET;
+        }
+
+        if (configureClosureClazz != null && !isRootRelated) {
+            final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+            GrLightMethodBuilder methodWithClosure = GradleResolverUtil.createMethodWithClosure(
+                CONFIGURE_CLOSURE_METHOD,
+                configureClosureClazz,
+                null,
+                place,
+                psiManager
+            );
+            if (methodWithClosure != null) {
+                processor.execute(methodWithClosure, state);
+            }
+        }
+        //else {
+        //  GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+        //  GradleResolverUtil.processDeclarations(psiManager, processor, state, place, GradleCommonClassNames.GRADLE_API_PROJECT);
+        //}
+        if (contributorClass != null) {
+            GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+            GradleResolverUtil.processDeclarations(psiManager, processor, state, place, contributorClass);
+        }
     }
-    //else {
-    //  GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-    //  GradleResolverUtil.processDeclarations(psiManager, processor, state, place, GradleCommonClassNames.GRADLE_API_PROJECT);
-    //}
-    if (contributorClass != null) {
-      GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-      GradleResolverUtil.processDeclarations(psiManager, processor, state, place, contributorClass);
-    }
-  }
 }

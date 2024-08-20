@@ -25,13 +25,12 @@ import javax.annotation.Nonnull;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/28/13
+ * @since 2013-10-28
  */
 @ExtensionImpl
 public class GradleProjectStartupActivity implements PostStartupActivity {
-
-  @Override
-  public void runActivity(@Nonnull final Project project, @Nonnull UIAccess uiAccess) {
-    DumbService.getInstance(project).smartInvokeLater(new ImportMavenRepositoriesTask(project));
-  }
+    @Override
+    public void runActivity(@Nonnull final Project project, @Nonnull UIAccess uiAccess) {
+        DumbService.getInstance(project).smartInvokeLater(new ImportMavenRepositoriesTask(project));
+    }
 }

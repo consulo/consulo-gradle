@@ -18,8 +18,10 @@ package org.jetbrains.plugins.gradle.service.resolve.dsl;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.annotation.AnnotationHolder;
 import consulo.language.editor.annotation.Annotator;
+import consulo.language.editor.annotation.HighlightSeverity;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.gradle.service.resolve.GradleCommonClassNames;
 import org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil;
@@ -36,33 +38,45 @@ import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.ca
 
 /**
  * @author Vladislav.Soroka
- * @since 9/25/13
+ * @since 2013-09-25
  */
 public class GradleDslAnnotator implements Annotator {
-  @Override
-  public void annotate(@Nonnull PsiElement element, @Nonnull AnnotationHolder holder) {
-    if (element instanceof GrReferenceExpression) {
-      GrReferenceExpression referenceExpression = (GrReferenceExpression)element;
-      final GrExpression qualifier = ResolveUtil.getSelfOrWithQualifier(referenceExpression);
-      if (qualifier == null) return;
-      if (qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)qualifier).resolve() instanceof PsiClass) return;
+    @Override
+    @RequiredReadAction
+    public void annotate(@Nonnull PsiElement element, @Nonnull AnnotationHolder holder) {
+        if (element instanceof GrReferenceExpression referenceExpression) {
+            final GrExpression qualifier = ResolveUtil.getSelfOrWithQualifier(referenceExpression);
+            if (qualifier == null) {
+                return;
+            }
+            if (qualifier instanceof GrReferenceExpression qualifierRefExpr && qualifierRefExpr.resolve() instanceof PsiClass) {
+                return;
+            }
 
-      PsiType psiType = GradleResolverUtil.getTypeOf(qualifier);
-      if (psiType == null) return;
-      if (InheritanceUtil.isInheritor(psiType, GradleCommonClassNames.GRADLE_API_NAMED_DOMAIN_OBJECT_COLLECTION)) {
-        final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(element.getProject());
-        PsiClass defaultGroovyMethodsClass =
-          psiManager.findClassWithCache(GroovyCommonClassNames.DEFAULT_GROOVY_METHODS, element.getResolveScope());
-        if (canBeMethodOf(referenceExpression.getReferenceName(), defaultGroovyMethodsClass)) return;
+            PsiType psiType = GradleResolverUtil.getTypeOf(qualifier);
+            if (psiType == null) {
+                return;
+            }
+            if (InheritanceUtil.isInheritor(psiType, GradleCommonClassNames.GRADLE_API_NAMED_DOMAIN_OBJECT_COLLECTION)) {
+                final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(element.getProject());
+                PsiClass defaultGroovyMethodsClass =
+                    psiManager.findClassWithCache(GroovyCommonClassNames.DEFAULT_GROOVY_METHODS, element.getResolveScope());
+                if (canBeMethodOf(referenceExpression.getReferenceName(), defaultGroovyMethodsClass)) {
+                    return;
+                }
 
-        PsiClass containerClass = psiManager.findClassWithCache(psiType.getCanonicalText(), element.getResolveScope());
-        if (canBeMethodOf(referenceExpression.getReferenceName(), containerClass)) return;
+                PsiClass containerClass = psiManager.findClassWithCache(psiType.getCanonicalText(), element.getResolveScope());
+                if (canBeMethodOf(referenceExpression.getReferenceName(), containerClass)) {
+                    return;
+                }
 
-        PsiElement nameElement = referenceExpression.getReferenceNameElement();
-        if (nameElement != null) {
-          holder.createInfoAnnotation(nameElement, null).setTextAttributes(GroovySyntaxHighlighter.MAP_KEY);
+                PsiElement nameElement = referenceExpression.getReferenceNameElement();
+                if (nameElement != null) {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(GroovySyntaxHighlighter.MAP_KEY)
+                        .create();
+                }
+            }
         }
-      }
     }
-  }
 }

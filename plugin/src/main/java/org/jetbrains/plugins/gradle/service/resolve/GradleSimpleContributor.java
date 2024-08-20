@@ -26,35 +26,37 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 8/30/13
+ * @since 2013-08-30
  */
 public abstract class GradleSimpleContributor implements GradleMethodContextContributor {
+    private final String blockName;
+    private final String fqName;
+    private final List<String> myMixIns;
 
-  private final String blockName;
-  private final String fqName;
-  private final List<String> myMixIns;
-
-  protected GradleSimpleContributor(@Nonnull String blockName, @Nonnull String fqName, String... mixIns) {
-    this.blockName = blockName;
-    this.fqName = fqName;
-    myMixIns = List.of(mixIns);
-  }
-
-  @Override
-  public void process(@Nonnull List<String> methodCallInfo,
-                      @Nonnull PsiScopeProcessor processor,
-                      @Nonnull ResolveState state,
-                      @Nonnull PsiElement place) {
-    if (methodCallInfo.isEmpty() || methodCallInfo.size() < 2 || !blockName.equals(methodCallInfo.get(1))) {
-      return;
+    protected GradleSimpleContributor(@Nonnull String blockName, @Nonnull String fqName, String... mixIns) {
+        this.blockName = blockName;
+        this.fqName = fqName;
+        myMixIns = List.of(mixIns);
     }
-    GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-    GradleResolverUtil.processDeclarations(psiManager, processor, state, place, fqName);
-    for(final String mixin : myMixIns) {
-      PsiClass contributorClass =
-        psiManager.findClassWithCache(mixin, place.getResolveScope());
-      if (contributorClass == null) continue;
-      GradleResolverUtil.processMethod(methodCallInfo.get(0), contributorClass, processor, state, place);
+
+    @Override
+    public void process(
+        @Nonnull List<String> methodCallInfo,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    ) {
+        if (methodCallInfo.isEmpty() || methodCallInfo.size() < 2 || !blockName.equals(methodCallInfo.get(1))) {
+            return;
+        }
+        GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+        GradleResolverUtil.processDeclarations(psiManager, processor, state, place, fqName);
+        for (final String mixin : myMixIns) {
+            PsiClass contributorClass = psiManager.findClassWithCache(mixin, place.getResolveScope());
+            if (contributorClass == null) {
+                continue;
+            }
+            GradleResolverUtil.processMethod(methodCallInfo.get(0), contributorClass, processor, state, place);
+        }
     }
-  }
 }

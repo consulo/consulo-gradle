@@ -10,25 +10,24 @@ import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
- * @since 3/13/12 3:53 PM
+ * @since 2012-03-13
  */
 public abstract class GradleSettingsListenerAdapter extends ExternalSystemSettingsListenerAdapter<GradleProjectSettings>
-  implements GradleSettingsListener
-{
+    implements GradleSettingsListener {
 
-  @Override
-  public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
-  }
+    @Override
+    public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
+    }
 
-  @Override
-  public void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath) {
-  }
+    @Override
+    public void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath) {
+    }
 
-  @Override
-  public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath) {
-  }
+    @Override
+    public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath) {
+    }
 
-  @Override
-  public void onGradleVmOptionsChange(@Nullable String oldOptions, @Nullable String newOptions) {
-  }
+    @Override
+    public void onGradleVmOptionsChange(@Nullable String oldOptions, @Nullable String newOptions) {
+    }
 }

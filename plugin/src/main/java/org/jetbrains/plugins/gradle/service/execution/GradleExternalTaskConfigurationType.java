@@ -23,16 +23,16 @@ import javax.annotation.Nonnull;
 
 /**
  * @author Denis Zhdanov
- * @since 23.05.13 17:56
+ * @since 2013-05-23
  */
 @ExtensionImpl
 public class GradleExternalTaskConfigurationType extends AbstractExternalSystemTaskConfigurationType {
-  @Nonnull
-  public static GradleExternalTaskConfigurationType getInstance() {
-    return EP_NAME.findExtensionOrFail(GradleExternalTaskConfigurationType.class);
-  }
+    @Nonnull
+    public static GradleExternalTaskConfigurationType getInstance() {
+        return EP_NAME.findExtensionOrFail(GradleExternalTaskConfigurationType.class);
+    }
 
-  public GradleExternalTaskConfigurationType() {
-    super(GradleConstants.SYSTEM_ID);
-  }
+    public GradleExternalTaskConfigurationType() {
+        super(GradleConstants.SYSTEM_ID);
+    }
 }

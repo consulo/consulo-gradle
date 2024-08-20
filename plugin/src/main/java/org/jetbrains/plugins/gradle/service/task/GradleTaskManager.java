@@ -21,19 +21,19 @@ import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.externalSystem.task.ExternalSystemTaskManager;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.gradle.GradleConstants;
+import consulo.gradle.service.project.GradleProjectResolverExtension;
+import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.ide.impl.idea.openapi.externalSystem.task.AbstractExternalSystemTaskManager;
+import consulo.platform.Platform;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.SystemProperties;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.ProjectConnection;
 import org.jetbrains.plugins.gradle.service.project.GradleExecutionHelper;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver;
-import consulo.gradle.service.project.GradleProjectResolverExtension;
-import consulo.gradle.setting.GradleExecutionSettings;
-import consulo.gradle.GradleConstants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,105 +45,100 @@ import java.util.function.Function;
 
 /**
  * @author Denis Zhdanov
- * @since 3/14/13 5:09 PM
+ * @since 2013-03-14
  */
 public class GradleTaskManager extends AbstractExternalSystemTaskManager<GradleExecutionSettings> implements
-		ExternalSystemTaskManager<GradleExecutionSettings>
-{
+    ExternalSystemTaskManager<GradleExecutionSettings> {
 
-	private final GradleExecutionHelper myHelper = new GradleExecutionHelper();
+    private final GradleExecutionHelper myHelper = new GradleExecutionHelper();
 
-	@Override
-	public void executeTasks(@Nonnull final ExternalSystemTaskId id, @Nonnull final List<String> taskNames, @Nonnull String projectPath,
-			@Nullable final GradleExecutionSettings settings, @Nonnull final List<String> vmOptions, @Nonnull final List<String> scriptParameters,
-			@Nullable final String debuggerSetup, @Nonnull final ExternalSystemTaskNotificationListener listener) throws ExternalSystemException
-	{
+    @Override
+    public void executeTasks(
+        @Nonnull final ExternalSystemTaskId id,
+        @Nonnull final List<String> taskNames,
+        @Nonnull String projectPath,
+        @Nullable final GradleExecutionSettings settings,
+        @Nonnull final List<String> vmOptions,
+        @Nonnull final List<String> scriptParameters,
+        @Nullable final String debuggerSetup,
+        @Nonnull final ExternalSystemTaskNotificationListener listener
+    ) throws ExternalSystemException {
+        // TODO add support for external process mode
+        if (ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID)) {
+            for (GradleTaskManagerExtension gradleTaskManagerExtension : GradleTaskManagerExtension.EP_NAME.getExtensions()) {
+                if (gradleTaskManagerExtension.executeTasks(
+                    id,
+                    taskNames,
+                    projectPath,
+                    settings,
+                    vmOptions,
+                    scriptParameters,
+                    debuggerSetup,
+                    listener
+                )) {
+                    return;
+                }
+            }
+        }
+        if (!scriptParameters.contains("--tests") && taskNames.contains("test")) {
+            ContainerUtil.addAll(scriptParameters, "--tests", "*");
+        }
 
-		// TODO add support for external process mode
-		if(ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID))
-		{
-			for(GradleTaskManagerExtension gradleTaskManagerExtension : GradleTaskManagerExtension.EP_NAME.getExtensions())
-			{
-				if(gradleTaskManagerExtension.executeTasks(id, taskNames, projectPath, settings, vmOptions, scriptParameters, debuggerSetup,
-						listener))
-				{
-					return;
-				}
-			}
-		}
-		if(!scriptParameters.contains("--tests") && taskNames.contains("test"))
-		{
-			ContainerUtil.addAll(scriptParameters, "--tests", "*");
-		}
+        Function<ProjectConnection, Void> f = connection -> {
+            final List<String> initScripts = new ArrayList<>();
+            final GradleProjectResolverExtension projectResolverChain = GradleProjectResolver.createProjectResolverChain(settings);
+            for (GradleProjectResolverExtension resolverExtension = projectResolverChain; resolverExtension != null; resolverExtension =
+                resolverExtension.getNext()) {
+                final String resolverClassName = resolverExtension.getClass().getName();
+                resolverExtension.enhanceTaskProcessing(
+                    taskNames,
+                    debuggerSetup,
+                    script -> {
+                        if (StringUtil.isNotEmpty(script)) {
+                            ContainerUtil.addAllNotNull(initScripts, "//-- Generated by " + resolverClassName, script, "//");
+                        }
+                    }
+                );
+            }
 
-		Function<ProjectConnection, Void> f = new Function<ProjectConnection, Void>()
-		{
-			@Override
-			public Void apply(ProjectConnection connection)
-			{
+            if (!initScripts.isEmpty()) {
+                try {
+                    final File tempFile = FileUtil.createTempFile("init", ".gradle");
+                    tempFile.deleteOnExit();
+                    String path = StringUtil.join(initScripts, Platform.current().os().lineSeparator().getSeparatorString());
+                    FileUtil.writeToFile(tempFile, path);
+                    ContainerUtil.addAll(scriptParameters, GradleConstants.INIT_SCRIPT_CMD_OPTION, tempFile.getAbsolutePath());
+                }
+                catch (IOException e) {
+                    throw new ExternalSystemException(e);
+                }
+            }
 
-				final List<String> initScripts = new ArrayList<>();
-				final GradleProjectResolverExtension projectResolverChain = GradleProjectResolver.createProjectResolverChain(settings);
-				for(GradleProjectResolverExtension resolverExtension = projectResolverChain; resolverExtension != null; resolverExtension =
-						resolverExtension.getNext())
-				{
-					final String resolverClassName = resolverExtension.getClass().getName();
-					resolverExtension.enhanceTaskProcessing(taskNames, debuggerSetup, script ->
-					{
-						if(StringUtil.isNotEmpty(script))
-						{
-							ContainerUtil.addAllNotNull(initScripts, "//-- Generated by " + resolverClassName, script, "//");
-						}
-					});
-				}
+            BuildLauncher launcher = myHelper.getBuildLauncher(id, connection, settings, listener, vmOptions, scriptParameters);
+            launcher.forTasks(ArrayUtil.toStringArray(taskNames));
+            launcher.run();
+            return null;
+        };
+        myHelper.execute(projectPath, settings, f);
+    }
 
-				if(!initScripts.isEmpty())
-				{
-					try
-					{
-						final File tempFile = FileUtil.createTempFile("init", ".gradle");
-						tempFile.deleteOnExit();
-						FileUtil.writeToFile(tempFile, StringUtil.join(initScripts, SystemProperties.getLineSeparator()));
-						ContainerUtil.addAll(scriptParameters, GradleConstants.INIT_SCRIPT_CMD_OPTION, tempFile.getAbsolutePath());
-					}
-					catch(IOException e)
-					{
-						throw new ExternalSystemException(e);
-					}
-				}
+    @Override
+    public boolean cancelTask(@Nonnull ExternalSystemTaskId id, @Nonnull ExternalSystemTaskNotificationListener listener) throws
+        ExternalSystemException {
+        // extension points are available only in IDE process
+        if (ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID)) {
+            for (GradleTaskManagerExtension gradleTaskManagerExtension : GradleTaskManagerExtension.EP_NAME.getExtensions()) {
+                if (gradleTaskManagerExtension.cancelTask(id, listener)) {
+                    return true;
+                }
+            }
+        }
 
-				BuildLauncher launcher = myHelper.getBuildLauncher(id, connection, settings, listener, vmOptions, scriptParameters);
-				launcher.forTasks(ArrayUtil.toStringArray(taskNames));
-				launcher.run();
-				return null;
-			}
-		};
-		myHelper.execute(projectPath, settings, f);
-	}
-
-	@Override
-	public boolean cancelTask(@Nonnull ExternalSystemTaskId id, @Nonnull ExternalSystemTaskNotificationListener listener) throws
-			ExternalSystemException
-	{
-		// extension points are available only in IDE process
-		if(ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID))
-		{
-			for(GradleTaskManagerExtension gradleTaskManagerExtension : GradleTaskManagerExtension.EP_NAME.getExtensions())
-			{
-				if(gradleTaskManagerExtension.cancelTask(id, listener))
-				{
-					return true;
-				}
-			}
-		}
-
-		// TODO replace with cancellation gradle API invocation when it will be ready, see http://issues.gradle.org/browse/GRADLE-1539
-		if(!ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID))
-		{
-			listener.onStatusChange(new ExternalSystemTaskNotificationEvent(id, "Cancelling the task...\n"));
-			System.exit(0);
-		}
-		return false;
-	}
+        // TODO replace with cancellation gradle API invocation when it will be ready, see http://issues.gradle.org/browse/GRADLE-1539
+        if (!ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID)) {
+            listener.onStatusChange(new ExternalSystemTaskNotificationEvent(id, "Cancelling the task...\n"));
+            System.exit(0);
+        }
+        return false;
+    }
 }
-

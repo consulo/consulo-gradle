@@ -44,59 +44,64 @@ import java.util.Map;
  */
 @ExtensionImpl
 public class GradleClassFinder extends NonClasspathClassFinder {
-  @Nonnull
-  private final GradleBuildClasspathManager myBuildClasspathManager;
-  private final Map<String, PackageDirectoryCache> myCaches;
+    @Nonnull
+    private final GradleBuildClasspathManager myBuildClasspathManager;
+    private final Map<String, PackageDirectoryCache> myCaches;
 
-  @Inject
-  public GradleClassFinder(@Nonnull Project project, @Nonnull GradleBuildClasspathManager buildClasspathManager) {
-    super(project, JavaFileType.DEFAULT_EXTENSION, GroovyFileType.DEFAULT_EXTENSION);
-    myBuildClasspathManager = buildClasspathManager;
+    @Inject
+    public GradleClassFinder(@Nonnull Project project, @Nonnull GradleBuildClasspathManager buildClasspathManager) {
+        super(project, JavaFileType.DEFAULT_EXTENSION, GroovyFileType.DEFAULT_EXTENSION);
+        myBuildClasspathManager = buildClasspathManager;
 
-    myCaches = ConcurrentFactoryMap.createMap(path -> createCache(myBuildClasspathManager.getModuleClasspathEntries(path)));
-  }
-
-  @Override
-  protected List<VirtualFile> calcClassRoots() {
-    return myBuildClasspathManager.getAllClasspathEntries();
-  }
-
-  @Nonnull
-  @Override
-  protected PackageDirectoryCache getCache(@Nullable GlobalSearchScope scope) {
-    if (scope instanceof ExternalModuleBuildGlobalSearchScope) {
-      return myCaches.get(((ExternalModuleBuildGlobalSearchScope)scope).getExternalModulePath());
-    }
-    return super.getCache(scope);
-  }
-
-  @Override
-  public void clearCache() {
-    super.clearCache();
-    myCaches.clear();
-  }
-
-  @Override
-  public PsiClass findClass(@Nonnull String qualifiedName, @Nonnull GlobalSearchScope scope) {
-    PsiClass aClass = super.findClass(qualifiedName, scope);
-    if (aClass == null || scope instanceof ExternalModuleBuildGlobalSearchScope || scope instanceof EverythingGlobalScope) {
-      return aClass;
+        myCaches = ConcurrentFactoryMap.createMap(path -> createCache(myBuildClasspathManager.getModuleClasspathEntries(path)));
     }
 
-    PsiFile containingFile = aClass.getContainingFile();
-    VirtualFile file = containingFile != null ? containingFile.getVirtualFile() : null;
-    return (file != null && !ProjectFileIndex.SERVICE.getInstance(myProject).isInContent(file) && !ProjectFileIndex.SERVICE.getInstance
-      (myProject).isInLibraryClasses(file) && !ProjectFileIndex.SERVICE.getInstance(myProject).isInLibrarySource(file)) ? aClass : null;
-  }
+    @Override
+    protected List<VirtualFile> calcClassRoots() {
+        return myBuildClasspathManager.getAllClasspathEntries();
+    }
 
-  @Nonnull
-  @Override
-  public PsiJavaPackage[] getSubPackages(@Nonnull PsiJavaPackage psiPackage, @Nonnull GlobalSearchScope scope) {
-    if (scope instanceof ExternalModuleBuildGlobalSearchScope) {
-      return super.getSubPackages(psiPackage, scope);
+    @Nonnull
+    @Override
+    protected PackageDirectoryCache getCache(@Nullable GlobalSearchScope scope) {
+        if (scope instanceof ExternalModuleBuildGlobalSearchScope externalModuleBuildGlobalSearchScope) {
+            return myCaches.get(externalModuleBuildGlobalSearchScope.getExternalModulePath());
+        }
+        return super.getCache(scope);
     }
-    else {
-      return PsiJavaPackage.EMPTY_ARRAY;
+
+    @Override
+    public void clearCache() {
+        super.clearCache();
+        myCaches.clear();
     }
-  }
+
+    @Override
+    public PsiClass findClass(@Nonnull String qualifiedName, @Nonnull GlobalSearchScope scope) {
+        PsiClass aClass = super.findClass(qualifiedName, scope);
+        if (aClass == null || scope instanceof ExternalModuleBuildGlobalSearchScope || scope instanceof EverythingGlobalScope) {
+            return aClass;
+        }
+
+        PsiFile containingFile = aClass.getContainingFile();
+        VirtualFile file = containingFile != null ? containingFile.getVirtualFile() : null;
+        ProjectFileIndex projectFileIndex = ProjectFileIndex.SERVICE.getInstance(myProject);
+        return file != null
+            && !projectFileIndex.isInContent(file)
+            && !projectFileIndex.isInLibraryClasses(file)
+            && !projectFileIndex.isInLibrarySource(file)
+            ? aClass
+            : null;
+    }
+
+    @Nonnull
+    @Override
+    public PsiJavaPackage[] getSubPackages(@Nonnull PsiJavaPackage psiPackage, @Nonnull GlobalSearchScope scope) {
+        if (scope instanceof ExternalModuleBuildGlobalSearchScope) {
+            return super.getSubPackages(psiPackage, scope);
+        }
+        else {
+            return PsiJavaPackage.EMPTY_ARRAY;
+        }
+    }
 }

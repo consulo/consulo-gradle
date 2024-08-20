@@ -29,46 +29,67 @@ import java.util.List;
 
 /**
  * @author Denis Zhdanov
- * @since 8/14/13 12:58 PM
+ * @since 2013-08-14
  */
 @ExtensionImpl
 public class GradleDependenciesContributor implements GradleMethodContextContributor {
+    @Override
+    public void process(
+        @Nonnull List<String> methodCallInfo,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    ) {
+        if (methodCallInfo.isEmpty()) {
+            return;
+        }
 
-  @Override
-  public void process(@Nonnull List<String> methodCallInfo,
-                      @Nonnull PsiScopeProcessor processor,
-                      @Nonnull ResolveState state,
-                      @Nonnull PsiElement place) {
-    if (methodCallInfo.isEmpty()) return;
+        String methodCall = ContainerUtil.getLastItem(methodCallInfo);
+        if (methodCall == null) {
+            return;
+        }
 
-    String methodCall = ContainerUtil.getLastItem(methodCallInfo);
-    if (methodCall == null) return;
+        if (!StringUtil.equals(methodCall, "dependencies")) {
+            return;
+        }
 
-    if (!StringUtil.equals(methodCall, "dependencies")) return;
-
-    final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-    if (methodCallInfo.size() == 2) {
-      GradleResolverUtil.processDeclarations(
-        psiManager, processor, state, place, GradleCommonClassNames.GRADLE_API_ARTIFACTS_EXTERNAL_MODULE_DEPENDENCY);
-      // Assuming that the method call is addition of new dependency into configuration.
-      PsiClass contributorClass =
-        psiManager.findClassWithCache(GradleCommonClassNames.GRADLE_API_DEPENDENCY_HANDLER, place.getResolveScope());
-      if (contributorClass == null) return;
-      GradleResolverUtil.processMethod(methodCallInfo.get(0), contributorClass, processor, state, place, "add");
+        final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+        if (methodCallInfo.size() == 2) {
+            GradleResolverUtil.processDeclarations(
+                psiManager,
+                processor,
+                state,
+                place,
+                GradleCommonClassNames.GRADLE_API_ARTIFACTS_EXTERNAL_MODULE_DEPENDENCY
+            );
+            // Assuming that the method call is addition of new dependency into configuration.
+            PsiClass contributorClass =
+                psiManager.findClassWithCache(GradleCommonClassNames.GRADLE_API_DEPENDENCY_HANDLER, place.getResolveScope());
+            if (contributorClass == null) {
+                return;
+            }
+            GradleResolverUtil.processMethod(methodCallInfo.get(0), contributorClass, processor, state, place, "add");
+        }
+        else if (methodCallInfo.size() == 3) {
+            GradleResolverUtil.processDeclarations(
+                psiManager,
+                processor,
+                state,
+                place,
+                GradleCommonClassNames.GRADLE_API_DEPENDENCY_HANDLER,
+                GradleCommonClassNames.GRADLE_API_ARTIFACTS_EXTERNAL_MODULE_DEPENDENCY,
+                GradleCommonClassNames.GRADLE_API_ARTIFACTS_DEPENDENCY_ARTIFACT,
+                GradleCommonClassNames.GRADLE_API_PROJECT
+            );
+        }
+        else if (methodCallInfo.size() == 4) {
+            // Assuming that the method call is addition of new dependency into configuration.
+            PsiClass contributorClass =
+                psiManager.findClassWithCache(GradleCommonClassNames.GRADLE_API_DEPENDENCY_HANDLER, place.getResolveScope());
+            if (contributorClass == null) {
+                return;
+            }
+            GradleResolverUtil.processMethod(methodCallInfo.get(0), contributorClass, processor, state, place, "add");
+        }
     }
-    else if (methodCallInfo.size() == 3) {
-      GradleResolverUtil.processDeclarations(psiManager, processor, state, place,
-                                             GradleCommonClassNames.GRADLE_API_DEPENDENCY_HANDLER,
-                                             GradleCommonClassNames.GRADLE_API_ARTIFACTS_EXTERNAL_MODULE_DEPENDENCY,
-                                             GradleCommonClassNames.GRADLE_API_ARTIFACTS_DEPENDENCY_ARTIFACT,
-                                             GradleCommonClassNames.GRADLE_API_PROJECT);
-    }
-    else if (methodCallInfo.size() == 4) {
-      // Assuming that the method call is addition of new dependency into configuration.
-      PsiClass contributorClass =
-        psiManager.findClassWithCache(GradleCommonClassNames.GRADLE_API_DEPENDENCY_HANDLER, place.getResolveScope());
-      if (contributorClass == null) return;
-      GradleResolverUtil.processMethod(methodCallInfo.get(0), contributorClass, processor, state, place, "add");
-    }
-  }
 }

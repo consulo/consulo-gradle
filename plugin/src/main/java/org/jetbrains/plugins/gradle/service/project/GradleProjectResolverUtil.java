@@ -9,23 +9,22 @@ import consulo.externalSystem.util.ExternalSystemApiUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class GradleProjectResolverUtil
-{
-	public static boolean linkProjectLibrary(@Nullable DataNode<ProjectData> ideProject, @Nonnull final LibraryData library)
-	{
-		if(ideProject == null)
-		{
-			return false;
-		}
+public class GradleProjectResolverUtil {
+    public static boolean linkProjectLibrary(@Nullable DataNode<ProjectData> ideProject, @Nonnull final LibraryData library) {
+        if (ideProject == null) {
+            return false;
+        }
 
-		String libraryName = library.getExternalName();
-		DataNode<LibraryData> libraryData = ExternalSystemApiUtil.find(ideProject, ProjectKeys.LIBRARY, node -> libraryName.equals(node.getData()
-				.getExternalName()));
-		if(libraryData == null)
-		{
-			ideProject.createChild(ProjectKeys.LIBRARY, library);
-			return true;
-		}
-		return libraryData.getData().equals(library);
-	}
+        String libraryName = library.getExternalName();
+        DataNode<LibraryData> libraryData = ExternalSystemApiUtil.find(
+            ideProject,
+            ProjectKeys.LIBRARY,
+            node -> libraryName.equals(node.getData().getExternalName())
+        );
+        if (libraryData == null) {
+            ideProject.createChild(ProjectKeys.LIBRARY, library);
+            return true;
+        }
+        return libraryData.getData().equals(library);
+    }
 }

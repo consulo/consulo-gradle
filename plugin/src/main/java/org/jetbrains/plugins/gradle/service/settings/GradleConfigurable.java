@@ -32,42 +32,42 @@ import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
- * @since 4/30/13 11:42 PM
+ * @since 2013-04-30
  */
 @ExtensionImpl
 public class GradleConfigurable extends AbstractExternalSystemConfigurable<GradleProjectSettings, GradleSettingsListener, GradleSettings> implements ProjectConfigurable {
-  @Inject
-  public GradleConfigurable(@Nonnull Project project) {
-    super(project, GradleConstants.SYSTEM_ID);
-  }
+    @Inject
+    public GradleConfigurable(@Nonnull Project project) {
+        super(project, GradleConstants.SYSTEM_ID);
+    }
 
-  @Nonnull
-  @Override
-  protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@Nonnull GradleProjectSettings settings) {
-    return new GradleProjectSettingsControl(settings);
-  }
+    @Nonnull
+    @Override
+    protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@Nonnull GradleProjectSettings settings) {
+        return new GradleProjectSettingsControl(settings);
+    }
 
-  @Nullable
-  @Override
-  protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@Nonnull GradleSettings settings) {
-    return new GradleSystemSettingsControl(settings);
-  }
+    @Nullable
+    @Override
+    protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@Nonnull GradleSettings settings) {
+        return new GradleSystemSettingsControl(settings);
+    }
 
-  @Nonnull
-  @Override
-  protected GradleProjectSettings newProjectSettings() {
-    return new GradleProjectSettings();
-  }
+    @Nonnull
+    @Override
+    protected GradleProjectSettings newProjectSettings() {
+        return new GradleProjectSettings();
+    }
 
-  @Nonnull
-  @Override
-  public String getId() {
-    return "execution.gradle";
-  }
+    @Nonnull
+    @Override
+    public String getId() {
+        return "execution.gradle";
+    }
 
-  @Nullable
-  @Override
-  public String getParentId() {
-    return StandardConfigurableIds.EXECUTION_GROUP;
-  }
+    @Nullable
+    @Override
+    public String getParentId() {
+        return StandardConfigurableIds.EXECUTION_GROUP;
+    }
 }

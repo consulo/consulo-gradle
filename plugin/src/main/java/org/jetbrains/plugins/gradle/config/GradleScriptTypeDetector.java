@@ -27,12 +27,12 @@ import javax.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GradleScriptTypeDetector extends GroovyScriptTypeDetector {
-  public GradleScriptTypeDetector() {
-    super(GradleScriptType.INSTANCE);
-  }
+    public GradleScriptTypeDetector() {
+        super(GradleScriptType.INSTANCE);
+    }
 
-  @Override
-  public boolean isSpecificScriptFile(@Nonnull GroovyFile script) {
-    return GradleConstants.EXTENSION.equals(script.getViewProvider().getVirtualFile().getExtension());
-  }
+    @Override
+    public boolean isSpecificScriptFile(@Nonnull GroovyFile script) {
+        return GradleConstants.EXTENSION.equals(script.getViewProvider().getVirtualFile().getExtension());
+    }
 }

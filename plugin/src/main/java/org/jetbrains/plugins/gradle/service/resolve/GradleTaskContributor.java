@@ -40,116 +40,128 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 9/9/13
+ * @since 2013-09-09
  */
 @ExtensionImpl
 public class GradleTaskContributor implements GradleMethodContextContributor {
-
-  @Override
-  public void process(@Nonnull List<String> methodCallInfo,
-                      @Nonnull PsiScopeProcessor processor,
-                      @Nonnull ResolveState state,
-                      @Nonnull PsiElement place) {
-    if (methodCallInfo.isEmpty()) return;
-
-    if (methodCallInfo.size() == 1) {
-      if(GradleResolverUtil.isLShiftElement(place.getParent())) {
-        GradleResolverUtil.addImplicitVariable(processor, state, place, GradleCommonClassNames.GRADLE_API_TASK);
-      }
-    }
-    else if (methodCallInfo.size() == 2) {
-      if (place.getParent().getParent() instanceof GrCommandArgumentList) {
-        // Assuming that the method call is addition of new task into the project.
-        processTaskAddition(methodCallInfo.get(0), GradleCommonClassNames.GRADLE_API_TASK_CONTAINER, processor, state, place);
-      }
-      else {
-        processTaskTypeParameter(methodCallInfo.get(0), processor, state, place);
-      }
-
-      GradleImplicitContributor.processImplicitDeclarations(processor, state, place);
-    }
-    else if (methodCallInfo.size() >= 3) {
-      processTaskTypeParameter(methodCallInfo.get(0), processor, state, place);
-
-      GradleImplicitContributor.processImplicitDeclarations(processor, state, place);
-
-      if (place.getText().equals(GradleSourceSetsContributor.SOURCE_SETS) &&
-          StringUtil.startsWith(methodCallInfo.get(0), GradleSourceSetsContributor.SOURCE_SETS + '.')) {
-        GradleResolverUtil.addImplicitVariable(processor, state, place, GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER);
-      }
-    }
-  }
-
-  private static void processTaskTypeParameter(@Nonnull String methodCall, @Nonnull PsiScopeProcessor processor,
-                                               @Nonnull ResolveState state,
-                                               @Nonnull PsiElement place) {
-    final int taskTypeParameterLevel = 3;
-    PsiElement psiElement = GradleResolverUtil.findParent(place, taskTypeParameterLevel);
-
-    if (psiElement instanceof GrMethodCallExpression) {
-      GrMethodCallExpression callExpression = (GrMethodCallExpression)psiElement;
-      GrArgumentList argumentList = callExpression.getArgumentList();
-      if (argumentList != null && argumentList.getAllArguments().length > 0) {
-        for (GroovyPsiElement argument : argumentList.getAllArguments()) {
-          if (argument instanceof GrNamedArgument) {
-            GrNamedArgument namedArgument = (GrNamedArgument)argument;
-            GrExpression grExpression = namedArgument.getExpression();
-            PsiType psiType = null;
-            if (grExpression != null) {
-              psiType = GradleResolverUtil.getTypeOf(grExpression);
-            }
-            if (psiType instanceof PsiImmediateClassType) {
-              PsiImmediateClassType immediateClassType = (PsiImmediateClassType)psiType;
-              for (PsiType type : immediateClassType.getParameters()) {
-                GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-                GradleResolverUtil.processDeclarations(methodCall, psiManager, processor, state, place, type.getCanonicalText());
-              }
-            }
-          }
+    @Override
+    public void process(
+        @Nonnull List<String> methodCallInfo,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    ) {
+        if (methodCallInfo.isEmpty()) {
+            return;
         }
-      }
-      else {
+
+        if (methodCallInfo.size() == 1) {
+            if (GradleResolverUtil.isLShiftElement(place.getParent())) {
+                GradleResolverUtil.addImplicitVariable(processor, state, place, GradleCommonClassNames.GRADLE_API_TASK);
+            }
+        }
+        else if (methodCallInfo.size() == 2) {
+            if (place.getParent().getParent() instanceof GrCommandArgumentList) {
+                // Assuming that the method call is addition of new task into the project.
+                processTaskAddition(methodCallInfo.get(0), GradleCommonClassNames.GRADLE_API_TASK_CONTAINER, processor, state, place);
+            }
+            else {
+                processTaskTypeParameter(methodCallInfo.get(0), processor, state, place);
+            }
+
+            GradleImplicitContributor.processImplicitDeclarations(processor, state, place);
+        }
+        else if (methodCallInfo.size() >= 3) {
+            processTaskTypeParameter(methodCallInfo.get(0), processor, state, place);
+
+            GradleImplicitContributor.processImplicitDeclarations(processor, state, place);
+
+            if (place.getText().equals(GradleSourceSetsContributor.SOURCE_SETS) &&
+                StringUtil.startsWith(methodCallInfo.get(0), GradleSourceSetsContributor.SOURCE_SETS + '.')) {
+                GradleResolverUtil.addImplicitVariable(processor, state, place, GradleCommonClassNames.GRADLE_API_SOURCE_SET_CONTAINER);
+            }
+        }
+    }
+
+    private static void processTaskTypeParameter(
+        @Nonnull String methodCall,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    ) {
+        final int taskTypeParameterLevel = 3;
+        PsiElement psiElement = GradleResolverUtil.findParent(place, taskTypeParameterLevel);
+
+        if (psiElement instanceof GrMethodCallExpression callExpression) {
+            GrArgumentList argumentList = callExpression.getArgumentList();
+            if (argumentList != null && argumentList.getAllArguments().length > 0) {
+                for (GroovyPsiElement argument : argumentList.getAllArguments()) {
+                    if (argument instanceof GrNamedArgument namedArgument) {
+                        GrExpression grExpression = namedArgument.getExpression();
+                        PsiType psiType = null;
+                        if (grExpression != null) {
+                            psiType = GradleResolverUtil.getTypeOf(grExpression);
+                        }
+                        if (psiType instanceof PsiImmediateClassType immediateClassType) {
+                            for (PsiType type : immediateClassType.getParameters()) {
+                                GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+                                GradleResolverUtil.processDeclarations(
+                                    methodCall,
+                                    psiManager,
+                                    processor,
+                                    state,
+                                    place,
+                                    type.getCanonicalText()
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+                GradleResolverUtil.processDeclarations(psiManager, processor, state, place, GradleCommonClassNames.GRADLE_API_TASK);
+            }
+        }
+    }
+
+    private static void processTaskAddition(
+        @Nonnull String name,
+        @Nonnull String handlerClass,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    ) {
         GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-        GradleResolverUtil.processDeclarations(psiManager, processor, state, place, GradleCommonClassNames.GRADLE_API_TASK);
-      }
-    }
-  }
+        PsiClass psiClass = psiManager.findClassWithCache(handlerClass, place.getResolveScope());
+        if (psiClass == null) {
+            return;
+        }
 
-  private static void processTaskAddition(@Nonnull String name,
-                                          @Nonnull String handlerClass,
-                                          @Nonnull PsiScopeProcessor processor,
-                                          @Nonnull ResolveState state,
-                                          @Nonnull PsiElement place) {
-    GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-    PsiClass psiClass = psiManager.findClassWithCache(handlerClass, place.getResolveScope());
-    if (psiClass == null) {
-      return;
-    }
+        GrLightMethodBuilder builder = new GrLightMethodBuilder(place.getManager(), name);
+        PsiElementFactory factory = JavaPsiFacade.getElementFactory(place.getManager().getProject());
+        PsiType type = new PsiArrayType(factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_OBJECT, place.getResolveScope()));
+        builder.addParameter(new GrLightParameter("taskInfo", type, builder));
+        PsiClassType retType = factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_STRING, place.getResolveScope());
+        builder.setReturnType(retType);
+        processor.execute(builder, state);
 
-    GrLightMethodBuilder builder = new GrLightMethodBuilder(place.getManager(), name);
-    PsiElementFactory factory = JavaPsiFacade.getElementFactory(place.getManager().getProject());
-    PsiType type = new PsiArrayType(factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_OBJECT, place.getResolveScope()));
-    builder.addParameter(new GrLightParameter("taskInfo", type, builder));
-    PsiClassType retType = factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_STRING, place.getResolveScope());
-    builder.setReturnType(retType);
-    processor.execute(builder, state);
+        GrMethodCall call = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
+        if (call == null) {
+            return;
+        }
+        GrArgumentList args = call.getArgumentList();
+        if (args == null) {
+            return;
+        }
 
-    GrMethodCall call = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
-    if (call == null) {
-      return;
-    }
-    GrArgumentList args = call.getArgumentList();
-    if (args == null) {
-      return;
-    }
+        int argsCount = GradleResolverUtil.getGrMethodArumentsCount(args);
+        argsCount++; // Configuration name is delivered as an argument.
 
-    int argsCount = GradleResolverUtil.getGrMethodArumentsCount(args);
-    argsCount++; // Configuration name is delivered as an argument.
-
-    for (PsiMethod method : psiClass.findMethodsByName("create", false)) {
-      if (method.getParameterList().getParametersCount() == argsCount) {
-        builder.setNavigationElement(method);
-      }
+        for (PsiMethod method : psiClass.findMethodsByName("create", false)) {
+            if (method.getParameterList().getParametersCount() == argsCount) {
+                builder.setNavigationElement(method);
+            }
+        }
     }
-  }
 }

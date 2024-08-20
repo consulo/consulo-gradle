@@ -27,50 +27,50 @@ import java.util.List;
 
 /**
  * @author Vladislav.Soroka
- * @since 8/29/13
+ * @since 2013-08-29
  */
 @ExtensionImpl
 public class GradleConfigurationsContributor implements GradleMethodContextContributor {
 
-  private static final String CONFIGURATIONS = "configurations";
+    private static final String CONFIGURATIONS = "configurations";
 
-  @Override
-  public void process(@Nonnull List<String> methodCallInfo,
-                      @Nonnull PsiScopeProcessor processor,
-                      @Nonnull ResolveState state,
-                      @Nonnull PsiElement place) {
-    if (methodCallInfo.isEmpty()) {
-      return;
-    }
-    final String methodCall = methodCallInfo.get(0);
+    @Override
+    public void process(
+        @Nonnull List<String> methodCallInfo,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    ) {
+        if (methodCallInfo.isEmpty()) {
+            return;
+        }
+        final String methodCall = methodCallInfo.get(0);
 
-    String contributorClass = null;
-    if (methodCallInfo.size() == 1) {
-      if (methodCall.startsWith(CONFIGURATIONS + '.')) {
-        contributorClass = GradleCommonClassNames.GRADLE_API_CONFIGURATION;
-      }
-      else if (CONFIGURATIONS.equals(methodCall)) {
-        contributorClass = GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER;
-        if (place instanceof GrReferenceExpressionImpl) {
-          GradleResolverUtil
-            .addImplicitVariable(processor, state, (GrReferenceExpressionImpl)place, GradleCommonClassNames.GRADLE_API_CONFIGURATION);
-          return;
+        String contributorClass = null;
+        if (methodCallInfo.size() == 1) {
+            if (methodCall.startsWith(CONFIGURATIONS + '.')) {
+                contributorClass = GradleCommonClassNames.GRADLE_API_CONFIGURATION;
+            }
+            else if (CONFIGURATIONS.equals(methodCall)) {
+                contributorClass = GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER;
+                if (place instanceof GrReferenceExpressionImpl placeRefExpr) {
+                    GradleResolverUtil.addImplicitVariable(processor, state, placeRefExpr, GradleCommonClassNames.GRADLE_API_CONFIGURATION);
+                    return;
+                }
+            }
         }
-      }
-    }
-    else if (methodCallInfo.size() == 2) {
-      if (CONFIGURATIONS.equals(methodCallInfo.get(1))) {
-        contributorClass = GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER;
-        if (place instanceof GrReferenceExpressionImpl) {
-          GradleResolverUtil
-            .addImplicitVariable(processor, state, (GrReferenceExpressionImpl)place, GradleCommonClassNames.GRADLE_API_CONFIGURATION);
-          return;
+        else if (methodCallInfo.size() == 2) {
+            if (CONFIGURATIONS.equals(methodCallInfo.get(1))) {
+                contributorClass = GradleCommonClassNames.GRADLE_API_CONFIGURATION_CONTAINER;
+                if (place instanceof GrReferenceExpressionImpl placeRefExpr) {
+                    GradleResolverUtil.addImplicitVariable(processor, state, placeRefExpr, GradleCommonClassNames.GRADLE_API_CONFIGURATION);
+                    return;
+                }
+            }
         }
-      }
+        if (contributorClass != null) {
+            GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
+            GradleResolverUtil.processDeclarations(psiManager, processor, state, place, contributorClass);
+        }
     }
-    if (contributorClass != null) {
-      GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
-      GradleResolverUtil.processDeclarations(psiManager, processor, state, place, contributorClass);
-    }
-  }
 }

@@ -41,74 +41,77 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.
 
 /**
  * @author Vladislav.Soroka
- * @since 8/30/13
+ * @since 2013-08-30
  */
 @ExtensionImpl
 public class GradleConfigurationsNonCodeMembersContributor extends NonCodeMembersContributor {
+    private static final String METHOD_GET_BY_NAME = "getByName";
 
-  private static final String METHOD_GET_BY_NAME = "getByName";
+    @Override
+    public void processDynamicElements(
+        @Nonnull PsiType qualifierType,
+        PsiClass aClass,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull PsiElement place,
+        @Nonnull ResolveState state
+    ) {
+        if (place == null || aClass == null) {
+            return;
+        }
 
-  @Override
-  public void processDynamicElements(@Nonnull PsiType qualifierType,
-                                     PsiClass aClass,
-                                     PsiScopeProcessor processor,
-                                     PsiElement place,
-                                     ResolveState state) {
-    if (place == null || aClass == null) {
-      return;
+        if (!GRADLE_API_CONFIGURATION_CONTAINER.equals(aClass.getQualifiedName())) {
+            return;
+        }
+
+        // Assuming that the method call is equivalent to calling ConfigurationContainer.getByName()
+        processConfigurationAddition(aClass, processor, state, place);
     }
 
-    if (!GRADLE_API_CONFIGURATION_CONTAINER.equals(aClass.getQualifiedName())) {
-      return;
+    @SuppressWarnings("MethodMayBeStatic")
+    private void processConfigurationAddition(
+        @Nonnull PsiClass dependencyHandlerClass,
+        @Nonnull PsiScopeProcessor processor,
+        @Nonnull ResolveState state,
+        @Nonnull PsiElement place
+    ) {
+
+        GrMethodCall call = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
+        if (call == null) {
+            // TODO replace with groovy implicit method
+            GrReferenceExpressionImpl expression = (GrReferenceExpressionImpl)place;
+            String expr = expression.getCanonicalText();
+            GrImplicitVariableImpl myPsi = new GrImplicitVariableImpl(place.getManager(), expr, GRADLE_API_CONFIGURATION, place);
+            processor.execute(myPsi, state);
+            setNavigation(myPsi, dependencyHandlerClass, METHOD_GET_BY_NAME, 1);
+            return;
+        }
+        GrArgumentList args = call.getArgumentList();
+        if (args == null) {
+            return;
+        }
+        int argsCount = GradleResolverUtil.getGrMethodArumentsCount(args);
+
+        argsCount++; // Configuration name is delivered as an argument.
+
+        if (argsCount == 1) {
+            GrLightMethodBuilder builder = new GrLightMethodBuilder(place.getManager(), METHOD_GET_BY_NAME);
+            PsiClassType type = PsiType.getJavaLangObject(place.getManager(), place.getResolveScope());
+            builder.addParameter(new GrLightParameter("s", type, builder));
+            processor.execute(builder, state);
+
+            argsCount++; // we need method with extra argument of type Closure.
+            setNavigation(builder, dependencyHandlerClass, METHOD_GET_BY_NAME, argsCount);
+        }
     }
 
-    // Assuming that the method call is equivalent to calling ConfigurationContainer.getByName()
-    processConfigurationAddition(aClass, processor, state, place);
-  }
-
-  @SuppressWarnings("MethodMayBeStatic")
-  private void processConfigurationAddition(@Nonnull PsiClass dependencyHandlerClass,
-                                            @Nonnull PsiScopeProcessor processor,
-                                            @Nonnull ResolveState state,
-                                            @Nonnull PsiElement place) {
-
-    GrMethodCall call = PsiTreeUtil.getParentOfType(place, GrMethodCall.class);
-    if (call == null) {
-      // TODO replace with groovy implicit method
-      GrReferenceExpressionImpl expression = (GrReferenceExpressionImpl)place;
-      String expr = expression.getCanonicalText();
-      GrImplicitVariableImpl myPsi = new GrImplicitVariableImpl(place.getManager(), expr, GRADLE_API_CONFIGURATION, place);
-      processor.execute(myPsi, state);
-      setNavigation(myPsi, dependencyHandlerClass, METHOD_GET_BY_NAME, 1);
-      return;
+    @SuppressWarnings("MethodMayBeStatic")
+    private void setNavigation(LightElement element, PsiClass dependencyHandlerClass, String methodName, int parametersCount) {
+        for (PsiMethod method : dependencyHandlerClass.findMethodsByName(methodName, false)) {
+            int methodParameterCount = method.getParameterList().getParametersCount();
+            if (methodParameterCount == parametersCount &&
+                method.getParameterList().getParameters()[methodParameterCount - 1].getType().equalsToText(GROOVY_LANG_CLOSURE)) {
+                element.setNavigationElement(method);
+            }
+        }
     }
-    GrArgumentList args = call.getArgumentList();
-    if (args == null) {
-      return;
-    }
-    int argsCount = GradleResolverUtil.getGrMethodArumentsCount(args);
-
-    argsCount++; // Configuration name is delivered as an argument.
-
-    if (argsCount == 1) {
-      GrLightMethodBuilder builder = new GrLightMethodBuilder(place.getManager(), METHOD_GET_BY_NAME);
-      PsiClassType type = PsiType.getJavaLangObject(place.getManager(), place.getResolveScope());
-      builder.addParameter(new GrLightParameter("s", type, builder));
-      processor.execute(builder, state);
-
-      argsCount++; // we need method with extra argument of type Closure.
-      setNavigation(builder, dependencyHandlerClass, METHOD_GET_BY_NAME, argsCount);
-    }
-  }
-
-  @SuppressWarnings("MethodMayBeStatic")
-  private void setNavigation(LightElement element, PsiClass dependencyHandlerClass, String methodName, int parametersCount) {
-    for (PsiMethod method : dependencyHandlerClass.findMethodsByName(methodName, false)) {
-      int methodParameterCount = method.getParameterList().getParametersCount();
-      if (methodParameterCount == parametersCount &&
-        method.getParameterList().getParameters()[methodParameterCount - 1].getType().equalsToText(GROOVY_LANG_CLOSURE)) {
-        element.setNavigationElement(method);
-      }
-    }
-  }
 }

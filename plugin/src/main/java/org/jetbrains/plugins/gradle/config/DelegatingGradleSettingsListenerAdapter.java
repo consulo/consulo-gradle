@@ -26,29 +26,28 @@ import javax.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov
- * @since 6/24/13 6:35 PM
+ * @since 2013-06-24
  */
 public class DelegatingGradleSettingsListenerAdapter extends DelegatingExternalSystemSettingsListener<GradleProjectSettings>
-  implements GradleSettingsListener
-{
+    implements GradleSettingsListener {
 
-  public DelegatingGradleSettingsListenerAdapter(@Nonnull ExternalSystemSettingsListener<GradleProjectSettings> delegate) {
-    super(delegate);
-  }
+    public DelegatingGradleSettingsListenerAdapter(@Nonnull ExternalSystemSettingsListener<GradleProjectSettings> delegate) {
+        super(delegate);
+    }
 
-  @Override
-  public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
-  }
+    @Override
+    public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
+    }
 
-  @Override
-  public void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath) {
-  }
+    @Override
+    public void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath) {
+    }
 
-  @Override
-  public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath) {
-  }
+    @Override
+    public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath) {
+    }
 
-  @Override
-  public void onGradleVmOptionsChange(@Nullable String oldOptions, @Nullable String newOptions) {
-  }
+    @Override
+    public void onGradleVmOptionsChange(@Nullable String oldOptions, @Nullable String newOptions) {
+    }
 }

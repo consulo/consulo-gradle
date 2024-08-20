@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.gradle.codeInsight.actions;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
 import consulo.colorScheme.EditorColorsManager;
 import consulo.colorScheme.EditorColorsScheme;
 import consulo.colorScheme.EditorFontType;
 import consulo.document.Document;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.editor.util.LanguageEditorUtil;
@@ -29,12 +31,12 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.SimpleTextAttributes;
 import consulo.ui.ex.awt.ColoredListCellRenderer;
 import consulo.ui.ex.popup.JBPopup;
 import consulo.ui.ex.popup.JBPopupFactory;
 import consulo.util.lang.Pair;
-import consulo.gradle.GradleBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -48,73 +50,85 @@ import java.util.function.Consumer;
 
 /**
  * @author Vladislav.Soroka
- * @since 10/24/13
+ * @since 2013-10-24
  */
 class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
-  private final Pair[] myPlugins;
+    private final Pair[] myPlugins;
 
-  public AddGradleDslPluginActionHandler(Pair[] plugins) {
-    myPlugins = plugins;
-  }
+    public AddGradleDslPluginActionHandler(Pair[] plugins) {
+        myPlugins = plugins;
+    }
 
-  @Override
-  public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
-    if (!LanguageEditorUtil.checkModificationAllowed(editor)) return;
-
-    Consumer<Pair> runnable =
-      selected -> new WriteCommandAction.Simple(project, GradleBundle.message("gradle.codeInsight.action.apply_plugin.text"), file) {
-        @Override
-        protected void run() {
-          if (selected == null) return;
-          GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-          GrStatement grStatement = factory.createStatementFromText(
-            String.format("apply plugin: '%s'", selected.getFirst()), null);
-
-          PsiElement anchor = file.findElementAt(editor.getCaretModel().getOffset());
-          PsiElement currentElement = PsiTreeUtil.getParentOfType(anchor, GrClosableBlock.class, GroovyFile.class);
-          if (currentElement != null) {
-            currentElement.addAfter(grStatement, anchor);
-          }
-          else {
-            file.addAfter(grStatement, file.findElementAt(editor.getCaretModel().getOffset() - 1));
-          }
-          PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
-          Document document = documentManager.getDocument(file);
-          if (document != null) {
-            documentManager.commitDocument(document);
-          }
+    @Override
+    @RequiredUIAccess
+    public void invoke(@Nonnull final Project project, @Nonnull final Editor editor, @Nonnull final PsiFile file) {
+        if (!LanguageEditorUtil.checkModificationAllowed(editor)) {
+            return;
         }
-      }.execute();
 
-    JBPopup popup = JBPopupFactory.getInstance().createPopupChooserBuilder(List.of(myPlugins))
-                                  .setTitle(GradleBundle.message("gradle.codeInsight.action.apply_plugin.popup.title"))
-                                  .setNamerForFiltering(pair -> String.valueOf(pair.getFirst()))
-                                  .setItemChosenCallback(runnable)
-                                  .setRenderer(new ColoredListCellRenderer<Pair<String, String>>() {
+        Consumer<Pair> runnable = selected -> new WriteCommandAction.Simple(
+            project,
+            GradleLocalize.gradleCodeinsightActionApply_pluginText().get(),
+            file
+        ) {
+            @Override
+            @RequiredReadAction
+            protected void run() {
+                if (selected == null) {
+                    return;
+                }
+                GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+                GrStatement grStatement = factory.createStatementFromText(
+                    String.format("apply plugin: '%s'", selected.getFirst()),
+                    null
+                );
 
-                                    @Override
-                                    protected void customizeCellRenderer(@Nonnull JList<? extends Pair<String, String>> list,
-                                                                         Pair<String, String> descriptor,
-                                                                         int index,
-                                                                         boolean selected,
-                                                                         boolean hasFocus) {
-                                      EditorColorsScheme scheme = EditorColorsManager.getInstance().getGlobalScheme();
-                                      Font font = scheme.getFont(EditorFontType.PLAIN);
-                                      setFont(font);
+                PsiElement anchor = file.findElementAt(editor.getCaretModel().getOffset());
+                PsiElement currentElement = PsiTreeUtil.getParentOfType(anchor, GrClosableBlock.class, GroovyFile.class);
+                if (currentElement != null) {
+                    currentElement.addAfter(grStatement, anchor);
+                }
+                else {
+                    file.addAfter(grStatement, file.findElementAt(editor.getCaretModel().getOffset() - 1));
+                }
+                PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
+                Document document = documentManager.getDocument(file);
+                if (document != null) {
+                    documentManager.commitDocument(document);
+                }
+            }
+        }.execute();
 
-                                      append(String.valueOf(descriptor.getFirst()));
+        JBPopup popup = JBPopupFactory.getInstance().createPopupChooserBuilder(List.of(myPlugins))
+            .setTitle(GradleLocalize.gradleCodeinsightActionApply_pluginPopupTitle().get())
+            .setNamerForFiltering(pair -> String.valueOf(pair.getFirst()))
+            .setItemChosenCallback(runnable)
+            .setRenderer(new ColoredListCellRenderer<Pair<String, String>>() {
+                @Override
+                protected void customizeCellRenderer(
+                    @Nonnull JList<? extends Pair<String, String>> list,
+                    Pair<String, String> descriptor,
+                    int index,
+                    boolean selected,
+                    boolean hasFocus
+                ) {
+                    EditorColorsScheme scheme = EditorColorsManager.getInstance().getGlobalScheme();
+                    Font font = scheme.getFont(EditorFontType.PLAIN);
+                    setFont(font);
 
-                                      String description = String.valueOf(descriptor.getSecond());
-                                      append(description, SimpleTextAttributes.GRAY_ATTRIBUTES);
-                                    }
-                                  })
-                                  .createPopup();
+                    append(String.valueOf(descriptor.getFirst()));
 
-    EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
-  }
+                    String description = String.valueOf(descriptor.getSecond());
+                    append(description, SimpleTextAttributes.GRAY_ATTRIBUTES);
+                }
+            })
+            .createPopup();
 
-  @Override
-  public boolean startInWriteAction() {
-    return false;
-  }
+        EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return false;
+    }
 }

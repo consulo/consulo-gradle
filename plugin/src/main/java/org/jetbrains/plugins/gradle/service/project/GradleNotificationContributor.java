@@ -9,12 +9,12 @@ import java.util.function.Consumer;
 
 /**
  * @author VISTALL
- * @since 31/03/2023
+ * @since 2023-03-31
  */
 @ExtensionImpl
 public class GradleNotificationContributor implements NotificationGroupContributor {
-  @Override
-  public void contribute(@Nonnull Consumer<NotificationGroup> consumer) {
-    consumer.accept(GradleNotification.NOTIFICATION_GROUP);
-  }
+    @Override
+    public void contribute(@Nonnull Consumer<NotificationGroup> consumer) {
+        consumer.accept(GradleNotification.NOTIFICATION_GROUP);
+    }
 }

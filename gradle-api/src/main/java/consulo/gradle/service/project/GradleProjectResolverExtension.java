@@ -25,7 +25,7 @@ import consulo.externalSystem.model.task.TaskData;
 import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.externalSystem.service.ParametersEnhancer;
 import consulo.externalSystem.service.project.ProjectData;
-import consulo.util.lang.Pair;
+import consulo.util.lang.Couple;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
 
@@ -111,7 +111,7 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer {
   Set<Class> getToolingExtensionsClasses();
 
   @Nonnull
-  List<Pair<String, String>> getExtraJvmArgs();
+  List<Couple<String>> getExtraJvmArgs();
 
   @Nonnull
   List<String> getExtraCommandLineArgs();

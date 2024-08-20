@@ -15,12 +15,10 @@
  */
 package org.jetbrains.plugins.gradle.service.project.data;
 
-import consulo.application.CommonBundle;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.Task;
 import consulo.application.util.ConcurrentFactoryMap;
-import consulo.application.util.function.Computable;
-import consulo.externalSystem.ExternalSystemBundle;
+import consulo.externalSystem.localize.ExternalSystemLocalize;
 import consulo.externalSystem.model.DataNode;
 import consulo.externalSystem.model.Key;
 import consulo.externalSystem.model.ProjectKeys;
@@ -38,9 +36,11 @@ import consulo.externalSystem.util.Order;
 import consulo.ide.impl.idea.openapi.externalSystem.service.internal.ExternalSystemResolveProjectTask;
 import consulo.ide.impl.idea.openapi.externalSystem.service.notification.ExternalSystemNotificationManager;
 import consulo.ide.impl.idea.openapi.externalSystem.service.project.manage.ProjectDataManager;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.module.Module;
 import consulo.module.content.ProjectRootManager;
+import consulo.platform.base.localize.CommonLocalize;
 import consulo.project.Project;
 import consulo.ui.ex.awt.Messages;
 import consulo.ui.ex.awt.UIUtil;
@@ -54,186 +54,207 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * @author Vladislav.Soroka
- * @since 7/17/2014
+ * @since 2014-07-17
  */
 @Order(ExternalSystemConstants.BUILTIN_SERVICE_ORDER)
 public class ExternalProjectDataService implements ProjectDataService<ExternalProject, Project> {
-  private static final Logger LOG = Logger.getInstance(ExternalProjectDataService.class);
+    private static final Logger LOG = Logger.getInstance(ExternalProjectDataService.class);
 
-  @Nonnull
-  public static final Key<ExternalProject> KEY = Key.create(ExternalProject.class, ProjectKeys.TASK.getProcessingWeight() + 1);
+    @Nonnull
+    public static final Key<ExternalProject> KEY =
+        Key.create(ExternalProject.class, ProjectKeys.TASK.getProcessingWeight() + 1);
 
-  @Nonnull
-  private final Map<Pair<ProjectSystemId, File>, ExternalProject> myExternalRootProjects;
+    @Nonnull
+    private final Map<Pair<ProjectSystemId, File>, ExternalProject> myExternalRootProjects;
 
-  @Nonnull
-  private ProjectDataManager myProjectDataManager;
+    @Nonnull
+    private ProjectDataManager myProjectDataManager;
 
-  public ExternalProjectDataService(@Nonnull ProjectDataManager projectDataManager) {
-    myProjectDataManager = projectDataManager;
-    myExternalRootProjects = ConcurrentFactoryMap.createMap(key -> new ExternalProjectSerializer().load(key.first, key.second));
-  }
-
-  @Nonnull
-  @Override
-  public Key<ExternalProject> getTargetDataKey() {
-    return KEY;
-  }
-
-  public void importData(@Nonnull final Collection<DataNode<ExternalProject>> toImport,
-                         @Nonnull final Project project,
-                         final boolean synchronous) {
-    if (toImport.size() != 1) {
-      throw new IllegalArgumentException(String.format("Expected to get a single external project but got %d: %s",
-                                                       toImport.size(),
-                                                       toImport));
+    public ExternalProjectDataService(@Nonnull ProjectDataManager projectDataManager) {
+        myProjectDataManager = projectDataManager;
+        myExternalRootProjects = ConcurrentFactoryMap.createMap(key -> new ExternalProjectSerializer().load(key.first, key.second));
     }
-    saveExternalProject(toImport.iterator().next().getData());
-  }
 
-  @Override
-  public void removeData(@Nonnull final Collection<? extends Project> modules, @Nonnull Project project, boolean synchronous) {
-  }
+    @Nonnull
+    @Override
+    public Key<ExternalProject> getTargetDataKey() {
+        return KEY;
+    }
 
-  @Nullable
-  public ExternalProject getOrImportRootExternalProject(@Nonnull Project project,
-                                                        @Nonnull ProjectSystemId systemId,
-                                                        @Nonnull File projectRootDir) {
-    final ExternalProject externalProject = getRootExternalProject(systemId, projectRootDir);
-    return externalProject != null ? externalProject : importExternalProject(project, systemId, projectRootDir);
-  }
-
-  @Nullable
-  private ExternalProject importExternalProject(@Nonnull final Project project, @Nonnull final ProjectSystemId projectSystemId,
-                                                @Nonnull final File projectRootDir) {
-    final Boolean result = UIUtil.invokeAndWaitIfNeeded(new Computable<Boolean>() {
-      @Override
-      public Boolean compute() {
-        final Ref<Boolean> result = new Ref<Boolean>(false);
-        if (project.isDisposed()) {
-          return false;
+    @Override
+    public void importData(
+        @Nonnull final Collection<DataNode<ExternalProject>> toImport,
+        @Nonnull final Project project,
+        final boolean synchronous
+    ) {
+        if (toImport.size() != 1) {
+            throw new IllegalArgumentException(String.format(
+                "Expected to get a single external project but got %d: %s",
+                toImport.size(),
+                toImport
+            ));
         }
+        saveExternalProject(toImport.iterator().next().getData());
+    }
 
-        final String linkedProjectPath = FileUtil.toCanonicalPath(projectRootDir.getPath());
-        final ExternalProjectSettings projectSettings = ExternalSystemApiUtil.getSettings(project, projectSystemId).getLinkedProjectSettings
-          (linkedProjectPath);
-        if (projectSettings == null) {
-          LOG.warn("Unable to get project settings for project path: " + linkedProjectPath);
-          if (LOG.isDebugEnabled()) {
-            LOG.debug("Available projects paths: " + ContainerUtil.map(ExternalSystemApiUtil.getSettings(project,
-                                                                                                         projectSystemId)
-                                                                                            .getLinkedProjectsSettings(),
-                                                                       (Function<ExternalProjectSettings, String>)settings -> settings.getExternalProjectPath()));
-          }
-          return false;
-        }
+    @Override
+    public void removeData(@Nonnull final Collection<? extends Project> modules, @Nonnull Project project, boolean synchronous) {
+    }
 
-        final File projectFile = new File(linkedProjectPath);
-        final String projectName;
-        if (projectFile.isFile()) {
-          projectName = projectFile.getParentFile().getName();
-        }
-        else {
-          projectName = projectFile.getName();
-        }
+    @Nullable
+    public ExternalProject getOrImportRootExternalProject(
+        @Nonnull Project project,
+        @Nonnull ProjectSystemId systemId,
+        @Nonnull File projectRootDir
+    ) {
+        final ExternalProject externalProject = getRootExternalProject(systemId, projectRootDir);
+        return externalProject != null ? externalProject : importExternalProject(project, systemId, projectRootDir);
+    }
 
-        // ask a user for the project import if auto-import is disabled
-        if (!projectSettings.isUseAutoImport()) {
-          String message = String.format("Project '%s' require synchronization with %s configuration. \nImport the project?", projectName,
-                                         projectSystemId.getReadableName());
-          int returnValue = Messages.showOkCancelDialog(message, "Import Project", CommonBundle.getOkButtonText(),
-                                                        CommonBundle.getCancelButtonText(), Messages.getQuestionIcon());
-          if (returnValue != Messages.OK) {
-            return false;
-          }
-        }
-
-        final String title = ExternalSystemBundle.message("progress.import.text", linkedProjectPath, projectSystemId.getReadableName());
-        new Task.Modal(project, title, false) {
-          @Override
-          public void run(@Nonnull ProgressIndicator indicator) {
+    @Nullable
+    private ExternalProject importExternalProject(
+        @Nonnull final Project project,
+        @Nonnull final ProjectSystemId projectSystemId,
+        @Nonnull final File projectRootDir
+    ) {
+        final Boolean result = UIUtil.invokeAndWaitIfNeeded(() -> {
+            final Ref<Boolean> result1 = new Ref<>(false);
             if (project.isDisposed()) {
-              return;
+                return false;
             }
 
-            ExternalSystemNotificationManager.getInstance(project).clearNotifications(null, NotificationSource.PROJECT_SYNC,
-                                                                                      projectSystemId);
-            ExternalSystemResolveProjectTask task = new ExternalSystemResolveProjectTask(projectSystemId, project, linkedProjectPath,
-                                                                                         false);
-            task.execute(indicator, ExternalSystemTaskNotificationListener.EP_NAME.getExtensions());
-            if (project.isDisposed()) {
-              return;
+            final String linkedProjectPath = FileUtil.toCanonicalPath(projectRootDir.getPath());
+            final ExternalProjectSettings projectSettings =
+                ExternalSystemApiUtil.getSettings(project, projectSystemId).getLinkedProjectSettings(linkedProjectPath);
+            if (projectSettings == null) {
+                LOG.warn("Unable to get project settings for project path: " + linkedProjectPath);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Available projects paths: " + ContainerUtil.map(
+                        ExternalSystemApiUtil.getSettings(project, projectSystemId).getLinkedProjectsSettings(),
+                        ExternalProjectSettings::getExternalProjectPath
+                    ));
+                }
+                return false;
             }
 
-            final Throwable error = task.getError();
-            if (error != null) {
-              ExternalSystemNotificationManager.getInstance(project).processExternalProjectRefreshError(error, projectName,
-                                                                                                        projectSystemId);
-              return;
+            final File projectFile = new File(linkedProjectPath);
+            final String projectName;
+            if (projectFile.isFile()) {
+                projectName = projectFile.getParentFile().getName();
             }
-            final DataNode<ProjectData> projectDataDataNode = task.getExternalProject();
-            if (projectDataDataNode == null) {
-              return;
+            else {
+                projectName = projectFile.getName();
             }
 
-            final Collection<DataNode<ExternalProject>> nodes = ExternalSystemApiUtil.findAll(projectDataDataNode, KEY);
-            if (nodes.size() != 1) {
-              throw new IllegalArgumentException(String.format("Expected to get a single external project but got %d: %s",
-                                                               nodes.size(), nodes));
+            // ask a user for the project import if auto-import is disabled
+            if (!projectSettings.isUseAutoImport()) {
+                String message = String.format(
+                    "Project '%s' require synchronization with %s configuration. \nImport the project?",
+                    projectName,
+                    projectSystemId.getDisplayName()
+                );
+                int returnValue = Messages.showOkCancelDialog(
+                    message,
+                    "Import Project",
+                    CommonLocalize.buttonOk().get(),
+                    CommonLocalize.buttonCancel().get(),
+                    UIUtil.getQuestionIcon()
+                );
+                if (returnValue != Messages.OK) {
+                    return false;
+                }
             }
 
-            ProjectRootManager.getInstance((Project)myProject)
-                              .mergeRootsChangesDuring(() -> myProjectDataManager.importData(KEY, nodes, project, true));
+            final LocalizeValue title =
+                ExternalSystemLocalize.progressImportText(linkedProjectPath, projectSystemId.getDisplayName());
+            new Task.Modal(project, title.get(), false) {
+                @Override
+                public void run(@Nonnull ProgressIndicator indicator) {
+                    if (project.isDisposed()) {
+                        return;
+                    }
 
-            result.set(true);
-          }
-        }.queue();
+                    ExternalSystemNotificationManager.getInstance(project)
+                        .clearNotifications(null, NotificationSource.PROJECT_SYNC, projectSystemId);
+                    ExternalSystemResolveProjectTask task =
+                        new ExternalSystemResolveProjectTask(projectSystemId, project, linkedProjectPath, false);
+                    task.execute(indicator, ExternalSystemTaskNotificationListener.EP_NAME.getExtensions());
+                    if (project.isDisposed()) {
+                        return;
+                    }
 
-        return result.get();
-      }
-    });
+                    final Throwable error = task.getError();
+                    if (error != null) {
+                        ExternalSystemNotificationManager.getInstance(project)
+                            .processExternalProjectRefreshError(error, projectName, projectSystemId);
+                        return;
+                    }
+                    final DataNode<ProjectData> projectDataDataNode = task.getExternalProject();
+                    if (projectDataDataNode == null) {
+                        return;
+                    }
 
-    return result ? getRootExternalProject(projectSystemId, projectRootDir) : null;
-  }
+                    final Collection<DataNode<ExternalProject>> nodes = ExternalSystemApiUtil.findAll(projectDataDataNode, KEY);
+                    if (nodes.size() != 1) {
+                        throw new IllegalArgumentException(String.format(
+                            "Expected to get a single external project but got %d: %s",
+                            nodes.size(),
+                            nodes
+                        ));
+                    }
 
-  @Nullable
-  public ExternalProject getRootExternalProject(@Nonnull ProjectSystemId systemId, @Nonnull File projectRootDir) {
-    return myExternalRootProjects.get(Pair.create(systemId, projectRootDir));
-  }
+                    ProjectRootManager.getInstance((Project)myProject)
+                        .mergeRootsChangesDuring(() -> myProjectDataManager.importData(KEY, nodes, project, true));
 
-  public void saveExternalProject(@Nonnull ExternalProject externalProject) {
-    DefaultExternalProject value = new DefaultExternalProject(externalProject);
+                    result1.set(true);
+                }
+            }.queue();
 
-    myExternalRootProjects.put(Pair.create(new ProjectSystemId(externalProject.getExternalSystemId()), externalProject.getProjectDir()),
-                               value);
+            return result1.get();
+        });
 
-    new ExternalProjectSerializer().save(value);
-  }
-
-  @Nullable
-  public ExternalProject findExternalProject(@Nonnull ExternalProject parentProject, @Nonnull Module module) {
-    String externalProjectId = ExternalSystemApiUtil.getExternalProjectId(module);
-    return externalProjectId != null ? findExternalProject(parentProject, externalProjectId) : null;
-  }
-
-  @Nullable
-  private static ExternalProject findExternalProject(@Nonnull ExternalProject parentProject, @Nonnull String externalProjectId) {
-    if (parentProject.getQName().equals(externalProjectId)) {
-      return parentProject;
+        return result ? getRootExternalProject(projectSystemId, projectRootDir) : null;
     }
-    if (parentProject.getChildProjects().containsKey(externalProjectId)) {
-      return parentProject.getChildProjects().get(externalProjectId);
+
+    @Nullable
+    public ExternalProject getRootExternalProject(@Nonnull ProjectSystemId systemId, @Nonnull File projectRootDir) {
+        return myExternalRootProjects.get(Pair.create(systemId, projectRootDir));
     }
-    for (ExternalProject externalProject : parentProject.getChildProjects().values()) {
-      final ExternalProject project = findExternalProject(externalProject, externalProjectId);
-      if (project != null) {
-        return project;
-      }
+
+    public void saveExternalProject(@Nonnull ExternalProject externalProject) {
+        DefaultExternalProject value = new DefaultExternalProject(externalProject);
+
+        myExternalRootProjects.put(
+            Pair.create(new ProjectSystemId(externalProject.getExternalSystemId()), externalProject.getProjectDir()),
+            value
+        );
+
+        new ExternalProjectSerializer().save(value);
     }
-    return null;
-  }
+
+    @Nullable
+    public ExternalProject findExternalProject(@Nonnull ExternalProject parentProject, @Nonnull Module module) {
+        String externalProjectId = ExternalSystemApiUtil.getExternalProjectId(module);
+        return externalProjectId != null ? findExternalProject(parentProject, externalProjectId) : null;
+    }
+
+    @Nullable
+    private static ExternalProject findExternalProject(@Nonnull ExternalProject parentProject, @Nonnull String externalProjectId) {
+        if (parentProject.getQName().equals(externalProjectId)) {
+            return parentProject;
+        }
+        if (parentProject.getChildProjects().containsKey(externalProjectId)) {
+            return parentProject.getChildProjects().get(externalProjectId);
+        }
+        for (ExternalProject externalProject : parentProject.getChildProjects().values()) {
+            final ExternalProject project = findExternalProject(externalProject, externalProjectId);
+            if (project != null) {
+                return project;
+            }
+        }
+        return null;
+    }
 }

@@ -19,12 +19,15 @@ import consulo.annotation.component.ExtensionImpl;
 
 /**
  * @author Denis Zhdanov
- * @since 8/14/13 12:56 PM
+ * @since 2013-08-14
  */
 @ExtensionImpl
 public class GradleRepositoriesContributor extends GradleSimpleContributor {
-  public GradleRepositoriesContributor() {
-    super("repositories", GradleCommonClassNames.GRADLE_API_REPOSITORY_HANDLER,
-          GradleCommonClassNames.GRADLE_API_PLUGINS_MAVEN_REPOSITORY_HANDLER_CONVENTION);
-  }
+    public GradleRepositoriesContributor() {
+        super(
+            "repositories",
+            GradleCommonClassNames.GRADLE_API_REPOSITORY_HANDLER,
+            GradleCommonClassNames.GRADLE_API_PLUGINS_MAVEN_REPOSITORY_HANDLER_CONVENTION
+        );
+    }
 }
