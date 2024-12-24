@@ -12,31 +12,32 @@ import javax.annotation.Nonnull;
  * @since 8/1/11 3:10 PM
  */
 public class GradleConstants {
+    @Nonnull
+    public static final ProjectSystemId SYSTEM_ID = new ProjectSystemId("GRADLE", GradleLocalize.gradleName());
 
-  @Nonnull
-  public static final ProjectSystemId SYSTEM_ID = new ProjectSystemId("GRADLE", GradleLocalize.gradleName());
+    public static final String EXTENSION = "gradle";
+    public static final String DEFAULT_SCRIPT_NAME = "build.gradle";
+    public static final String KOTLIN_DSL_SCRIPT_NAME = "build.gradle.kts";
+    public static final String SETTINGS_FILE_NAME = "settings.gradle";
 
-  @Nonnull
-  public static final String EXTENSION = "gradle";
-  @Nonnull
-  public static final String DEFAULT_SCRIPT_NAME = "build.gradle";
-  @Nonnull
-  public static final String SETTINGS_FILE_NAME = "settings.gradle";
+    public static final String SYSTEM_DIRECTORY_PATH_KEY = "GRADLE_USER_HOME";
 
-  @Nonnull
-  public static final String SYSTEM_DIRECTORY_PATH_KEY = "GRADLE_USER_HOME";
+    public static final String TOOL_WINDOW_TOOLBAR_PLACE = "GRADLE_SYNC_CHANGES_TOOLBAR";
 
-  @Nonnull
-  public static final String TOOL_WINDOW_TOOLBAR_PLACE = "GRADLE_SYNC_CHANGES_TOOLBAR";
+    public static final String HELP_TOPIC_TOOL_WINDOW = "reference.toolwindows.gradle";
 
-  @Nonnull
-  public static final String HELP_TOPIC_TOOL_WINDOW = "reference.toolwindows.gradle";
+    public static final String OFFLINE_MODE_CMD_OPTION = "--offline";
+    public static final String INIT_SCRIPT_CMD_OPTION = "--init-script";
 
-  @Nonnull
-  public static final String OFFLINE_MODE_CMD_OPTION = "--offline";
-  @Nonnull
-  public static final String INIT_SCRIPT_CMD_OPTION = "--init-script";
+    public static final String KOTLIN_DSL_SETTINGS_FILE_NAME = "settings.gradle.kts";
+    public static final String DECLARATIVE_EXTENSION = "gradle.dcl";
 
-  private GradleConstants() {
-  }
+    public static final String KOTLIN_DSL_SCRIPT_EXTENSION = "gradle.kts";
+
+    public static final String[] BUILD_FILE_EXTENSIONS = {
+        EXTENSION, KOTLIN_DSL_SCRIPT_EXTENSION, DECLARATIVE_EXTENSION
+    };
+
+    private GradleConstants() {
+    }
 }

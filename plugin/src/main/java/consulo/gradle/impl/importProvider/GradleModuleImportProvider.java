@@ -58,18 +58,28 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
     @Override
     public boolean canImport(@Nonnull File fileOrDirectory) {
         if (fileOrDirectory.isDirectory()) {
-            return new File(fileOrDirectory, GradleConstants.DEFAULT_SCRIPT_NAME).exists();
+            File file = new File(fileOrDirectory, GradleConstants.DEFAULT_SCRIPT_NAME);
+            if (file.exists()) {
+                return true;
+            }
+
+            file = new File(fileOrDirectory, GradleConstants.KOTLIN_DSL_SCRIPT_NAME);
+            if (file.exists()) {
+                return true;
+            }
+            
+            return false;
         }
         else {
             String extension = FileUtil.getExtension(fileOrDirectory.getName());
-            return GradleConstants.EXTENSION.equalsIgnoreCase(extension);
+            return extension.equalsIgnoreCase(GradleConstants.EXTENSION) || extension.equalsIgnoreCase(GradleConstants.KOTLIN_DSL_SCRIPT_EXTENSION);
         }
     }
 
     @Nonnull
     @Override
     public String getFileSample() {
-        return "<b>Gradle</b> build script (*.gradle)";
+        return "<b>Gradle</b> build script (*.gradle &amp; *.gradle.kts)";
     }
 
     @Override
