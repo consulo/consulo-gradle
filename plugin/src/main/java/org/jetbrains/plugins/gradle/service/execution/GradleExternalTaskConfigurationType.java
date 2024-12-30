@@ -19,7 +19,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.externalSystem.service.execution.AbstractExternalSystemTaskConfigurationType;
 import consulo.gradle.GradleConstants;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Denis Zhdanov

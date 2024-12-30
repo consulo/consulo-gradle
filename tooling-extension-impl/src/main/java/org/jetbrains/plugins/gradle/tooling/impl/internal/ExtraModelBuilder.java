@@ -22,7 +22,6 @@ import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
 import org.jetbrains.plugins.gradle.tooling.annotation.TargetVersions;
 
-import javax.annotation.Nonnull;
 import java.util.ServiceLoader;
 
 /**
@@ -31,75 +30,78 @@ import java.util.ServiceLoader;
  */
 @SuppressWarnings("UnusedDeclaration")
 public class ExtraModelBuilder implements ToolingModelBuilder {
-  private static final String RANGE_TOKEN = " <=> ";
-  private static ServiceLoader<ModelBuilderService> buildersLoader =
-    ServiceLoader.load(ModelBuilderService.class, ExtraModelBuilder.class.getClassLoader());
+    private static final String RANGE_TOKEN = " <=> ";
+    private static ServiceLoader<ModelBuilderService> buildersLoader =
+        ServiceLoader.load(ModelBuilderService.class, ExtraModelBuilder.class.getClassLoader());
 
-  @Nonnull
-  private final GradleVersion myCurrentGradleVersion;
+    private final GradleVersion myCurrentGradleVersion;
 
-  public ExtraModelBuilder() {
-    this.myCurrentGradleVersion = GradleVersion.current();
-  }
-
-  public ExtraModelBuilder(@Nonnull GradleVersion gradleVersion) {
-    this.myCurrentGradleVersion = gradleVersion;
-  }
-
-  @Override
-  public boolean canBuild(String modelName) {
-    for (ModelBuilderService service : buildersLoader) {
-      if (service.canBuild(modelName) && isVersionMatch(service)) return true;
+    public ExtraModelBuilder() {
+        this.myCurrentGradleVersion = GradleVersion.current();
     }
-    return false;
-  }
 
-  @Override
-  public Object buildAll(String modelName, Project project) {
-    for (ModelBuilderService service : buildersLoader) {
-      if (service.canBuild(modelName) && isVersionMatch(service)) {
-        try {
-          return service.buildAll(modelName, project);
+    public ExtraModelBuilder(GradleVersion gradleVersion) {
+        this.myCurrentGradleVersion = gradleVersion;
+    }
+
+    @Override
+    public boolean canBuild(String modelName) {
+        for (ModelBuilderService service : buildersLoader) {
+            if (service.canBuild(modelName) && isVersionMatch(service)) {
+                return true;
+            }
         }
-        catch (Exception e) {
-          ErrorMessageBuilder builderError = service.getErrorMessageBuilder(project, e);
-          project.getLogger().error(builderError.build());
+        return false;
+    }
+
+    @Override
+    public Object buildAll(String modelName, Project project) {
+        for (ModelBuilderService service : buildersLoader) {
+            if (service.canBuild(modelName) && isVersionMatch(service)) {
+                try {
+                    return service.buildAll(modelName, project);
+                }
+                catch (Exception e) {
+                    ErrorMessageBuilder builderError = service.getErrorMessageBuilder(project, e);
+                    project.getLogger().error(builderError.build());
+                }
+                return null;
+            }
         }
-        return null;
-      }
+        throw new IllegalArgumentException("Unsupported model: " + modelName);
     }
-    throw new IllegalArgumentException("Unsupported model: " + modelName);
-  }
 
-  private boolean isVersionMatch(@Nonnull ModelBuilderService builderService) {
-    TargetVersions targetVersions = builderService.getClass().getAnnotation(TargetVersions.class);
-    if (targetVersions == null || targetVersions.value() == null || targetVersions.value().isEmpty()) return true;
+    private boolean isVersionMatch(ModelBuilderService builderService) {
+        TargetVersions targetVersions = builderService.getClass().getAnnotation(TargetVersions.class);
+        if (targetVersions == null || targetVersions.value() == null || targetVersions.value().isEmpty()) {
+            return true;
+        }
 
-    final GradleVersion current = adjust(myCurrentGradleVersion, targetVersions.checkBaseVersions());
+        final GradleVersion current = adjust(myCurrentGradleVersion, targetVersions.checkBaseVersions());
 
-    if (targetVersions.value().endsWith("+")) {
-      String minVersion = targetVersions.value().substring(0, targetVersions.value().length() - 1);
-      return compare(current, minVersion, targetVersions.checkBaseVersions()) >= 0;
+        if (targetVersions.value().endsWith("+")) {
+            String minVersion = targetVersions.value().substring(0, targetVersions.value().length() - 1);
+            return compare(current, minVersion, targetVersions.checkBaseVersions()) >= 0;
+        }
+        else {
+            final int rangeIndex = targetVersions.value().indexOf(RANGE_TOKEN);
+            if (rangeIndex != -1) {
+                String minVersion = targetVersions.value().substring(0, rangeIndex);
+                String maxVersion = targetVersions.value().substring(rangeIndex + RANGE_TOKEN.length());
+                return compare(current, minVersion, targetVersions.checkBaseVersions()) >= 0 &&
+                    compare(current, maxVersion, targetVersions.checkBaseVersions()) <= 0;
+            }
+            else {
+                return compare(current, targetVersions.value(), targetVersions.checkBaseVersions()) == 0;
+            }
+        }
     }
-    else {
-      final int rangeIndex = targetVersions.value().indexOf(RANGE_TOKEN);
-      if (rangeIndex != -1) {
-        String minVersion = targetVersions.value().substring(0, rangeIndex);
-        String maxVersion = targetVersions.value().substring(rangeIndex + RANGE_TOKEN.length());
-        return compare(current, minVersion, targetVersions.checkBaseVersions()) >= 0 &&
-               compare(current, maxVersion, targetVersions.checkBaseVersions()) <= 0;
-      }
-      else {
-        return compare(current, targetVersions.value(), targetVersions.checkBaseVersions()) == 0;
-      }
+
+    private static int compare(GradleVersion gradleVersion, String otherGradleVersion, boolean checkBaseVersions) {
+        return gradleVersion.compareTo(adjust(GradleVersion.version(otherGradleVersion), checkBaseVersions));
     }
-  }
 
-  private static int compare(@Nonnull GradleVersion gradleVersion, @Nonnull String otherGradleVersion, boolean checkBaseVersions) {
-    return gradleVersion.compareTo(adjust(GradleVersion.version(otherGradleVersion), checkBaseVersions));
-  }
-
-  private static GradleVersion adjust(@Nonnull GradleVersion version, boolean checkBaseVersions) {
-    return checkBaseVersions ? version.getBaseVersion() : version;
-  }
+    private static GradleVersion adjust(GradleVersion version, boolean checkBaseVersions) {
+        return checkBaseVersions ? version.getBaseVersion() : version;
+    }
 }

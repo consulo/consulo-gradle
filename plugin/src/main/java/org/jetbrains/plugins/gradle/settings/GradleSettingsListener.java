@@ -5,8 +5,8 @@ import consulo.annotation.component.TopicAPI;
 import consulo.externalSystem.setting.ExternalSystemSettingsListener;
 import consulo.gradle.setting.DistributionType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.lang.String;
 import java.util.Collection;
 import java.util.Set;

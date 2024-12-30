@@ -28,8 +28,6 @@ import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.BuildScriptClasspathModelImpl;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.ClasspathEntryModelImpl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,7 +49,6 @@ public class ModelBuildScriptClasspathBuilderImpl implements ModelBuilderService
     return BuildScriptClasspathModel.class.getName().equals(modelName);
   }
 
-  @Nullable
   @Override
   public Object buildAll(final String modelName, final Project project) {
     BuildScriptClasspathModelImpl buildScriptClasspath = cache.get(project.getPath());
@@ -122,9 +119,9 @@ public class ModelBuildScriptClasspathBuilderImpl implements ModelBuilderService
     return buildScriptClasspath;
   }
 
-  @Nonnull
+  
   @Override
-  public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
+  public ErrorMessageBuilder getErrorMessageBuilder( Project project,  Exception e) {
     return ErrorMessageBuilder.create(
       project, e, "Project build classpath resolve errors"
     ).withDescription("Unable to resolve additional buildscript classpath dependencies");

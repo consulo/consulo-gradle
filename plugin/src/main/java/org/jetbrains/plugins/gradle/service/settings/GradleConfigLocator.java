@@ -9,8 +9,8 @@ import consulo.virtualFileSystem.VirtualFile;
 import org.gradle.tooling.GradleConnector;
 import consulo.gradle.GradleConstants;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

@@ -36,7 +36,7 @@ import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 

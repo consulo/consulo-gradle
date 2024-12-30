@@ -20,8 +20,8 @@ import consulo.externalSystem.model.ProjectKeys;
 import consulo.externalSystem.model.ProjectSystemId;
 import consulo.externalSystem.service.project.AbstractExternalEntityData;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.Collections;
 import java.util.Map;

@@ -17,19 +17,14 @@ package org.jetbrains.plugins.gradle.tooling.model;
 
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 /**
  * @author Vladislav.Soroka
  * @since 12/20/13
  */
 public interface ClasspathEntryModel {
-  @Nonnull
   Set<String> getClasses();
 
-  @Nonnull
   Set<String> getSources();
 
-  @Nonnull
   Set<String> getJavadoc();
 }

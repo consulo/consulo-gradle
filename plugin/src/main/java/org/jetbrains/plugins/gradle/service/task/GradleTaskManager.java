@@ -16,11 +16,9 @@
 package org.jetbrains.plugins.gradle.service.task;
 
 import consulo.externalSystem.model.task.ExternalSystemTaskId;
-import consulo.externalSystem.model.task.ExternalSystemTaskNotificationEvent;
 import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.externalSystem.task.ExternalSystemTaskManager;
-import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.service.project.GradleProjectResolverExtension;
 import consulo.gradle.setting.GradleExecutionSettings;
@@ -30,13 +28,13 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.ProjectConnection;
 import org.jetbrains.plugins.gradle.service.project.GradleExecutionHelper;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,23 +61,21 @@ public class GradleTaskManager extends AbstractExternalSystemTaskManager<GradleE
         @Nullable final String debuggerSetup,
         @Nonnull final ExternalSystemTaskNotificationListener listener
     ) throws ExternalSystemException {
-        // TODO add support for external process mode
-        if (ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID)) {
-            for (GradleTaskManagerExtension gradleTaskManagerExtension : GradleTaskManagerExtension.EP_NAME.getExtensions()) {
-                if (gradleTaskManagerExtension.executeTasks(
-                    id,
-                    taskNames,
-                    projectPath,
-                    settings,
-                    vmOptions,
-                    scriptParameters,
-                    debuggerSetup,
-                    listener
-                )) {
-                    return;
-                }
+        for (GradleTaskManagerExtension gradleTaskManagerExtension : GradleTaskManagerExtension.EP_NAME.getExtensions()) {
+            if (gradleTaskManagerExtension.executeTasks(
+                id,
+                taskNames,
+                projectPath,
+                settings,
+                vmOptions,
+                scriptParameters,
+                debuggerSetup,
+                listener
+            )) {
+                return;
             }
         }
+
         if (!scriptParameters.contains("--tests") && taskNames.contains("test")) {
             ContainerUtil.addAll(scriptParameters, "--tests", "*");
         }
@@ -125,19 +121,10 @@ public class GradleTaskManager extends AbstractExternalSystemTaskManager<GradleE
     @Override
     public boolean cancelTask(@Nonnull ExternalSystemTaskId id, @Nonnull ExternalSystemTaskNotificationListener listener) throws
         ExternalSystemException {
-        // extension points are available only in IDE process
-        if (ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID)) {
-            for (GradleTaskManagerExtension gradleTaskManagerExtension : GradleTaskManagerExtension.EP_NAME.getExtensions()) {
-                if (gradleTaskManagerExtension.cancelTask(id, listener)) {
-                    return true;
-                }
+        for (GradleTaskManagerExtension gradleTaskManagerExtension : GradleTaskManagerExtension.EP_NAME.getExtensionList()) {
+            if (gradleTaskManagerExtension.cancelTask(id, listener)) {
+                return true;
             }
-        }
-
-        // TODO replace with cancellation gradle API invocation when it will be ready, see http://issues.gradle.org/browse/GRADLE-1539
-        if (!ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID)) {
-            listener.onStatusChange(new ExternalSystemTaskNotificationEvent(id, "Cancelling the task...\n"));
-            System.exit(0);
         }
         return false;
     }

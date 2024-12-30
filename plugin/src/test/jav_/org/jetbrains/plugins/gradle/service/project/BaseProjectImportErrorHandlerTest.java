@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.service.project;
 
 import org.gradle.api.internal.LocationAwareException;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.junit.Before;
 import org.junit.Test;
 

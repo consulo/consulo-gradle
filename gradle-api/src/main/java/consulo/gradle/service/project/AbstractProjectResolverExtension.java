@@ -27,8 +27,8 @@ import consulo.util.lang.Couple;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;

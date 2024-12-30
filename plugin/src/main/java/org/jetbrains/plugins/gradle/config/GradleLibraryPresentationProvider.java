@@ -30,8 +30,8 @@ import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.impl.config.GroovyLibraryPresentationProviderBase;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.regex.Matcher;
 

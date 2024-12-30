@@ -14,8 +14,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import consulo.gradle.GradleConstants;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov

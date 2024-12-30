@@ -44,8 +44,8 @@ import org.jetbrains.plugins.groovy.impl.extensions.debugger.ScriptPositionManag
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;

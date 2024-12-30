@@ -22,7 +22,7 @@ import org.gradle.tooling.model.idea.IdeaDependency;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaModuleDependency;
 import org.gradle.tooling.model.idea.IdeaSingleEntryLibraryDependency;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.junit.Test;
 
 import java.util.List;

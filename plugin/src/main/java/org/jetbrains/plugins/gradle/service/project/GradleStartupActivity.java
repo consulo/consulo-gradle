@@ -44,7 +44,7 @@ import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import javax.swing.event.HyperlinkEvent;
 import java.io.File;
 import java.util.Collections;

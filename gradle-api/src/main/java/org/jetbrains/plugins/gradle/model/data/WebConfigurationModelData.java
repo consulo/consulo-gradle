@@ -20,7 +20,7 @@ import consulo.externalSystem.model.ProjectKeys;
 import consulo.externalSystem.model.ProjectSystemId;
 import consulo.externalSystem.service.project.AbstractExternalEntityData;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**

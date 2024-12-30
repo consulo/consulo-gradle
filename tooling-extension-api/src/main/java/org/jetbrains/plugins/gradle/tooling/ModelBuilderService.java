@@ -16,7 +16,6 @@
 package org.jetbrains.plugins.gradle.tooling;
 
 import org.gradle.api.Project;
-import javax.annotation.Nonnull;
 
 import java.io.Serializable;
 
@@ -29,6 +28,5 @@ public interface ModelBuilderService extends Serializable {
 
   Object buildAll(String modelName, Project project);
 
-  @Nonnull
-  ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e);
+  ErrorMessageBuilder getErrorMessageBuilder( Project project,  Exception e);
 }

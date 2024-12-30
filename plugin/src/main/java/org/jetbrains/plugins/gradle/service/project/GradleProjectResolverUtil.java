@@ -6,8 +6,8 @@ import consulo.externalSystem.model.project.LibraryData;
 import consulo.externalSystem.service.project.ProjectData;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public class GradleProjectResolverUtil {
     public static boolean linkProjectLibrary(@Nullable DataNode<ProjectData> ideProject, @Nonnull final LibraryData library) {

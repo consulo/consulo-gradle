@@ -17,7 +17,7 @@ package org.jetbrains.plugins.gradle.testutil;
 
 import com.intellij.openapi.externalSystem.service.project.ExternalLibraryPathTypeMapper;
 import com.intellij.openapi.roots.OrderRootType;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import com.intellij.openapi.externalSystem.model.project.LibraryPathType;
 
 import java.util.EnumMap;

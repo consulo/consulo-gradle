@@ -20,7 +20,7 @@ import consulo.annotation.component.ExtensionImpl;
 import org.jetbrains.plugins.groovy.impl.extensions.GroovyUnresolvedHighlightFilter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Set;
 
 /**

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.gradle.settings;
 import consulo.externalSystem.setting.ExternalProjectSettings;
 import consulo.gradle.setting.DistributionType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov

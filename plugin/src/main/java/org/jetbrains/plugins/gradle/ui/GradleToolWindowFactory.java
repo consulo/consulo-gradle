@@ -7,7 +7,7 @@ import consulo.ide.impl.idea.openapi.externalSystem.service.task.ui.AbstractExte
 import consulo.ui.ex.toolWindow.ToolWindowAnchor;
 import consulo.ui.image.Image;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
 public class GradleToolWindowFactory extends AbstractExternalSystemToolWindowFactory {

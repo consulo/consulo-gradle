@@ -15,7 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.tooling.model;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.Serializable;
 
@@ -23,24 +22,20 @@ public interface ExtIdeaCompilerOutput extends Serializable {
   /**
    * @return the directory to generate the classes of the "main" source set into.
    */
-  @Nullable
   File getMainClassesDir();
 
   /**
    * @return the directory to generate the resources of the "main" source set into.
    */
-  @Nullable
   File getMainResourcesDir();
 
   /**
    * @return the directory to generate the classes of the "test" source set into.
    */
-  @Nullable
   File getTestClassesDir();
 
   /**
    * @return the directory to generate the resources of the "test" source set into.
    */
-  @Nullable
   File getTestResourcesDir();
 }

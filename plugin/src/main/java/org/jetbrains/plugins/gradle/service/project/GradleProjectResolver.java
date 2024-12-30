@@ -49,8 +49,8 @@ import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleEnvironment;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.function.Function;

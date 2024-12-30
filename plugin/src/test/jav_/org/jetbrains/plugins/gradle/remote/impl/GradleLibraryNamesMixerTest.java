@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.gradle.remote.impl;
 
 import com.intellij.openapi.externalSystem.model.project.LibraryData;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.junit.Before;
 import org.junit.Test;

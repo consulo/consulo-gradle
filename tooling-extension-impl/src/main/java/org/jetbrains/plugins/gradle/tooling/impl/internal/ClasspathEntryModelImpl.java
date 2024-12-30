@@ -17,7 +17,6 @@ package org.jetbrains.plugins.gradle.tooling.impl.internal;
 
 import org.jetbrains.plugins.gradle.tooling.model.ClasspathEntryModel;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -26,34 +25,34 @@ import java.util.Set;
  * @since 12/20/13
  */
 public class ClasspathEntryModelImpl implements ClasspathEntryModel, Serializable {
-  @Nonnull
-  private final Set<String> classes;
-  @Nonnull
-  private final Set<String> sources;
-  @Nonnull
-  private final Set<String> javadoc;
 
-  public ClasspathEntryModelImpl(@Nonnull Set<String> classes, @Nonnull Set<String> sources, @Nonnull Set<String> javadoc) {
-    this.classes = classes;
-    this.sources = sources;
-    this.javadoc = javadoc;
-  }
+    private final Set<String> classes;
 
-  @Nonnull
-  @Override
-  public Set<String> getClasses() {
-    return classes;
-  }
+    private final Set<String> sources;
 
-  @Nonnull
-  @Override
-  public Set<String> getSources() {
-    return sources;
-  }
+    private final Set<String> javadoc;
 
-  @Nonnull
-  @Override
-  public Set<String> getJavadoc() {
-    return javadoc;
-  }
+    public ClasspathEntryModelImpl(Set<String> classes, Set<String> sources, Set<String> javadoc) {
+        this.classes = classes;
+        this.sources = sources;
+        this.javadoc = javadoc;
+    }
+
+
+    @Override
+    public Set<String> getClasses() {
+        return classes;
+    }
+
+
+    @Override
+    public Set<String> getSources() {
+        return sources;
+    }
+
+
+    @Override
+    public Set<String> getJavadoc() {
+        return javadoc;
+    }
 }

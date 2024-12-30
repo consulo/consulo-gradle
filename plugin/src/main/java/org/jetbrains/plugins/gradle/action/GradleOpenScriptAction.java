@@ -12,7 +12,7 @@ import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * Forces the Consulo to open {@link GradleSettings#getLinkedExternalProjectPath() linked gradle project} at the editor

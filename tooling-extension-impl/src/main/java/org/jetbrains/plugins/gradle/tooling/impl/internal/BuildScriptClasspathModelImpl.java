@@ -20,8 +20,6 @@ import org.gradle.tooling.model.internal.ImmutableDomainObjectSet;
 import org.jetbrains.plugins.gradle.tooling.model.BuildScriptClasspathModel;
 import org.jetbrains.plugins.gradle.tooling.model.ClasspathEntryModel;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,45 +28,44 @@ import java.util.List;
  * @author Vladislav.Soroka
  * @since 12/20/13
  */
-public class BuildScriptClasspathModelImpl implements BuildScriptClasspathModel
-{
+public class BuildScriptClasspathModelImpl implements BuildScriptClasspathModel {
 
-  private final List<ClasspathEntryModel> myClasspathEntries;
-  @Nullable
-  private File gradleHomeDir;
-  @Nonnull
-  private String myGradleVersion;
+    private final List<ClasspathEntryModel> myClasspathEntries;
 
-  public BuildScriptClasspathModelImpl() {
-    myClasspathEntries = new ArrayList<ClasspathEntryModel>();
-  }
+    private File gradleHomeDir;
 
-  @Override
-  public DomainObjectSet<? extends ClasspathEntryModel> getClasspath() {
-    return ImmutableDomainObjectSet.of(myClasspathEntries);
-  }
+    private String myGradleVersion;
 
-  public void setGradleHomeDir(@Nullable File file) {
-    gradleHomeDir = file;
-  }
+    public BuildScriptClasspathModelImpl() {
+        myClasspathEntries = new ArrayList<ClasspathEntryModel>();
+    }
 
-  @Nullable
-  @Override
-  public File getGradleHomeDir() {
-    return gradleHomeDir;
-  }
+    @Override
+    public DomainObjectSet<? extends ClasspathEntryModel> getClasspath() {
+        return ImmutableDomainObjectSet.of(myClasspathEntries);
+    }
 
-  public void add(@Nonnull ClasspathEntryModel classpathEntryModel) {
-    myClasspathEntries.add(classpathEntryModel);
-  }
+    public void setGradleHomeDir(File file) {
+        gradleHomeDir = file;
+    }
 
-  public void setGradleVersion(@Nonnull String gradleVersion) {
-    myGradleVersion = gradleVersion;
-  }
 
-  @Nonnull
-  @Override
-  public String getGradleVersion() {
-    return myGradleVersion;
-  }
+    @Override
+    public File getGradleHomeDir() {
+        return gradleHomeDir;
+    }
+
+    public void add(ClasspathEntryModel classpathEntryModel) {
+        myClasspathEntries.add(classpathEntryModel);
+    }
+
+    public void setGradleVersion(String gradleVersion) {
+        myGradleVersion = gradleVersion;
+    }
+
+
+    @Override
+    public String getGradleVersion() {
+        return myGradleVersion;
+    }
 }

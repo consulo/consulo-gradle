@@ -6,7 +6,7 @@ import consulo.virtualFileSystem.fileType.FileTypeFactory;
 import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author VISTALL

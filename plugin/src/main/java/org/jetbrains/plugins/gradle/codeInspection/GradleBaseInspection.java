@@ -17,7 +17,7 @@ package org.jetbrains.plugins.gradle.codeInspection;
 
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Vladislav.Soroka

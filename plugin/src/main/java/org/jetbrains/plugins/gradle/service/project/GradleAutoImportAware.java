@@ -23,8 +23,8 @@ import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.project.Project;
 import consulo.gradle.GradleConstants;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;

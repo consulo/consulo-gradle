@@ -21,8 +21,8 @@ import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
 import org.gradle.tooling.UnsupportedVersionException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.ConnectException;

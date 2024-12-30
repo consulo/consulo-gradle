@@ -16,8 +16,6 @@
 package org.jetbrains.plugins.gradle.tooling.model;
 
 import org.gradle.tooling.model.DomainObjectSet;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import java.io.File;
 import java.io.Serializable;
@@ -29,9 +27,7 @@ import java.io.Serializable;
 public interface BuildScriptClasspathModel extends Serializable {
   DomainObjectSet<? extends ClasspathEntryModel> getClasspath();
 
-  @Nullable
   File getGradleHomeDir();
 
-  @Nonnull
   String getGradleVersion();
 }

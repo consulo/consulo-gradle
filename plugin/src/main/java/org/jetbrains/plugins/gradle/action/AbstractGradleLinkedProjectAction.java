@@ -8,8 +8,8 @@ import consulo.ui.ex.action.AnActionEvent;
 import consulo.util.lang.Pair;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * Common super class for gradle actions that require {@link GradleSettings#getLinkedExternalProjectPath()}  linked project}.

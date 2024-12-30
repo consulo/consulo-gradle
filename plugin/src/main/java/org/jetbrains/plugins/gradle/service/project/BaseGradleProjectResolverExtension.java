@@ -64,8 +64,8 @@ import org.jetbrains.plugins.gradle.tooling.model.ModuleExtendedModel;
 import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -435,25 +435,22 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
     @Nonnull
     @Override
     public List<Couple<String>> getExtraJvmArgs() {
-        if (ExternalSystemApiUtil.isInProcessMode(GradleConstants.SYSTEM_ID)) {
-            final List<Couple<String>> extraJvmArgs = new ArrayList<>();
-            final HttpProxyManager httpConfigurable = HttpProxyManager.getInstance();
+        final List<Couple<String>> extraJvmArgs = new ArrayList<>();
+        final HttpProxyManager httpConfigurable = HttpProxyManager.getInstance();
 
-            List<String> proxyExceptions = httpConfigurable.getProxyExceptions();
-            if (!proxyExceptions.isEmpty()) {
-                extraJvmArgs.add(Couple.of(
-                    "http.nonProxyHosts",
-                    StringUtil.join(proxyExceptions, consulo.ide.impl.idea.openapi.util.text.StringUtil.TRIMMER, "|")
-                ));
-            }
-
-            for (Pair<String, String> pair : httpConfigurable.getJvmProperties(false, null)) {
-                extraJvmArgs.add(Couple.of(pair.getFirst(), pair.getSecond()));
-            }
-
-            return extraJvmArgs;
+        List<String> proxyExceptions = httpConfigurable.getProxyExceptions();
+        if (!proxyExceptions.isEmpty()) {
+            extraJvmArgs.add(Couple.of(
+                "http.nonProxyHosts",
+                StringUtil.join(proxyExceptions, consulo.ide.impl.idea.openapi.util.text.StringUtil.TRIMMER, "|")
+            ));
         }
-        return Collections.emptyList();
+
+        for (Pair<String, String> pair : httpConfigurable.getJvmProperties(false, null)) {
+            extraJvmArgs.add(Couple.of(pair.getFirst(), pair.getSecond()));
+        }
+
+        return extraJvmArgs;
     }
 
     @Nonnull

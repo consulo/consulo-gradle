@@ -49,8 +49,8 @@ import consulo.util.io.FileUtil;
 import consulo.util.lang.Pair;
 import consulo.util.lang.ref.Ref;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;

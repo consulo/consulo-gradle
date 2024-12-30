@@ -34,8 +34,6 @@ import org.jetbrains.plugins.gradle.tooling.impl.internal.ModuleExtendedModelImp
 import org.jetbrains.plugins.gradle.tooling.model.ExtIdeaContentRoot;
 import org.jetbrains.plugins.gradle.tooling.model.ModuleExtendedModel;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -58,8 +56,7 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
   public boolean canBuild(String modelName) {
     return ModuleExtendedModel.class.getName().equals(modelName);
   }
-
-  @Nullable
+  
   @Override
   public Object buildAll(String modelName, Project project) {
     final String moduleName = project.getName();
@@ -190,9 +187,9 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
     return moduleVersionModel;
   }
 
-  @Nonnull
+  
   @Override
-  public ErrorMessageBuilder getErrorMessageBuilder(@Nonnull Project project, @Nonnull Exception e) {
+  public ErrorMessageBuilder getErrorMessageBuilder( Project project,  Exception e) {
     return ErrorMessageBuilder.create(
       project, e, "Other"
     ).withDescription("Unable to resolve all content root directories");

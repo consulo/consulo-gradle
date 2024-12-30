@@ -15,8 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.tooling.web;
 
-import javax.annotation.Nonnull;
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
@@ -31,7 +29,6 @@ public interface WebConfiguration extends Serializable {
   List<? extends WarModel> getWarModels();
 
   interface WarModel extends Serializable {
-    @Nonnull
     String getWarName();
 
     String getWebAppDirName();
@@ -48,14 +45,10 @@ public interface WebConfiguration extends Serializable {
   }
 
   interface WebResource extends Serializable {
-
-    @Nonnull
     String getWarDirectory();
 
-    @Nonnull
     String getRelativePath();
 
-    @Nonnull
     File getFile();
   }
 }

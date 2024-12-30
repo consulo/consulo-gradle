@@ -22,8 +22,8 @@ import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Collection;
 
 /**

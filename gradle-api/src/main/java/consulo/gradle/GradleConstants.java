@@ -3,7 +3,7 @@ package consulo.gradle;
 import consulo.externalSystem.model.ProjectSystemId;
 import consulo.gradle.localize.GradleLocalize;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * Holds object representation of icons used at the <code>Gradle</code> plugin.

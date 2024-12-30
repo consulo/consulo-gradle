@@ -31,7 +31,7 @@ import consulo.maven.rt.server.common.model.MavenId;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**

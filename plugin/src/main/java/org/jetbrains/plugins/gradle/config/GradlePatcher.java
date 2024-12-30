@@ -3,7 +3,7 @@ package org.jetbrains.plugins.gradle.config;
 import consulo.project.Project;
 import consulo.project.ProjectManager;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * Encapsulates functionality of patching problems from the previous gradle integration releases.

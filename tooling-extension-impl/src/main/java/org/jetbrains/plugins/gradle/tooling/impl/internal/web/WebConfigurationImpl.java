@@ -17,7 +17,6 @@ package org.jetbrains.plugins.gradle.tooling.impl.internal.web;
 
 import org.jetbrains.plugins.gradle.tooling.web.WebConfiguration;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -26,10 +25,9 @@ import java.util.List;
  */
 public class WebConfigurationImpl implements WebConfiguration {
 
-  @Nonnull
   private final List<WarModel> myWarModels;
 
-  public WebConfigurationImpl(@Nonnull List<WarModel> warModels) {
+  public WebConfigurationImpl(List<WarModel> warModels) {
     myWarModels = warModels;
   }
 

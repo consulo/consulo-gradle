@@ -17,7 +17,6 @@ package org.jetbrains.plugins.gradle.tooling.impl.internal.web;
 
 import org.jetbrains.plugins.gradle.tooling.web.WebConfiguration;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +26,6 @@ import java.util.Set;
  * @since 2/10/14
  */
 public class WarModelImpl implements WebConfiguration.WarModel {
-  @Nonnull
   private final String warName;
   private final String myWebAppDirName;
   private final File myWebAppDir;
@@ -36,13 +34,13 @@ public class WarModelImpl implements WebConfiguration.WarModel {
   private Set<File> myClasspath;
   private String myManifestContent;
 
-  public WarModelImpl(@Nonnull String name, String webAppDirName, File webAppDir) {
+  public WarModelImpl( String name, String webAppDirName, File webAppDir) {
     warName = name;
     myWebAppDirName = webAppDirName;
     myWebAppDir = webAppDir;
   }
 
-  @Nonnull
+  
   @Override
   public String getWarName() {
     return warName;

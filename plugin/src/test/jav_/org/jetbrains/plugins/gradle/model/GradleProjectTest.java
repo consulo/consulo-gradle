@@ -2,7 +2,7 @@ package org.jetbrains.plugins.gradle.model;
 
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.projectRoots.JavaSdkVersion;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.junit.Before;
 import org.junit.Test;
 

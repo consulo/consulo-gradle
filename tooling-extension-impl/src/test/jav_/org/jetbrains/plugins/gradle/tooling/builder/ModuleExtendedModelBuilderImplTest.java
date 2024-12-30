@@ -21,7 +21,7 @@ import com.intellij.util.containers.ContainerUtil;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaSourceDirectory;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.junit.Assert;
 import org.junit.Test;
 
