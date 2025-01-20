@@ -16,9 +16,9 @@
 package org.jetbrains.plugins.gradle.tooling.impl.internal;
 
 import org.gradle.tooling.model.DomainObjectSet;
+import org.gradle.tooling.model.idea.IdeaContentRoot;
 import org.gradle.tooling.model.internal.ImmutableDomainObjectSet;
 import org.jetbrains.plugins.gradle.tooling.model.ExtIdeaCompilerOutput;
-import org.jetbrains.plugins.gradle.tooling.model.ExtIdeaContentRoot;
 import org.jetbrains.plugins.gradle.tooling.model.ModuleExtendedModel;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class ModuleExtendedModelImpl implements ModuleExtendedModel
   private final String myVersion;
   private final File myBuildDir;
   private List<File> myArtifacts;
-  private Set<ExtIdeaContentRoot> myContentRoots;
+  private Set<IdeaContentRoot> myContentRoots;
   private ExtIdeaCompilerOutput myCompilerOutput;
 
   public ModuleExtendedModelImpl(String name, String group, String version, File buildDir) {
@@ -74,7 +74,7 @@ public class ModuleExtendedModelImpl implements ModuleExtendedModel
   }
 
   @Override
-  public DomainObjectSet<? extends ExtIdeaContentRoot> getContentRoots() {
+  public DomainObjectSet<? extends IdeaContentRoot> getContentRoots() {
     return ImmutableDomainObjectSet.of(myContentRoots);
   }
 
@@ -83,8 +83,8 @@ public class ModuleExtendedModelImpl implements ModuleExtendedModel
     return myBuildDir;
   }
 
-  public void setContentRoots(Set<ExtIdeaContentRoot> contentRoots) {
-    myContentRoots = contentRoots == null ? Collections.<ExtIdeaContentRoot>emptySet() : contentRoots;
+  public void setContentRoots(Set<IdeaContentRoot> contentRoots) {
+    myContentRoots = contentRoots == null ? Collections.<IdeaContentRoot>emptySet() : contentRoots;
   }
 
   @Override

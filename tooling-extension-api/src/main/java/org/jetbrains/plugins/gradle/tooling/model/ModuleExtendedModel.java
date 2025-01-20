@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.gradle.tooling.model;
 
 import org.gradle.tooling.model.DomainObjectSet;
+import org.gradle.tooling.model.idea.IdeaContentRoot;
 
 import java.io.File;
 import java.io.Serializable;
@@ -62,7 +63,7 @@ public interface ModuleExtendedModel extends Serializable {
    *
    * @return content roots
    */
-  DomainObjectSet<? extends ExtIdeaContentRoot> getContentRoots();
+  DomainObjectSet<? extends IdeaContentRoot> getContentRoots();
 
   /**
    * The build directory.

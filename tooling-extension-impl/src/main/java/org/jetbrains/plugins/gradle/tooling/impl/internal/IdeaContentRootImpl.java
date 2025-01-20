@@ -16,18 +16,21 @@
 package org.jetbrains.plugins.gradle.tooling.impl.internal;
 
 import org.gradle.tooling.model.DomainObjectSet;
+import org.gradle.tooling.model.idea.IdeaContentRoot;
 import org.gradle.tooling.model.idea.IdeaSourceDirectory;
 import org.gradle.tooling.model.internal.ImmutableDomainObjectSet;
-import org.jetbrains.plugins.gradle.tooling.model.ExtIdeaContentRoot;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Vladislav.Soroka
  * @since 11/13/13
  */
-public class IdeaContentRootImpl implements ExtIdeaContentRoot
+public class IdeaContentRootImpl implements IdeaContentRoot
 {
 	private final File myRootDirectory;
 	private final List<IdeaSourceDirectory> mySourceDirectories;

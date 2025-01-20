@@ -59,7 +59,6 @@ import org.jetbrains.plugins.gradle.service.project.data.ExternalProjectDataServ
 import org.jetbrains.plugins.gradle.tooling.impl.builder.ModelBuildScriptClasspathBuilderImpl;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.init.Init;
 import org.jetbrains.plugins.gradle.tooling.model.BuildScriptClasspathModel;
-import org.jetbrains.plugins.gradle.tooling.model.ExtIdeaContentRoot;
 import org.jetbrains.plugins.gradle.tooling.model.ModuleExtendedModel;
 import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
@@ -231,14 +230,12 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
             populateContentRoot(ideContentRoot, ExternalSystemSourceType.SOURCE, gradleContentRoot.getSourceDirectories());
             populateContentRoot(ideContentRoot, ExternalSystemSourceType.TEST, gradleContentRoot.getTestDirectories());
 
-            if (gradleContentRoot instanceof ExtIdeaContentRoot extIdeaContentRoot) {
-                populateContentRoot(ideContentRoot, ExternalSystemSourceType.RESOURCE, extIdeaContentRoot.getResourceDirectories());
-                populateContentRoot(
-                    ideContentRoot,
-                    ExternalSystemSourceType.TEST_RESOURCE,
-                    extIdeaContentRoot.getTestResourceDirectories()
-                );
-            }
+            populateContentRoot(ideContentRoot, ExternalSystemSourceType.RESOURCE, gradleContentRoot.getResourceDirectories());
+            populateContentRoot(
+                ideContentRoot,
+                ExternalSystemSourceType.TEST_RESOURCE,
+                gradleContentRoot.getTestResourceDirectories()
+            );
 
             Set<File> excluded = gradleContentRoot.getExcludeDirectories();
             if (excluded != null) {
