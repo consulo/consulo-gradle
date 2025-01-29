@@ -1,8 +1,9 @@
 package consulo.gradle;
 
 import consulo.externalSystem.model.ProjectSystemId;
+import consulo.gradle.icon.GradleIconGroup;
 import consulo.gradle.localize.GradleLocalize;
-
+import consulo.ui.image.Image;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -13,7 +14,11 @@ import jakarta.annotation.Nonnull;
  */
 public class GradleConstants {
     @Nonnull
-    public static final ProjectSystemId SYSTEM_ID = new ProjectSystemId("GRADLE", GradleLocalize.gradleName());
+    public static final ProjectSystemId SYSTEM_ID = new ProjectSystemId("GRADLE", GradleLocalize.gradleName()) {
+        public Image getIcon() {
+            return GradleIconGroup.gradle();
+        }
+    };
 
     public static final String EXTENSION = "gradle";
     public static final String DEFAULT_SCRIPT_NAME = "build.gradle";

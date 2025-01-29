@@ -12,6 +12,7 @@ module org.jetbrains.plugins.gradle.api {
 
   exports consulo.gradle;
   exports consulo.gradle.localize;
+  exports consulo.gradle.icon;
   exports org.jetbrains.plugins.gradle.model.data;
   exports consulo.gradle.service.project;
   exports consulo.gradle.setting;
