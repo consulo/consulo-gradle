@@ -14,11 +14,7 @@ import jakarta.annotation.Nonnull;
  */
 public class GradleConstants {
     @Nonnull
-    public static final ProjectSystemId SYSTEM_ID = new ProjectSystemId("GRADLE", GradleLocalize.gradleName()) {
-        public Image getIcon() {
-            return GradleIconGroup.gradle();
-        }
-    };
+    public static final ProjectSystemId SYSTEM_ID = new ProjectSystemId("GRADLE", GradleLocalize.gradleName(), GradleIconGroup.gradle());
 
     public static final String EXTENSION = "gradle";
     public static final String DEFAULT_SCRIPT_NAME = "build.gradle";
