@@ -18,9 +18,6 @@ package org.jetbrains.plugins.gradle;
 import com.intellij.java.language.LanguageLevel;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.Application;
-import consulo.application.util.AtomicNotNullLazyValue;
-import consulo.application.util.NotNullLazyValue;
-import consulo.component.extension.ExtensionPointCacheKey;
 import consulo.component.messagebus.MessageBusConnection;
 import consulo.configurable.Configurable;
 import consulo.content.bundle.Sdk;
@@ -43,7 +40,9 @@ import consulo.externalSystem.util.DisposeAwareProjectChange;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
 import consulo.fileChooser.FileChooserDescriptor;
+import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
+import consulo.gradle.service.project.GradleProjectResolverExtension;
 import consulo.gradle.setting.ClassHolder;
 import consulo.gradle.setting.DistributionType;
 import consulo.gradle.setting.GradleExecutionSettings;
@@ -67,20 +66,21 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.Pair;
 import consulo.virtualFileSystem.util.PathsList;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.gradle.config.GradleSettingsListenerAdapter;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.service.project.GradleAutoImportAware;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver;
-import consulo.gradle.service.project.GradleProjectResolverExtension;
 import org.jetbrains.plugins.gradle.service.settings.GradleConfigurable;
 import org.jetbrains.plugins.gradle.service.task.GradleTaskManager;
-import org.jetbrains.plugins.gradle.settings.*;
-import consulo.gradle.GradleConstants;
+import org.jetbrains.plugins.gradle.settings.GradleLocalSettings;
+import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
+import org.jetbrains.plugins.gradle.settings.GradleSettings;
+import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -172,7 +172,6 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
     };
   }
 
-  @Override
   public void enhanceRemoteProcessing(@Nonnull SimpleJavaParameters parameters) throws ExecutionException {
     final Set<String> additionalEntries = new HashSet<>();
     for (GradleProjectResolverExtension extension : Application.get().getExtensionList(GradleProjectResolverExtension.class)) {
@@ -180,7 +179,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
       for (Class aClass : extension.getExtraProjectModelClasses()) {
         ContainerUtil.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(aClass));
       }
-      extension.enhanceRemoteProcessing(parameters);
+      //extension.enhanceRemoteProcessing(parameters);
     }
 
     final PathsList classPath = parameters.getClassPath();
