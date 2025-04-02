@@ -21,14 +21,12 @@ import consulo.externalSystem.model.project.ModuleData;
 import consulo.externalSystem.model.task.TaskData;
 import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.externalSystem.service.project.ProjectData;
-import consulo.process.ExecutionException;
-import consulo.process.cmd.SimpleJavaParameters;
 import consulo.util.lang.Couple;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -162,10 +160,6 @@ public abstract class AbstractProjectResolverExtension implements GradleProjectR
         @Nullable String buildFilePath
     ) {
         return nextResolver.getUserFriendlyError(error, projectPath, buildFilePath);
-    }
-
-    @Override
-    public void enhanceRemoteProcessing(@Nonnull SimpleJavaParameters parameters) throws ExecutionException {
     }
 
     @Override
