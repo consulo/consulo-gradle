@@ -9,6 +9,7 @@ import consulo.content.bundle.SdkModificator;
 import consulo.gradle.icon.GradleIconGroup;
 import consulo.platform.Platform;
 import consulo.ui.image.Image;
+import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileManager;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
@@ -41,7 +42,14 @@ public class GradleBundleType extends BundleType {
 
     @Override
     public void collectHomePaths(@Nonnull Platform platform, @Nonnull Consumer<Path> consumer) {
-
+        String gradleHome = platform.os().getEnvironmentVariable("GRADLE_HOME");
+        if (!StringUtil.isEmptyOrSpaces(gradleHome)) {
+            Path gradleHomePath = platform.fs().getPath(gradleHome);
+            
+            if (Files.exists(gradleHomePath)) {
+                consumer.accept(gradleHomePath);
+            }
+        }
     }
 
     @Nullable
