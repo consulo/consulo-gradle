@@ -18,12 +18,9 @@ import consulo.util.lang.ref.Ref;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Singleton;
-import org.gradle.StartParameter;
-import org.gradle.api.tasks.wrapper.Wrapper;
-import org.gradle.util.GradleVersion;
-import org.gradle.util.internal.DistributionLocator;
-import org.gradle.wrapper.PathAssembler;
 import org.gradle.wrapper.WrapperConfiguration;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
@@ -33,8 +30,6 @@ import org.jetbrains.plugins.gradle.util.GradleLog;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -146,15 +141,6 @@ public class GradleInstallationManager {
             case DEFAULT_WRAPPED:
                 WrapperConfiguration wrapperConfiguration = GradleUtil.getWrapperConfiguration(linkedProjectPath);
                 candidate = getWrappedGradleHome(linkedProjectPath, wrapperConfiguration);
-                break;
-            case WRAPPED:
-                // not supported yet
-                break;
-            case BUNDLED:
-                WrapperConfiguration bundledWrapperSettings = new WrapperConfiguration();
-                DistributionLocator distributionLocator = new DistributionLocator();
-                bundledWrapperSettings.setDistribution(distributionLocator.getDistributionFor(GradleVersion.current()));
-                candidate = getWrappedGradleHome(linkedProjectPath, bundledWrapperSettings);
                 break;
         }
 
@@ -316,7 +302,7 @@ public class GradleInstallationManager {
     /**
      * Allows to answer if given virtual file points to the gradle installation root.
      *
-     * @param file gradle installation root candidate
+     * @param gradleHomePath gradle installation root candidate
      * @return <code>true</code> if we consider that given file actually points to the gradle installation root;
      * <code>false</code> otherwise
      */
@@ -478,31 +464,34 @@ public class GradleInstallationManager {
     }
 
     private File getWrappedGradleHome(String linkedProjectPath, @Nullable final WrapperConfiguration wrapperConfiguration) {
-        if (wrapperConfiguration == null) {
-            return null;
-        }
-        File gradleSystemDir;
+        return null;
 
-        if (Wrapper.PathBase.PROJECT.name().equals(wrapperConfiguration.getDistributionBase())) {
-            gradleSystemDir = new File(linkedProjectPath, ".gradle");
-        }
-        else {
-            gradleSystemDir = StartParameter.DEFAULT_GRADLE_USER_HOME;
-        }
-        if (!gradleSystemDir.isDirectory()) {
-            return null;
-        }
-
-        PathAssembler.LocalDistribution localDistribution =
-            new PathAssembler(gradleSystemDir, new File(linkedProjectPath)).getDistribution(wrapperConfiguration);
-
-        if (localDistribution.getDistributionDir() == null) {
-            return null;
-        }
-
-        File[] distFiles =
-            localDistribution.getDistributionDir().listFiles(f -> f.isDirectory() && StringUtil.startsWith(f.getName(), "gradle-"));
-
-        return distFiles == null || distFiles.length == 0 ? null : distFiles[0];
+// TODO
+//        if (wrapperConfiguration == null) {
+//            return null;
+//        }
+//        File gradleSystemDir;
+//
+//        if (Wrapper.PathBase.PROJECT.name().equals(wrapperConfiguration.getDistributionBase())) {
+//            gradleSystemDir = new File(linkedProjectPath, ".gradle");
+//        }
+//        else {
+//            gradleSystemDir = StartParameter.DEFAULT_GRADLE_USER_HOME;
+//        }
+//        if (!gradleSystemDir.isDirectory()) {
+//            return null;
+//        }
+//
+//        PathAssembler.LocalDistribution localDistribution =
+//            new PathAssembler(gradleSystemDir, new File(linkedProjectPath)).getDistribution(wrapperConfiguration);
+//
+//        if (localDistribution.getDistributionDir() == null) {
+//            return null;
+//        }
+//
+//        File[] distFiles =
+//            localDistribution.getDistributionDir().listFiles(f -> f.isDirectory() && StringUtil.startsWith(f.getName(), "gradle-"));
+//
+//        return distFiles == null || distFiles.length == 0 ? null : distFiles[0];
     }
 }

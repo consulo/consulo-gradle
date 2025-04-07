@@ -33,7 +33,7 @@ try {
   String[] paths = ${EXTENSIONS_JARS_PATH}
   URL[] urls = paths.collect{ new File(it).toURI().toURL() }
   URLClassLoader classLoader = new URLClassLoader(urls, getClass().classLoader)
-  Class modelClass = classLoader.loadClass('org.jetbrains.plugins.gradle.tooling.internal.ExtraModelBuilder')
+  Class modelClass = classLoader.loadClass('org.jetbrains.plugins.gradle.tooling.impl.internal.ExtraModelBuilder')
   allprojects {
     apply plugin: 'idea'
     idea.module.ext.set('resourceDirs', [])

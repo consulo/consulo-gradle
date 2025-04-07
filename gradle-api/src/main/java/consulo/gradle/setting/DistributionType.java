@@ -21,10 +21,6 @@ package consulo.gradle.setting;
  */
 public enum DistributionType {
   /**
-   * Gradle version packaged with IDE used
-   */
-  BUNDLED,
-  /**
    * The default configuration of the wrapper task assumed based on manually wrapper generated files:
    * <p/>
    * Build layout with default wrapper task:
@@ -38,10 +34,7 @@ public enum DistributionType {
    * </pre>
    */
   DEFAULT_WRAPPED,
-  /**
-   * Wrapper task configuration based on build.gradle script to be used.
-   */
-  WRAPPED,
+
   /**
    * Locally installed gradle to be used
    */
@@ -52,6 +45,6 @@ public enum DistributionType {
    * @return true in case of DEFAULT_WRAPPED or WRAPPED mode
    */
   public boolean isWrapped() {
-    return this == DEFAULT_WRAPPED || this == WRAPPED;
+    return this == DEFAULT_WRAPPED;
   }
 }

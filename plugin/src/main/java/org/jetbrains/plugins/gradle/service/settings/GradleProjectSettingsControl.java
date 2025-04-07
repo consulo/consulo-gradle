@@ -16,7 +16,6 @@
 package org.jetbrains.plugins.gradle.service.settings;
 
 import com.intellij.java.language.projectRoots.JavaSdkType;
-import consulo.application.AllIcons;
 import consulo.configurable.ConfigurationException;
 import consulo.disposer.Disposable;
 import consulo.externalSystem.ui.awt.ExternalSystemUiUtil;
@@ -35,19 +34,21 @@ import consulo.module.ui.BundleBoxBuilder;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.NotificationType;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.awt.*;
+import consulo.ui.ex.awt.JBLabel;
+import consulo.ui.ex.awt.JBRadioButton;
+import consulo.ui.ex.awt.TextComponentAccessor;
+import consulo.ui.ex.awt.TextFieldWithBrowseButton;
 import consulo.ui.ex.awt.util.Alarm;
 import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.ui.util.LabeledBuilder;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
-import org.gradle.util.GradleVersion;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -75,11 +76,9 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
     @SuppressWarnings("FieldCanBeLocal") // Used implicitly by reflection at disposeUIResources() and showUi()
     private JLabel myGradleHomeLabel;
     private TextFieldWithBrowseButton myGradleHomePathField;
+
     private JBRadioButton myUseWrapperButton;
-    private JBRadioButton myUseWrapperWithVerificationButton;
-    private JBLabel myUseWrapperVerificationLabel;
     private JBRadioButton myUseLocalDistributionButton;
-    private JBRadioButton myUseBundledDistributionButton;
 
     private boolean myShowBalloonIfNecessary;
 
@@ -113,12 +112,8 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
         initGradleHome();
 
         initControls();
+
         content.add(myUseWrapperButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
-        content.add(myUseWrapperWithVerificationButton, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
-        content.add(myUseWrapperVerificationLabel, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
-        //content.add(Box.createGlue(), ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
-        // Hide bundled distribution option for a while
-        // content.add(myUseBundledDistributionButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
         content.add(myUseLocalDistributionButton, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
 
         content.add(myGradleHomeLabel, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
@@ -160,24 +155,12 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 
         myUseWrapperButton = new JBRadioButton(GradleLocalize.gradleSettingsTextUseDefault_wrapperConfigured().get());
         myUseWrapperButton.addActionListener(listener);
-        myUseWrapperWithVerificationButton = new JBRadioButton(GradleLocalize.gradleSettingsTextUseCustomizable_wrapper().get());
-        myUseWrapperWithVerificationButton.addActionListener(listener);
-        myUseWrapperVerificationLabel = new JBLabel(GradleLocalize.gradleSettingsTextWrapperCustomizationCompatibility().get());
-        myUseWrapperVerificationLabel.setFont(UIUtil.getLabelFont(UIUtil.FontSize.MINI));
-        myUseWrapperVerificationLabel.setIcon(AllIcons.General.BalloonInformation);
 
         myUseLocalDistributionButton = new JBRadioButton(GradleLocalize.gradleSettingsTextUseLocalDistribution().get());
         myUseLocalDistributionButton.addActionListener(listener);
 
-        myUseBundledDistributionButton =
-            new JBRadioButton(GradleLocalize.gradleSettingsTextUseBundledDistribution(GradleVersion.current().getVersion()).get());
-        myUseBundledDistributionButton.addActionListener(listener);
-        myUseBundledDistributionButton.setEnabled(false);
-
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(myUseWrapperButton);
-        buttonGroup.add(myUseWrapperWithVerificationButton);
-        buttonGroup.add(myUseBundledDistributionButton);
         buttonGroup.add(myUseLocalDistributionButton);
     }
 
@@ -245,9 +228,6 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
         else if (myUseWrapperButton.isSelected()) {
             settings.setDistributionType(DistributionType.DEFAULT_WRAPPED);
         }
-        else if (myUseWrapperWithVerificationButton.isSelected() || myUseBundledDistributionButton.isSelected()) {
-            settings.setDistributionType(DistributionType.WRAPPED);
-        }
 
         settings.setJreName(myBundleBox.getSelectedBundleName());
     }
@@ -262,23 +242,12 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
         else if (myUseWrapperButton.isSelected()) {
             getInitialSettings().setDistributionType(DistributionType.DEFAULT_WRAPPED);
         }
-        else if (myUseWrapperWithVerificationButton.isSelected() || myUseBundledDistributionButton.isSelected()) {
-            getInitialSettings().setDistributionType(DistributionType.WRAPPED);
-        }
     }
 
     @Override
     protected boolean isExtraSettingModified() {
         DistributionType distributionType = getInitialSettings().getDistributionType();
-        if (myUseBundledDistributionButton.isSelected() && distributionType != DistributionType.BUNDLED) {
-            return true;
-        }
-
         if (myUseWrapperButton.isSelected() && distributionType != DistributionType.DEFAULT_WRAPPED) {
-            return true;
-        }
-
-        if (myUseWrapperWithVerificationButton.isSelected() && distributionType != DistributionType.WRAPPED) {
             return true;
         }
 
@@ -364,14 +333,6 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
                 myGradleHomePathField.setEnabled(false);
                 myUseWrapperButton.setSelected(true);
                 myUseWrapperButton.setEnabled(true);
-                break;
-            case WRAPPED:
-                myGradleHomePathField.setEnabled(false);
-                myUseWrapperWithVerificationButton.setSelected(true);
-                break;
-            case BUNDLED:
-                myGradleHomePathField.setEnabled(false);
-                myUseBundledDistributionButton.setSelected(true);
                 break;
         }
     }

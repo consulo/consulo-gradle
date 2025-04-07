@@ -20,6 +20,7 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
 import consulo.externalSystem.model.DataNode;
+import consulo.externalSystem.model.ProjectKeys;
 import consulo.externalSystem.model.project.ModuleData;
 import consulo.externalSystem.model.task.TaskData;
 import consulo.externalSystem.rt.model.ExternalSystemException;
@@ -31,6 +32,8 @@ import org.gradle.tooling.model.idea.IdeaProject;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -77,7 +80,7 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer {
   void populateModuleExtraModels(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule);
 
   /**
-   * Populates {@link consulo.externalSystem.model.ProjectKeys#CONTENT_ROOT) content roots} of the given ide module on the basis of
+   * Populates {@link ProjectKeys#CONTENT_ROOT) content roots} of the given ide module on the basis of
    * the information
    * contained at the given gradle module.
    *
@@ -100,7 +103,9 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer {
   Collection<TaskData> filterRootProjectTasks(@Nonnull List<TaskData> allTasks);
 
   @Nonnull
-  Set<Class> getExtraProjectModelClasses();
+  default Set<Class> getExtraProjectModelClasses() {
+    return Set.of();
+  }
 
   /**
    * add paths containing these classes to classpath of gradle tooling extension
@@ -108,7 +113,9 @@ public interface GradleProjectResolverExtension extends ParametersEnhancer {
    * @return classes to be available for gradle
    */
   @Nonnull
-  Set<Class> getToolingExtensionsClasses();
+  default Set<File> getToolingExtensionsFiles() {
+    return Set.of();
+  }
 
   @Nonnull
   List<Couple<String>> getExtraJvmArgs();

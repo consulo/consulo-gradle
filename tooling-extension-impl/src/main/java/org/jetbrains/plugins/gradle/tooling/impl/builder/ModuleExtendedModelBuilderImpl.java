@@ -26,9 +26,10 @@ import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.plugins.ide.idea.IdeaPlugin;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
+import org.gradle.plugins.ide.idea.model.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaContentRoot;
-import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
-import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
+import org.jetbrains.plugins.gradle.tooling.impl.ErrorMessageBuilder;
+import org.jetbrains.plugins.gradle.tooling.impl.ModelBuilderService;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.IdeaCompilerOutputImpl;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.IdeaContentRootImpl;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.IdeaSourceDirectoryImpl;
@@ -44,11 +45,21 @@ import java.util.*;
  * @since 11/5/13
  */
 public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
-    private static final ReflectionMethod<File, Test> Test__getTestClassesDir = new ReflectionMethod<>(Test.class, "getTestClassesDir");
+    private static final ReflectionMethod<File, Test> Test__getTestClassesDir =
+        new ReflectionMethod<>(Test.class, "getTestClassesDir");
+    private static final ReflectionMethod<Iterable<File>, Test> Test__getTestClassesDirs =
+        new ReflectionMethod<>(Test.class, "getTestClassesDirs");
+
     private static final ReflectionMethod<File, SourceSetOutput> SourceSetOutput__getClassesDir =
         new ReflectionMethod<>(SourceSetOutput.class, "getClassesDir");
     private static final ReflectionMethod<Iterable<File>, SourceSetOutput> SourceSetOutput__getClassesDirs =
         new ReflectionMethod<>(SourceSetOutput.class, "getClassesDirs");
+
+    private static final ReflectionMethod<SourceSetContainer, JavaPluginExtension> JavaPluginExtension__getSourceSets =
+        new ReflectionMethod<>(JavaPluginExtension.class, "getSourceSets");
+
+    private static final ReflectionMethod<Iterable<File>, IdeaModule> IdeaModule__getTestSources =
+        new ReflectionMethod<>(IdeaModule.class, "getTestSources");
 
     private static final String SOURCE_SETS_PROPERTY = "sourceSets";
     private static final String TEST_SRC_DIRS_PROPERTY = "testSrcDirs";
@@ -62,7 +73,7 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
         try {
             JavaPluginExtension pluginExtension = project.getExtensions().getByType(JavaPluginExtension.class);
             if (pluginExtension != null) {
-                return pluginExtension.getSourceSets();
+                return JavaPluginExtension__getSourceSets.invoke(pluginExtension);
             }
         }
         catch (Throwable ignored) {
@@ -105,12 +116,10 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
                     testClassesDirs.add(testDir);
                 }
 
-                if (test.hasProperty(TEST_SRC_DIRS_PROPERTY)) {
-                    Object testSrcDirs = test.property(TEST_SRC_DIRS_PROPERTY);
-                    if (testSrcDirs instanceof Iterable) {
-                        for (Object dir : Iterable.class.cast(testSrcDirs)) {
-                            addFilePath(testDirectories, dir);
-                        }
+                Iterable<File> files = Test__getTestClassesDirs.invoke(test);
+                if (files != null) {
+                    for (File file : files) {
+                        addFilePath(testDirectories, file);
                     }
                 }
             }
@@ -274,18 +283,28 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
         }
 
         IdeaModel ideaModel = ideaPlugin.getModel();
-        if (ideaModel == null || ideaModel.getModule() == null) {
+        IdeaModule module = ideaModel == null ? null : ideaModel.getModule();
+        if (module == null) {
             return;
         }
 
-        for (File excludeDir : ideaModel.getModule().getExcludeDirs()) {
+        for (File excludeDir : module.getExcludeDirs()) {
             excludeDirectories.add(excludeDir);
         }
-        for (File file : ideaModel.getModule().getSourceDirs()) {
+
+        for (File file : module.getSourceDirs()) {
             javaDirectories.add(file.getPath());
         }
-        for (File file : ideaModel.getModule().getTestSourceDirs()) {
-            testDirectories.add(file.getPath());
+
+        Iterable<File> testDirs = IdeaModule__getTestSources.invoke(module);
+        if (testDirs != null) {
+            for (File testDir : testDirs) {
+                testDirectories.add(testDir.getPath());
+            }
+        } else {
+            for (File file : module.getTestSourceDirs()) {
+                testDirectories.add(file.getPath());
+            }
         }
     }
 }

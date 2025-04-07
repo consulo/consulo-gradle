@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-org.jetbrains.plugins.gradle.tooling.builder.WarModelBuilderImpl
+org.jetbrains.plugins.gradle.tooling.impl.builder.WarModelBuilderImpl
 org.jetbrains.plugins.gradle.tooling.impl.builder.ModuleExtendedModelBuilderImpl
 org.jetbrains.plugins.gradle.tooling.impl.builder.ModelBuildScriptClasspathBuilderImpl
 org.jetbrains.plugins.gradle.tooling.impl.builder.ScalaModelBuilderImpl
-org.jetbrains.plugins.gradle.tooling.builder.ExternalProjectBuilderImpl
+org.jetbrains.plugins.gradle.tooling.impl.builder.ExternalProjectBuilderImpl

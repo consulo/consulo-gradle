@@ -22,18 +22,18 @@ import consulo.gradle.GradleConstants;
 import consulo.gradle.service.project.AbstractProjectResolverExtension;
 import consulo.logging.Logger;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.jetbrains.plugins.gradle.model.data.War;
 import org.jetbrains.plugins.gradle.model.data.WarDirectory;
 import org.jetbrains.plugins.gradle.model.data.WebConfigurationModelData;
 import org.jetbrains.plugins.gradle.model.data.WebResource;
+import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.tooling.web.WebConfiguration;
 
-import jakarta.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 /**
  * {@link JavaEEGradleProjectResolverExtension} provides JavaEE project info based on gradle tooling API models.
@@ -43,47 +43,41 @@ import java.util.function.Function;
  */
 @ExtensionImpl
 public class JavaEEGradleProjectResolverExtension extends AbstractProjectResolverExtension {
-  private static final Logger LOG = Logger.getInstance(JavaEEGradleProjectResolverExtension.class);
+    private static final Logger LOG = Logger.getInstance(JavaEEGradleProjectResolverExtension.class);
 
-  @Override
-  public void populateModuleExtraModels(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule) {
-    final WebConfiguration webConfiguration = resolverCtx.getExtraProject(gradleModule, WebConfiguration.class);
-    if (webConfiguration != null) {
-      List<War> warModels = ContainerUtil.map(webConfiguration.getWarModels(), new Function<WebConfiguration.WarModel, War>() {
-        @Override
-        public War apply(WebConfiguration.WarModel model) {
-          War war = new War(model.getWarName(), model.getWebAppDirName(), model.getWebAppDir());
-          war.setWebXml(model.getWebXml());
-          war.setWebResources(map(model.getWebResources()));
-          war.setClasspath(model.getClasspath());
-          war.setManifestContent(model.getManifestContent());
-          return war;
+    @Override
+    public void populateModuleExtraModels(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule) {
+        final WebConfiguration webConfiguration = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, WebConfiguration.class);
+        if (webConfiguration != null) {
+            List<War> warModels = ContainerUtil.map(webConfiguration.getWarModels(), model -> {
+                War war = new War(model.getWarName(), model.getWebAppDirName(), model.getWebAppDir());
+                war.setWebXml(model.getWebXml());
+                war.setWebResources(map(model.getWebResources()));
+                war.setClasspath(model.getClasspath());
+                war.setManifestContent(model.getManifestContent());
+                return war;
+            });
+
+            ideModule.createChild(WebConfigurationModelData.KEY, new WebConfigurationModelData(GradleConstants.SYSTEM_ID, warModels));
         }
-      });
 
-      ideModule.createChild(WebConfigurationModelData.KEY, new WebConfigurationModelData(GradleConstants.SYSTEM_ID, warModels));
+        nextResolver.populateModuleExtraModels(gradleModule, ideModule);
     }
 
-    nextResolver.populateModuleExtraModels(gradleModule, ideModule);
-  }
+    @Nonnull
+    @Override
+    public Set<Class> getExtraProjectModelClasses() {
+        return Collections.<Class>singleton(WebConfiguration.class);
+    }
 
-  @Nonnull
-  @Override
-  public Set<Class> getExtraProjectModelClasses() {
-    return Collections.<Class>singleton(WebConfiguration.class);
-  }
+    private static List<WebResource> map(List<WebConfiguration.WebResource> webResources) {
+        return ContainerUtil.mapNotNull(webResources, resource -> {
+            if (resource == null) {
+                return null;
+            }
 
-  private static List<WebResource> map(List<WebConfiguration.WebResource> webResources) {
-    return ContainerUtil.mapNotNull(webResources, new Function<WebConfiguration.WebResource, WebResource>() {
-      @Override
-      public WebResource apply(WebConfiguration.WebResource resource) {
-        if (resource == null) {
-          return null;
-        }
-
-        final WarDirectory warDirectory = WarDirectory.fromPath(resource.getWarDirectory());
-        return new WebResource(warDirectory, resource.getRelativePath(), resource.getFile());
-      }
-    });
-  }
+            final WarDirectory warDirectory = WarDirectory.fromPath(resource.getWarDirectory());
+            return new WebResource(warDirectory, resource.getRelativePath(), resource.getFile());
+        });
+    }
 }

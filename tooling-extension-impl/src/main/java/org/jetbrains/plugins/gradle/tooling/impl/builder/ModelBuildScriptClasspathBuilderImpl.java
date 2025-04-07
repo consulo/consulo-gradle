@@ -23,8 +23,8 @@ import org.gradle.plugins.ide.idea.model.*;
 import org.gradle.util.GradleVersion;
 import org.jetbrains.plugins.gradle.tooling.model.BuildScriptClasspathModel;
 import org.jetbrains.plugins.gradle.tooling.model.ClasspathEntryModel;
-import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
-import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
+import org.jetbrains.plugins.gradle.tooling.impl.ErrorMessageBuilder;
+import org.jetbrains.plugins.gradle.tooling.impl.ModelBuilderService;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.BuildScriptClasspathModelImpl;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.ClasspathEntryModelImpl;
 

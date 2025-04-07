@@ -15,7 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.tooling.model;
 
-import consulo.externalSystem.rt.model.ExternalSystemException;
 import org.gradle.tooling.BuildAction;
 import org.gradle.tooling.BuildController;
 import org.gradle.tooling.model.build.BuildEnvironment;
@@ -31,6 +30,7 @@ import java.util.*;
  * @since 10/14/13
  */
 public class ProjectImportAction implements BuildAction<ProjectImportAction.AllModels>, Serializable {
+    private static final long serialVersionUID = 257773272670650022L;
 
     private final Set<Class> myExtraProjectModelClasses = new HashSet<Class>();
     private final boolean myIsPreviewMode;
@@ -76,13 +76,15 @@ public class ProjectImportAction implements BuildAction<ProjectImportAction.AllM
             catch (Exception e) {
                 // do not fail project import in a preview mode
                 if (!myIsPreviewMode) {
-                    throw new ExternalSystemException(e);
+                    throw e;
                 }
             }
         }
     }
 
     public static class AllModels implements Serializable {
+        private static final long serialVersionUID = -5856781288747689870L;
+
         private final Map<String, Object> projectsByPath = new HashMap<String, Object>();
         private final IdeaProject myIdeaProject;
 

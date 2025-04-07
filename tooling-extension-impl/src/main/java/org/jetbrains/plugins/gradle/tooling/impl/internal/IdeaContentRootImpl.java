@@ -21,6 +21,7 @@ import org.gradle.tooling.model.idea.IdeaSourceDirectory;
 import org.gradle.tooling.model.internal.ImmutableDomainObjectSet;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,83 +31,80 @@ import java.util.Set;
  * @author Vladislav.Soroka
  * @since 11/13/13
  */
-public class IdeaContentRootImpl implements IdeaContentRoot
-{
-	private final File myRootDirectory;
-	private final List<IdeaSourceDirectory> mySourceDirectories;
-	private final List<IdeaSourceDirectory> myTestDirectories;
-	private final List<IdeaSourceDirectory> myResourceDirectories;
-	private final List<IdeaSourceDirectory> myTestResourceDirectories;
-	private final Set<File> myExcludeDirectories;
+public class IdeaContentRootImpl implements IdeaContentRoot, Serializable {
+    private static final long serialVersionUID = 4015386851732249650L;
+    
+    private final File myRootDirectory;
+    private final List<IdeaSourceDirectory> mySourceDirectories = new ArrayList<>();
+    private final List<IdeaSourceDirectory> myTestDirectories = new ArrayList<>();
+    private final List<IdeaSourceDirectory> myResourceDirectories = new ArrayList<>();
+    private final List<IdeaSourceDirectory> myTestResourceDirectories = new ArrayList<>();
+    private final List<IdeaSourceDirectory> myGeneratedSourceDirectories = new ArrayList<>();
+    private final List<IdeaSourceDirectory> myGeneratedTestSourceDirectories = new ArrayList<>();
 
-	public IdeaContentRootImpl(File rootDirectory)
-	{
-		myRootDirectory = rootDirectory;
-		mySourceDirectories = new ArrayList<IdeaSourceDirectory>();
-		myTestDirectories = new ArrayList<IdeaSourceDirectory>();
-		myResourceDirectories = new ArrayList<IdeaSourceDirectory>();
-		myTestResourceDirectories = new ArrayList<IdeaSourceDirectory>();
-		myExcludeDirectories = new HashSet<File>();
-	}
+    private final Set<File> myExcludeDirectories = new HashSet<>();
 
-	@Override
-	public File getRootDirectory()
-	{
-		return myRootDirectory;
-	}
+    public IdeaContentRootImpl(File rootDirectory) {
+        myRootDirectory = rootDirectory;
+    }
 
-	@Override
-	public DomainObjectSet<? extends IdeaSourceDirectory> getSourceDirectories()
-	{
-		return ImmutableDomainObjectSet.of(mySourceDirectories);
-	}
+    @Override
+    public File getRootDirectory() {
+        return myRootDirectory;
+    }
 
-	public void addSourceDirectory(IdeaSourceDirectory sourceDirectory)
-	{
-		mySourceDirectories.add(sourceDirectory);
-	}
+    @Override
+    public DomainObjectSet<? extends IdeaSourceDirectory> getSourceDirectories() {
+        return ImmutableDomainObjectSet.of(mySourceDirectories);
+    }
 
-	public void addTestDirectory(IdeaSourceDirectory testDirectory)
-	{
-		myTestDirectories.add(testDirectory);
-	}
+    @Override
+    public DomainObjectSet<? extends IdeaSourceDirectory> getGeneratedSourceDirectories() {
+        return ImmutableDomainObjectSet.of(myGeneratedSourceDirectories);
+    }
 
-	public void addResourceDirectory(IdeaSourceDirectory resourceDirectory)
-	{
-		myResourceDirectories.add(resourceDirectory);
-	}
+    @Override
+    public DomainObjectSet<? extends IdeaSourceDirectory> getGeneratedTestDirectories() {
+        return ImmutableDomainObjectSet.of(myGeneratedTestSourceDirectories);
+    }
 
-	public void addTestResourceDirectory(IdeaSourceDirectory resourceDirectory)
-	{
-		myTestResourceDirectories.add(resourceDirectory);
-	}
+    public void addSourceDirectory(IdeaSourceDirectory sourceDirectory) {
+        mySourceDirectories.add(sourceDirectory);
+    }
 
-	public void addExcludeDirectory(File excludeDirectory)
-	{
-		myExcludeDirectories.add(excludeDirectory);
-	}
+    public void addTestDirectory(IdeaSourceDirectory testDirectory) {
+        myTestDirectories.add(testDirectory);
+    }
 
-	@Override
-	public DomainObjectSet<? extends IdeaSourceDirectory> getTestDirectories()
-	{
-		return ImmutableDomainObjectSet.of(myTestDirectories);
-	}
+    public void addResourceDirectory(IdeaSourceDirectory resourceDirectory) {
+        myResourceDirectories.add(resourceDirectory);
+    }
 
-	@Override
-	public DomainObjectSet<? extends IdeaSourceDirectory> getResourceDirectories()
-	{
-		return ImmutableDomainObjectSet.of(myResourceDirectories);
-	}
+    public void addTestResourceDirectory(IdeaSourceDirectory resourceDirectory) {
+        myTestResourceDirectories.add(resourceDirectory);
+    }
 
-	@Override
-	public DomainObjectSet<? extends IdeaSourceDirectory> getTestResourceDirectories()
-	{
-		return ImmutableDomainObjectSet.of(myTestResourceDirectories);
-	}
+    public void addExcludeDirectory(File excludeDirectory) {
+        myExcludeDirectories.add(excludeDirectory);
+    }
 
-	@Override
-	public Set<File> getExcludeDirectories()
-	{
-		return myExcludeDirectories;
-	}
+    @Override
+    public DomainObjectSet<? extends IdeaSourceDirectory> getTestDirectories() {
+        return ImmutableDomainObjectSet.of(myTestDirectories);
+    }
+
+    @Override
+    public DomainObjectSet<? extends IdeaSourceDirectory> getResourceDirectories() {
+        return ImmutableDomainObjectSet.of(myResourceDirectories);
+    }
+
+    @Override
+    public DomainObjectSet<? extends IdeaSourceDirectory> getTestResourceDirectories() {
+        return ImmutableDomainObjectSet.of(myTestResourceDirectories);
+    }
+
+    @Override
+    public Set<File> getExcludeDirectories() {
+        return myExcludeDirectories;
+    }
 }

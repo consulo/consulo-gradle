@@ -16,73 +16,74 @@
   -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>consulo</groupId>
-    <artifactId>arch.ide-api-provided</artifactId>
+    <parent>
+        <groupId>consulo</groupId>
+        <artifactId>arch.ide-api-provided</artifactId>
+        <version>3-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <repositories>
+        <repository>
+            <id>consulo</id>
+            <url>https://maven.consulo.io/repository/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>interval:60</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>gradle</id>
+            <url>https://repo.gradle.org/gradle/libs-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <properties>
+        <gradle.version>6.1</gradle.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>consulo.maven</groupId>
+                <artifactId>maven-consulo-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>gen</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate-localize</goal>
+                            <goal>generate-icon</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <groupId>consulo.plugin</groupId>
+    <artifactId>org.jetbrains.plugins.gradle-gradle.api</artifactId>
     <version>3-SNAPSHOT</version>
-    <relativePath/>
-  </parent>
+    <packaging>jar</packaging>
 
-  <repositories>
-    <repository>
-      <id>consulo</id>
-      <url>https://maven.consulo.io/repository/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>interval:60</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-tooling-api</artifactId>
+            <version>${gradle.version}</version>
+        </dependency>
 
-  <properties>
-    <gradle.version>7.6.1</gradle.version>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>consulo.maven</groupId>
-        <artifactId>maven-consulo-plugin</artifactId>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>gen</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-localize</goal>
-              <goal>generate-icon</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
-  <groupId>consulo.plugin</groupId>
-  <artifactId>org.jetbrains.plugins.gradle-gradle.api</artifactId>
-  <version>3-SNAPSHOT</version>
-  <packaging>jar</packaging>
-
-  <dependencies>
-    <dependency>
-      <groupId>consulo.internal.gradle.plugin</groupId>
-      <artifactId>gradle-all</artifactId>
-      <version>${gradle.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>org.jetbrains.plugins.gradle-tooling.extension.api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>org.intellij.groovy</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.intellij.groovy</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

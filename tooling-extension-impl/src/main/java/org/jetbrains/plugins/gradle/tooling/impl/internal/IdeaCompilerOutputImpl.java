@@ -20,44 +20,46 @@ import org.jetbrains.plugins.gradle.tooling.model.ExtIdeaCompilerOutput;
 import java.io.File;
 
 public class IdeaCompilerOutputImpl implements ExtIdeaCompilerOutput {
-  private File myMainClassesDir;
-  private File myMainResourcesDir;
-  private File myTestClassesDir;
-  private File myTestResourcesDir;
+    private static final long serialVersionUID = 5829190111515446606L;
 
-  @Override
-  public File getMainClassesDir() {
-    return myMainClassesDir;
-  }
+    private File myMainClassesDir;
+    private File myMainResourcesDir;
+    private File myTestClassesDir;
+    private File myTestResourcesDir;
 
-  @Override
-  public File getMainResourcesDir() {
-    return myMainResourcesDir;
-  }
+    @Override
+    public File getMainClassesDir() {
+        return myMainClassesDir;
+    }
 
-  @Override
-  public File getTestClassesDir() {
-    return myTestClassesDir;
-  }
+    @Override
+    public File getMainResourcesDir() {
+        return myMainResourcesDir;
+    }
 
-  @Override
-  public File getTestResourcesDir() {
-    return myTestResourcesDir;
-  }
+    @Override
+    public File getTestClassesDir() {
+        return myTestClassesDir;
+    }
 
-  public void setMainClassesDir(File mainClassesDir) {
-    myMainClassesDir = mainClassesDir;
-  }
+    @Override
+    public File getTestResourcesDir() {
+        return myTestResourcesDir;
+    }
 
-  public void setMainResourcesDir(File mainResourcesDir) {
-    myMainResourcesDir = mainResourcesDir;
-  }
+    public void setMainClassesDir(File mainClassesDir) {
+        myMainClassesDir = mainClassesDir;
+    }
 
-  public void setTestClassesDir(File testClassesDir) {
-    myTestClassesDir = testClassesDir;
-  }
+    public void setMainResourcesDir(File mainResourcesDir) {
+        myMainResourcesDir = mainResourcesDir;
+    }
 
-  public void setTestResourcesDir(File testResourcesDir) {
-    myTestResourcesDir = testResourcesDir;
-  }
+    public void setTestClassesDir(File testClassesDir) {
+        myTestClassesDir = testClassesDir;
+    }
+
+    public void setTestResourcesDir(File testResourcesDir) {
+        myTestResourcesDir = testResourcesDir;
+    }
 }

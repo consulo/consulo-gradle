@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.gradle.tooling;
+package org.jetbrains.plugins.gradle.tooling.impl;
 
 import org.gradle.api.Project;
 
@@ -28,5 +28,5 @@ public interface ModelBuilderService extends Serializable {
 
   Object buildAll(String modelName, Project project);
 
-  ErrorMessageBuilder getErrorMessageBuilder( Project project,  Exception e);
+  ErrorMessageBuilder getErrorMessageBuilder(Project project, Exception e);
 }

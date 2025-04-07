@@ -24,26 +24,23 @@ import java.io.Serializable;
  * @author Vladislav.Soroka
  * @since 11/15/13
  */
-public class IdeaSourceDirectoryImpl implements IdeaSourceDirectory, Serializable
-{
-	private final File myDirectory;
-	private final boolean myGenerated;
+public class IdeaSourceDirectoryImpl implements IdeaSourceDirectory, Serializable {
+    private static final long serialVersionUID = 7981587002081712567L;
+    private final File myDirectory;
+    private final boolean myGenerated;
 
-	public IdeaSourceDirectoryImpl(File directory, boolean generated)
-	{
-		myDirectory = directory;
-		myGenerated = generated;
-	}
+    public IdeaSourceDirectoryImpl(File directory, boolean generated) {
+        myDirectory = directory;
+        myGenerated = generated;
+    }
 
-	@Override
-	public File getDirectory()
-	{
-		return myDirectory;
-	}
+    @Override
+    public File getDirectory() {
+        return myDirectory;
+    }
 
-	@Override
-	public boolean isGenerated()
-	{
-		return myGenerated;
-	}
+    @Override
+    public boolean isGenerated() {
+        return myGenerated;
+    }
 }

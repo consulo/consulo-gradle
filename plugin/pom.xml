@@ -38,10 +38,17 @@
                 <updatePolicy>interval:60</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>gradle</id>
+            <url>https://repo.gradle.org/gradle/libs-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
     </repositories>
 
     <properties>
-        <gradle.version>7.6.1</gradle.version>
+        <gradle.version>6.1</gradle.version>
     </properties>
 
     <build>
@@ -70,6 +77,16 @@
                     <packaging>
                         <skip>${dev.mode}</skip>
                         <version>${build.number}</version>
+                        <copies>
+                            <copy>
+                                <artifact>${project.groupId}:org.jetbrains.plugins.gradle-tooling.extension.api</artifact>
+                                <path>gradle-rt/gradle-ext-api.jar</path>
+                            </copy>
+                            <copy>
+                                <artifact>${project.groupId}:org.jetbrains.plugins.gradle-tooling-extension.impl</artifact>
+                                <path>gradle-rt/gradle-ext-impl.jar</path>
+                            </copy>
+                        </copies>
                     </packaging>
                 </configuration>
                 <executions>
@@ -104,14 +121,20 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>org.jetbrains.plugins.gradle-maven.impl</artifactId>
             <version>${project.version}</version>
-            <scope>runtime</scope>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>${project.groupId}</groupId>-->
+            <!--<artifactId>org.jetbrains.plugins.gradle-jakarta.web.impl</artifactId>-->
+            <!--<version>${project.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>org.jetbrains.plugins.gradle-jakarta.web.impl</artifactId>
+            <groupId>consulo</groupId>
+            <artifactId>consulo-external-system-rt</artifactId>
             <version>${project.version}</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -124,36 +147,25 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>org.jetbrains.plugins.gradle-tooling-extension.impl</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>consulo.internal.gradle.plugin</groupId>
-            <artifactId>gradle-all</artifactId>
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-tooling-api</artifactId>
             <version>${gradle.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.objenesis</groupId>
-            <artifactId>objenesis</artifactId>
-            <version>2.5.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>minlog</artifactId>
-            <version>1.3.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>4.0.2</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

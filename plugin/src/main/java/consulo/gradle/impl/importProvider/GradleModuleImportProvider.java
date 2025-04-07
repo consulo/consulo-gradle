@@ -67,7 +67,17 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
             if (file.exists()) {
                 return true;
             }
-            
+
+            file = new File(fileOrDirectory, GradleConstants.SETTINGS_FILE_NAME);
+            if (file.exists()) {
+                return true;
+            }
+
+            file = new File(fileOrDirectory, GradleConstants.KOTLIN_DSL_SETTINGS_FILE_NAME);
+            if (file.exists()) {
+                return true;
+            }
+
             return false;
         }
         else {

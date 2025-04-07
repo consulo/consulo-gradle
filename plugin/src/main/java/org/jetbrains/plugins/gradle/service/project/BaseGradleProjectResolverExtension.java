@@ -56,8 +56,6 @@ import org.gradle.util.GradleVersion;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
 import org.jetbrains.plugins.gradle.service.project.data.ExternalProjectDataService;
-import org.jetbrains.plugins.gradle.tooling.impl.builder.ModelBuildScriptClasspathBuilderImpl;
-import org.jetbrains.plugins.gradle.tooling.impl.internal.init.Init;
 import org.jetbrains.plugins.gradle.tooling.model.BuildScriptClasspathModel;
 import org.jetbrains.plugins.gradle.tooling.model.ModuleExtendedModel;
 import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
@@ -65,6 +63,7 @@ import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -112,7 +111,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
     @Override
     public ProjectData createProject() {
         final String projectDirPath = resolverCtx.getProjectPath();
-        final IdeaProject ideaProject = resolverCtx.getModels().getIdeaProject();
+        final IdeaProject ideaProject = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getIdeaProject();
         return new ProjectData(GradleConstants.SYSTEM_ID, ideaProject.getName(), projectDirPath, projectDirPath);
     }
 
@@ -120,7 +119,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
     @Override
     public JavaProjectData createJavaProjectData() {
         final String projectDirPath = resolverCtx.getProjectPath();
-        final IdeaProject ideaProject = resolverCtx.getModels().getIdeaProject();
+        final IdeaProject ideaProject = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getIdeaProject();
 
         // Gradle API doesn't expose gradleProject compile output path yet.
         JavaProjectData javaProjectData = new JavaProjectData(GradleConstants.SYSTEM_ID, projectDirPath + "/build/classes");
@@ -142,7 +141,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 
     @Override
     public void populateProjectExtraModels(@Nonnull IdeaProject gradleProject, @Nonnull DataNode<ProjectData> ideProject) {
-        final ExternalProject externalProject = resolverCtx.getExtraProject(ExternalProject.class);
+        final ExternalProject externalProject = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(ExternalProject.class);
         if (externalProject != null) {
             ideProject.createChild(ExternalProjectDataService.KEY, externalProject);
         }
@@ -170,7 +169,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
         String moduleId = StringUtil.isEmpty(gradlePath) || ":".equals(gradlePath) ? moduleName : gradlePath;
         ModuleData moduleData = new ModuleData(moduleId, GradleConstants.SYSTEM_ID, moduleName, moduleConfigPath, moduleConfigPath);
 
-        final ModuleExtendedModel moduleExtendedModel = resolverCtx.getExtraProject(gradleModule, ModuleExtendedModel.class);
+        final ModuleExtendedModel moduleExtendedModel = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, ModuleExtendedModel.class);
         if (moduleExtendedModel != null) {
             moduleData.setGroup(moduleExtendedModel.getGroup());
             moduleData.setVersion(moduleExtendedModel.getVersion());
@@ -182,7 +181,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
     @Override
     public void populateModuleExtraModels(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule) {
         final BuildScriptClasspathModel buildScriptClasspathModel =
-            resolverCtx.getExtraProject(gradleModule, BuildScriptClasspathModel.class);
+            ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, BuildScriptClasspathModel.class);
         final List<BuildScriptClasspathData.ClasspathEntry> classpathEntries;
         if (buildScriptClasspathModel != null) {
             classpathEntries = ContainerUtil.map(
@@ -204,7 +203,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
     @Override
     public void populateModuleContentRoots(@Nonnull IdeaModule gradleModule, @Nonnull DataNode<ModuleData> ideModule) {
         DomainObjectSet<? extends IdeaContentRoot> contentRoots;
-        ModuleExtendedModel moduleExtendedModel = resolverCtx.getExtraProject(gradleModule, ModuleExtendedModel.class);
+        ModuleExtendedModel moduleExtendedModel = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, ModuleExtendedModel.class);
         if (moduleExtendedModel != null) {
             contentRoots = moduleExtendedModel.getContentRoots();
         }
@@ -265,7 +264,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
             inheritOutputDirs = moduleCompilerOutput.getInheritOutputDirs();
         }
 
-        ExternalProject externalProject = resolverCtx.getExtraProject(gradleModule, ExternalProject.class);
+        ExternalProject externalProject = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, ExternalProject.class);
         if (externalProject != null) {
             externalProject = new DefaultExternalProject(externalProject);
         }
@@ -357,7 +356,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
             DependencyScope scope = parseScope(dependency.getScope());
 
             if (dependency instanceof IdeaModuleDependency) {
-                ModuleDependencyData d = buildDependency(ideModule, (IdeaModuleDependency)dependency, ideProject);
+                ModuleDependencyData d = buildDependency(ideModule, (IdeaModuleDependency) dependency, ideProject);
                 d.setExported(dependency.getExported());
                 if (scope != null) {
                     d.setScope(scope);
@@ -410,22 +409,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
     public Set<Class> getExtraProjectModelClasses() {
         return Set.of(
             GradleBuild.class,
-            ExternalProject.class,
             ModuleExtendedModel.class,
             BuildScriptClasspathModel.class
-        );
-    }
-
-    @Nonnull
-    @Override
-    public Set<Class> getToolingExtensionsClasses() {
-        return Set.of(
-            ExternalProject.class,
-            // gradle-tooling-extension-api jar
-            ProjectImportAction.class,
-            // gradle-tooling-extension-impl jar
-            ModelBuildScriptClasspathBuilderImpl.class,
-            GsonBuilder.class
         );
     }
 
@@ -488,46 +473,13 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
         }
     }
 
-    public void enhanceRemoteProcessing(@Nonnull SimpleJavaParameters parameters) throws ExecutionException {
-        PathsList classPath = parameters.getClassPath();
-
-        // Gradle i18n bundle.
-        ExternalSystemApiUtil.addBundle(classPath, GradleBundle.PATH_TO_BUNDLE, GradleBundle.class);
-
-        // Gradle tool jars.
-        String toolingApiPath = PathManager.getJarPathForClass(ProjectConnection.class);
-        if (toolingApiPath == null) {
-            LOG.warn(GradleLocalize.gradleGenericTextErrorJarNotFound().get());
-            throw new ExecutionException("Can't find gradle libraries");
-        }
-        File gradleJarsDir = new File(toolingApiPath).getParentFile();
-        String[] gradleJars = gradleJarsDir.list((dir, name) -> name.endsWith(".jar"));
-        if (gradleJars == null) {
-            LOG.warn(GradleLocalize.gradleGenericTextErrorJarNotFound().get());
-            throw new ExecutionException("Can't find gradle libraries at " + gradleJarsDir.getAbsolutePath());
-        }
-        for (String jar : gradleJars) {
-            classPath.add(new File(gradleJarsDir, jar).getAbsolutePath());
-        }
-
-        List<String> additionalEntries = new ArrayList<>();
-        ContainerUtil.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(GroovyObject.class));
-        ContainerUtil.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(GsonBuilder.class));
-        ContainerUtil.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(ExternalProject.class));
-        ContainerUtil.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(ProjectImportAction.class));
-        ContainerUtil.addIfNotNull(additionalEntries, PathUtil.getJarPathForClass(Init.class));
-        for (String entry : additionalEntries) {
-            classPath.add(entry);
-        }
-    }
-
     @Override
     public void enhanceLocalProcessing(@Nonnull List<URL> urls) {
     }
 
     @Nonnull
     private String getModuleConfigPath(@Nonnull IdeaModule gradleModule, @Nonnull String rootProjectPath) {
-        GradleBuild build = resolverCtx.getExtraProject(gradleModule, GradleBuild.class);
+        GradleBuild build = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, GradleBuild.class);
         if (build != null) {
             String gradlePath = gradleModule.getGradleProject().getPath();
             File moduleDirPath = getModuleDirPath(build, gradlePath);
@@ -743,7 +695,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
         }
 
         final BuildScriptClasspathModel buildScriptClasspathModel =
-            resolverCtx.getExtraProject(gradleModule, BuildScriptClasspathModel.class);
+            ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, BuildScriptClasspathModel.class);
         if (buildScriptClasspathModel == null) {
             return;
         }

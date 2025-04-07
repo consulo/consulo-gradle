@@ -1,18 +1,3 @@
-/*
- * Copyright 2000-2014 JetBrains s.r.o.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.jetbrains.plugins.gradle.service.project;
 
 import com.intellij.java.impl.externalSystem.JavaProjectData;
@@ -27,37 +12,39 @@ import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.externalSystem.service.project.ExternalSystemProjectResolver;
 import consulo.externalSystem.service.project.ProjectData;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.gradle.GradleConstants;
 import consulo.gradle.service.project.GradleProjectResolverExtension;
 import consulo.gradle.service.project.ProjectResolverContext;
+import consulo.gradle.setting.ClassHolder;
+import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
-import consulo.ide.impl.idea.util.BooleanFunction;
 import consulo.ide.impl.idea.util.containers.ContainerUtil;
 import consulo.logging.Logger;
 import consulo.process.cmd.ParametersList;
 import consulo.util.lang.Couple;
 import consulo.util.lang.Pair;
-import org.gradle.tooling.*;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.gradle.tooling.BuildActionExecuter;
+import org.gradle.tooling.ModelBuilder;
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.UnsupportedVersionException;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.build.BuildEnvironment;
 import org.gradle.tooling.model.idea.BasicIdeaProject;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
-import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.remote.impl.GradleLibraryNamesMixer;
-import consulo.gradle.setting.ClassHolder;
-import consulo.gradle.setting.GradleExecutionSettings;
-import consulo.gradle.GradleConstants;
+import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.util.GradleEnvironment;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 
 /**
- * @author Denis Zhdanov, Vladislav Soroka
- * @since 2011-08-08
+ * @author VISTALL
+ * @since 2025-04-06
  */
 public class GradleProjectResolver implements ExternalSystemProjectResolver<GradleExecutionSettings> {
     private static final Logger LOG = Logger.getInstance(GradleProjectResolver.class);
@@ -66,8 +53,6 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
     private final GradleExecutionHelper myHelper;
     private final GradleLibraryNamesMixer myLibraryNamesMixer = new GradleLibraryNamesMixer();
 
-    // This constructor is called by external system API, see AbstractExternalSystemFacadeImpl class constructor.
-    @SuppressWarnings("UnusedDeclaration")
     public GradleProjectResolver() {
         this(new GradleExecutionHelper());
     }
@@ -137,8 +122,9 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
         final ProjectImportAction projectImportAction = new ProjectImportAction(resolverCtx.isPreviewMode());
 
         final List<Pair<String, String>> extraJvmArgs = new ArrayList<>();
-        final List<String> commandLineArgs = ContainerUtil.newArrayList();
-        final Set<Class> toolingExtensionClasses = ContainerUtil.newHashSet();
+        final List<String> commandLineArgs = new ArrayList<>();
+
+        final Set<File> toolingExtensionFiles = new HashSet<>();
 
         for (GradleProjectResolverExtension resolverExtension = projectResolverChain; resolverExtension != null; resolverExtension =
             resolverExtension.getNext()) {
@@ -153,7 +139,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
             // collect extra command-line arguments
             commandLineArgs.addAll(resolverExtension.getExtraCommandLineArgs());
             // collect tooling extensions classes
-            toolingExtensionClasses.addAll(resolverExtension.getToolingExtensionsClasses());
+            toolingExtensionFiles.addAll(resolverExtension.getToolingExtensionsFiles());
         }
 
         final ParametersList parametersList = new ParametersList();
@@ -163,12 +149,9 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
 
         BuildActionExecuter<ProjectImportAction.AllModels> buildActionExecutor = resolverCtx.getConnection().action(projectImportAction);
 
-        // TODO [vlad] remove the check
-        if (!GradleEnvironment.DISABLE_ENHANCED_TOOLING_API) {
-            File initScript = GradleExecutionHelper.generateInitScript(isBuildSrcProject, toolingExtensionClasses);
-            if (initScript != null) {
-                ContainerUtil.addAll(commandLineArgs, GradleConstants.INIT_SCRIPT_CMD_OPTION, initScript.getAbsolutePath());
-            }
+        File initScript = GradleExecutionHelper.generateInitScript(isBuildSrcProject, toolingExtensionFiles);
+        if (initScript != null) {
+            consulo.util.collection.ContainerUtil.addAll(commandLineArgs, GradleConstants.INIT_SCRIPT_CMD_OPTION, initScript.getAbsolutePath());
         }
 
         GradleExecutionHelper.prepare(buildActionExecutor, resolverCtx.getExternalSystemTaskId(), resolverCtx.getSettings(),
@@ -211,7 +194,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
         JavaProjectData javaProjectData = projectResolverChain.createJavaProjectData();
         projectDataNode.createChild(JavaProjectData.KEY, javaProjectData);
 
-        IdeaProject ideaProject = resolverCtx.getModels().getIdeaProject();
+        IdeaProject ideaProject = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getIdeaProject();
 
         projectResolverChain.populateProjectExtraModels(ideaProject, projectDataNode);
 

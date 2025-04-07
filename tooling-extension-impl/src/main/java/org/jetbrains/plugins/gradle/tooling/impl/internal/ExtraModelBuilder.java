@@ -18,9 +18,9 @@ package org.jetbrains.plugins.gradle.tooling.impl.internal;
 import org.gradle.api.Project;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
 import org.gradle.util.GradleVersion;
-import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
-import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
-import org.jetbrains.plugins.gradle.tooling.annotation.TargetVersions;
+import org.jetbrains.plugins.gradle.tooling.impl.ErrorMessageBuilder;
+import org.jetbrains.plugins.gradle.tooling.impl.ModelBuilderService;
+import org.jetbrains.plugins.gradle.tooling.impl.annotation.TargetVersions;
 
 import java.util.ServiceLoader;
 
@@ -73,7 +73,7 @@ public class ExtraModelBuilder implements ToolingModelBuilder {
 
     private boolean isVersionMatch(ModelBuilderService builderService) {
         TargetVersions targetVersions = builderService.getClass().getAnnotation(TargetVersions.class);
-        if (targetVersions == null || targetVersions.value() == null || targetVersions.value().isEmpty()) {
+        if (targetVersions == null || targetVersions.value().isEmpty()) {
             return true;
         }
 

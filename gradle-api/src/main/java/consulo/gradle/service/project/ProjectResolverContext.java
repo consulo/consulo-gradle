@@ -18,13 +18,9 @@ package consulo.gradle.service.project;
 import consulo.externalSystem.model.task.ExternalSystemTaskId;
 import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import consulo.gradle.setting.GradleExecutionSettings;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.model.idea.IdeaModule;
-import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import java.util.Collection;
+import org.gradle.tooling.ProjectConnection;
 
 /**
  * @author Vladislav.Soroka
@@ -43,7 +39,7 @@ public class ProjectResolverContext {
   private final ExternalSystemTaskNotificationListener myListener;
   private final boolean myIsPreviewMode;
   @Nonnull
-  private ProjectImportAction.AllModels myModels;
+  private Object myModels;
 
   public ProjectResolverContext(@Nonnull final ExternalSystemTaskId externalSystemTaskId, @Nonnull final String projectPath,
                                 @Nullable final GradleExecutionSettings settings, @Nonnull final ProjectConnection connection,
@@ -86,26 +82,26 @@ public class ProjectResolverContext {
   }
 
   @Nonnull
-  public ProjectImportAction.AllModels getModels() {
+  public Object getModels() {
     return myModels;
   }
 
-  public void setModels(@Nonnull ProjectImportAction.AllModels models) {
+  public void setModels(@Nonnull Object models) {
     myModels = models;
   }
-
-  @Nullable
-  public <T> T getExtraProject(Class<T> modelClazz) {
-    return myModels.getExtraProject(null, modelClazz);
-  }
-
-  @Nullable
-  public <T> T getExtraProject(@Nullable IdeaModule module, Class<T> modelClazz) {
-    return myModels.getExtraProject(module, modelClazz);
-  }
-
-  @Nonnull
-  public Collection<String> findModulesWithModel(@Nonnull Class modelClazz) {
-    return myModels.findModulesWithModel(modelClazz);
-  }
+//
+//  @Nullable
+//  public <T> T getExtraProject(Class<T> modelClazz) {
+//    return myModels.getExtraProject(null, modelClazz);
+//  }
+//
+//  @Nullable
+//  public <T> T getExtraProject(@Nullable IdeaModule module, Class<T> modelClazz) {
+//    return myModels.getExtraProject(module, modelClazz);
+//  }
+//
+//  @Nonnull
+//  public Collection<String> findModulesWithModel(@Nonnull Class modelClazz) {
+//    return myModels.findModulesWithModel(modelClazz);
+//  }
 }

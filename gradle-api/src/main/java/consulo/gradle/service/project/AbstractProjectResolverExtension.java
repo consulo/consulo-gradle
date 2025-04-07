@@ -130,18 +130,6 @@ public abstract class AbstractProjectResolverExtension implements GradleProjectR
 
     @Nonnull
     @Override
-    public Set<Class> getExtraProjectModelClasses() {
-        return Collections.emptySet();
-    }
-
-    @Nonnull
-    @Override
-    public Set<Class> getToolingExtensionsClasses() {
-        return Collections.emptySet();
-    }
-
-    @Nonnull
-    @Override
     public List<Couple<String>> getExtraJvmArgs() {
         return Collections.emptyList();
     }

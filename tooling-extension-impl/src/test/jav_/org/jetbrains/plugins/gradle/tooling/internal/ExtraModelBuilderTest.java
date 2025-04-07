@@ -18,9 +18,9 @@ package org.jetbrains.plugins.gradle.tooling.internal;
 import org.gradle.api.Project;
 import org.gradle.util.GradleVersion;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.gradle.tooling.ErrorMessageBuilder;
-import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
-import org.jetbrains.plugins.gradle.tooling.annotation.TargetVersions;
+import org.jetbrains.plugins.gradle.tooling.impl.ErrorMessageBuilder;
+import org.jetbrains.plugins.gradle.tooling.impl.ModelBuilderService;
+import org.jetbrains.plugins.gradle.tooling.impl.annotation.TargetVersions;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.ExtraModelBuilder;
 import org.junit.Test;
 

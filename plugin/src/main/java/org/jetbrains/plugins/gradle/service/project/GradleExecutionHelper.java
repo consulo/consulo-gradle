@@ -15,34 +15,36 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
+import com.google.gson.GsonBuilder;
+import consulo.container.plugin.PluginManager;
 import consulo.execution.util.CommandLineTokenizer;
 import consulo.externalSystem.model.task.ExternalSystemTaskId;
 import consulo.externalSystem.model.task.ExternalSystemTaskNotificationEvent;
 import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
+import consulo.externalSystem.rt.model.DefaultExternalProject;
 import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.setting.DistributionType;
 import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.ide.impl.idea.util.PathUtil;
-import consulo.util.collection.ContainerUtil;
 import consulo.logging.Logger;
 import consulo.platform.Platform;
 import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.io.FileUtil;
 import consulo.util.io.StreamUtil;
 import consulo.util.lang.ExceptionUtil;
 import consulo.util.lang.StringUtil;
-import org.gradle.process.internal.JvmOptions;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.gradle.tooling.*;
 import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
 import org.gradle.tooling.internal.consumer.Distribution;
 import org.gradle.tooling.model.build.BuildEnvironment;
-import org.jetbrains.plugins.gradle.tooling.impl.internal.init.Init;
+import org.jetbrains.plugins.gradle.GradleManager;
 import org.jetbrains.plugins.gradle.util.GradleEnvironment;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,6 +155,7 @@ public class GradleExecutionHelper {
             // filter nulls and empty strings
             List<String> filteredArgs = ContainerUtil.mapNotNull(merged, s -> StringUtil.isEmpty(s) ? null : s);
 
+            filteredArgs = new ArrayList<>(filteredArgs);
             operation.setJvmArguments(ArrayUtil.toStringArray(filteredArgs));
         }
 
@@ -176,7 +179,7 @@ public class GradleExecutionHelper {
             operation.setJavaHome(new File(javaHome));
         }
         operation.addProgressListener(
-            (ProgressListener)event -> listener.onStatusChange(new ExternalSystemTaskNotificationEvent(id, event.getDescription()))
+            (ProgressListener) event -> listener.onStatusChange(new ExternalSystemTaskNotificationEvent(id, event.getDescription()))
         );
         operation.setStandardOutput(standardOutput);
         operation.setStandardError(standardError);
@@ -301,9 +304,7 @@ public class GradleExecutionHelper {
     }
 
     private static List<String> mergeJvmArgs(Iterable<String> jvmArgs1, Iterable<String> jvmArgs2) {
-        JvmOptions jvmOptions = new JvmOptions(null);
-        jvmOptions.setAllJvmArgs(ContainerUtil.concat(jvmArgs1, jvmArgs2));
-        return jvmOptions.getAllJvmArgs();
+        return ContainerUtil.newArrayList(ContainerUtil.concat(jvmArgs1, jvmArgs2));
     }
 
     /**
@@ -336,21 +337,6 @@ public class GradleExecutionHelper {
                         }
                     }
                     break;
-                case WRAPPED:
-                    if (settings.getWrapperPropertyFile() != null) {
-                        File propertiesFile = new File(settings.getWrapperPropertyFile());
-                        if (propertiesFile.exists()) {
-                            Distribution distribution = new DistributionFactoryExt().getWrappedDistribution
-                                (propertiesFile);
-                            try {
-                                setField(connector, "distribution", distribution);
-                            }
-                            catch (Exception e) {
-                                throw new ExternalSystemException(e);
-                            }
-                        }
-                    }
-                    break;
             }
 
             // Setup service directory if necessary.
@@ -363,7 +349,7 @@ public class GradleExecutionHelper {
             if (settings.isVerboseProcessing() && connector instanceof DefaultGradleConnector defaultGradleConnector) {
                 defaultGradleConnector.setVerboseLogging(true);
             }
-            ttl = (int)settings.getRemoteProcessIdleTtlInMs();
+            ttl = (int) settings.getRemoteProcessIdleTtlInMs();
         }
 
         if (ttl > 0 && connector instanceof DefaultGradleConnector defaultGradleConnector) {
@@ -403,16 +389,28 @@ public class GradleExecutionHelper {
     }
 
     @Nullable
-    public static File generateInitScript(boolean isBuildSrcProject, @Nonnull Set<Class> toolingExtensionClasses) {
-        InputStream stream = Init.class.getResourceAsStream("/org/jetbrains/plugins/gradle/tooling/impl/internal/init/init.gradle_");
+    public static File generateInitScript(boolean isBuildSrcProject, @Nonnull Set<File> toolingExtensionFiles) {
+        InputStream stream = GradleExecutionHelper.class.getResourceAsStream("/org/jetbrains/plugins/gradle/service/project/init.gradle_");
         try {
             if (stream == null) {
                 LOG.warn("Can't get init script template");
                 return null;
             }
-            final String toolingExtensionsJarPaths = getToolingExtensionsJarPaths(toolingExtensionClasses);
+
+            ToolingExtensionPaths toolingExtensionPaths = new ToolingExtensionPaths();
+            toolingExtensionPaths.addJarByClass(GsonBuilder.class);
+            toolingExtensionPaths.addJarByClass(DefaultExternalProject.class);
+
+            for (File file : toolingExtensionFiles) {
+                toolingExtensionPaths.addJar(file);
+            }
+
+            File gradlePluginPath = PluginManager.getPluginPath(GradleManager.class);
+            toolingExtensionPaths.addJar(new File(gradlePluginPath, "gradle-rt/gradle-ext-api.jar"));
+            toolingExtensionPaths.addJar(new File(gradlePluginPath, "gradle-rt/gradle-ext-impl.jar"));
+
             String s = FileUtil.loadTextAndClose(stream)
-                .replaceFirst(Pattern.quote("${EXTENSIONS_JARS_PATH}"), toolingExtensionsJarPaths);
+                .replaceFirst(Pattern.quote("${EXTENSIONS_JARS_PATH}"), toolingExtensionPaths.toArrayExpression());
             if (isBuildSrcProject) {
                 String buildSrcDefaultInitScript = getBuildSrcDefaultInitScript();
                 if (buildSrcDefaultInitScript == null) {
@@ -437,7 +435,7 @@ public class GradleExecutionHelper {
     @Nullable
     public static String getBuildSrcDefaultInitScript() {
         InputStream stream =
-            Init.class.getResourceAsStream("/org/jetbrains/plugins/gradle/tooling/impl/internal/init/buildSrcInit.gradle_");
+            GradleExecutionHelper.class.getResourceAsStream("/org/jetbrains/plugins/gradle/service/project/buildSrcInit.gradle_");
         try {
             if (stream == null) {
                 return null;
@@ -490,7 +488,7 @@ public class GradleExecutionHelper {
             buf.append(']');
 
             InputStream stream =
-                Init.class.getResourceAsStream("/org/jetbrains/plugins/gradle/tooling/impl/internal/init/testFilterInit.gradle_");
+                GradleExecutionHelper.class.getResourceAsStream("/org/jetbrains/plugins/gradle/service/project/testFilterInit.gradle_");
             try {
                 if (stream == null) {
                     LOG.warn("Can't get test filter init script template");
@@ -508,21 +506,5 @@ public class GradleExecutionHelper {
                 StreamUtil.closeStream(stream);
             }
         }
-    }
-
-    @Nonnull
-    private static String getToolingExtensionsJarPaths(@Nonnull Set<Class> toolingExtensionClasses) {
-        StringBuilder buf = new StringBuilder();
-        buf.append('[');
-        for (Iterator<Class> it = toolingExtensionClasses.iterator(); it.hasNext(); ) {
-            Class<?> aClass = it.next();
-            String jarPath = PathUtil.getCanonicalPath(PathUtil.getJarPathForClass(aClass));
-            buf.append('\"').append(jarPath).append('\"');
-            if (it.hasNext()) {
-                buf.append(',');
-            }
-        }
-        buf.append(']');
-        return buf.toString();
     }
 }

@@ -32,7 +32,6 @@ import consulo.fileEditor.FileEditor;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.localize.GradleLocalize;
 import consulo.gradle.setting.DistributionType;
-import consulo.ide.ServiceManager;
 import consulo.ide.impl.idea.openapi.externalSystem.service.project.ExternalProjectRefreshCallback;
 import consulo.ide.impl.idea.openapi.externalSystem.service.project.manage.ProjectDataManager;
 import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemUtil;
@@ -45,16 +44,15 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
-import org.gradle.util.GUtil;
 import org.gradle.wrapper.WrapperConfiguration;
 import org.gradle.wrapper.WrapperExecutor;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -208,7 +206,7 @@ public class UseDistributionWithSourcesNotificationProvider implements EditorNot
             wrapperProperties.setProperty(WrapperExecutor.DISTRIBUTION_PATH_PROPERTY, wrapperConfiguration.getDistributionPath());
             wrapperProperties.setProperty(WrapperExecutor.ZIP_STORE_BASE_PROPERTY, wrapperConfiguration.getZipBase());
             wrapperProperties.setProperty(WrapperExecutor.ZIP_STORE_PATH_PROPERTY, wrapperConfiguration.getZipPath());
-            GUtil.saveProperties(wrapperProperties, new File(wrapperPropertiesFile.getPath()));
+            // TODO ! GUtil.saveProperties(wrapperProperties, new File(wrapperPropertiesFile.getPath()));
             LocalFileSystem.getInstance().refreshIoFiles(Collections.singletonList(wrapperPropertiesFile));
         }
         catch (Exception e) {

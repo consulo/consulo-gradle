@@ -6,9 +6,7 @@ module org.jetbrains.plugins.gradle.api {
   requires transitive consulo.ide.api;
   requires transitive org.intellij.groovy.psi;
 
-  requires gradle.all;
-
-  requires transitive org.jetbrains.plugins.gradle.tooling;
+  requires transitive gradle.tooling.api;
 
   exports consulo.gradle;
   exports consulo.gradle.localize;

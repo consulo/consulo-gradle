@@ -28,7 +28,7 @@ public class ReflectionMethod<ReturnMethod, InstanceObject> {
       return (ReturnMethod)myMethod.invoke(instanceObject);
     }
     catch (IllegalAccessException | InvocationTargetException e) {
-      throw new RuntimeException();
+      throw new RuntimeException(e);
     }
   }
 }
