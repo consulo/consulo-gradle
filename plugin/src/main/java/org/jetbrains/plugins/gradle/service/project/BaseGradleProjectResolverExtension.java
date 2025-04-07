@@ -15,7 +15,6 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import com.google.gson.GsonBuilder;
 import com.intellij.java.impl.externalSystem.JavaProjectData;
 import com.intellij.java.language.LanguageLevel;
 import consulo.annotation.component.ExtensionImpl;
@@ -26,26 +25,22 @@ import consulo.externalSystem.model.task.TaskData;
 import consulo.externalSystem.rt.model.*;
 import consulo.externalSystem.service.project.ProjectData;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
-import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
-import consulo.gradle.localize.GradleLocalize;
 import consulo.gradle.service.project.GradleProjectResolverExtension;
 import consulo.gradle.service.project.ProjectResolverContext;
 import consulo.http.HttpProxyManager;
-import consulo.ide.impl.idea.openapi.application.PathManager;
 import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
-import consulo.ide.impl.idea.util.PathUtil;
 import consulo.logging.Logger;
 import consulo.module.content.layer.orderEntry.DependencyScope;
 import consulo.platform.Platform;
-import consulo.process.ExecutionException;
-import consulo.process.cmd.SimpleJavaParameters;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.io.FileUtil;
-import consulo.util.lang.*;
-import consulo.virtualFileSystem.util.PathsList;
-import groovy.lang.GroovyObject;
-import org.gradle.tooling.ProjectConnection;
+import consulo.util.lang.CharArrayUtil;
+import consulo.util.lang.Couple;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.gradle.tooling.model.DomainObjectSet;
 import org.gradle.tooling.model.GradleModuleVersion;
 import org.gradle.tooling.model.GradleTask;
@@ -57,12 +52,10 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
 import org.jetbrains.plugins.gradle.service.project.data.ExternalProjectDataService;
 import org.jetbrains.plugins.gradle.tooling.model.BuildScriptClasspathModel;
+import org.jetbrains.plugins.gradle.tooling.model.ExtIdeaCompilerOutput;
 import org.jetbrains.plugins.gradle.tooling.model.ModuleExtendedModel;
 import org.jetbrains.plugins.gradle.tooling.model.ProjectImportAction;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -253,8 +246,8 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
 
         File sourceCompileOutputPath = null;
         File testCompileOutputPath = null;
-        File resourceCompileOutputPath;
-        File testResourceCompileOutputPath;
+        File resourceCompileOutputPath = null;
+        File testResourceCompileOutputPath = null;
         boolean inheritOutputDirs = false;
 
         ModuleData moduleData = ideModule.getData();
@@ -262,6 +255,37 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
             sourceCompileOutputPath = moduleCompilerOutput.getOutputDir();
             testCompileOutputPath = moduleCompilerOutput.getTestOutputDir();
             inheritOutputDirs = moduleCompilerOutput.getInheritOutputDirs();
+        }
+
+        ModuleExtendedModel extraModel = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, ModuleExtendedModel.class);
+        if (extraModel != null) {
+            ExtIdeaCompilerOutput compilerOutput = extraModel.getCompilerOutput();
+
+            if (compilerOutput != null) {
+                if (sourceCompileOutputPath == null) {
+                    sourceCompileOutputPath = compilerOutput.getMainClassesDir();
+                }
+
+                if (testCompileOutputPath == null) {
+                    testCompileOutputPath = compilerOutput.getTestClassesDir();
+                }
+
+                if (resourceCompileOutputPath == null) {
+                    resourceCompileOutputPath = compilerOutput.getMainClassesDir();
+                }
+
+                if (testResourceCompileOutputPath == null) {
+                    testResourceCompileOutputPath = compilerOutput.getTestClassesDir();
+                }
+            }
+        }
+
+        if (sourceCompileOutputPath != null
+            && testCompileOutputPath != null
+            && resourceCompileOutputPath != null
+            && testResourceCompileOutputPath != null
+        ) {
+            inheritOutputDirs = false;
         }
 
         ExternalProject externalProject = ((ProjectImportAction.AllModels) resolverCtx.getModels()).getExtraProject(gradleModule, ExternalProject.class);
