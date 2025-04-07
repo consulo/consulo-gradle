@@ -86,6 +86,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author Denis Zhdanov
@@ -196,13 +197,14 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 
   @Nonnull
   @Override
-  public Class<? extends ExternalSystemProjectResolver<GradleExecutionSettings>> getProjectResolverClass() {
-    return GradleProjectResolver.class;
+  public Supplier<? extends ExternalSystemProjectResolver<GradleExecutionSettings>> getProjectResolverFactory() {
+    return GradleProjectResolver::new;
   }
 
+  @Nonnull
   @Override
-  public Class<? extends ExternalSystemTaskManager<GradleExecutionSettings>> getTaskManagerClass() {
-    return GradleTaskManager.class;
+  public Supplier<? extends ExternalSystemTaskManager<GradleExecutionSettings>> getTaskManagerFactory() {
+    return GradleTaskManager::new;
   }
 
   @Nonnull
