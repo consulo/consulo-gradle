@@ -497,9 +497,6 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
         }
     }
 
-    @Override
-    public void enhanceLocalProcessing(@Nonnull List<URL> urls) {
-    }
 
     @Nonnull
     private String getModuleConfigPath(@Nonnull IdeaModule gradleModule, @Nonnull String rootProjectPath) {

@@ -167,10 +167,6 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
         };
     }
 
-    @Override
-    public void enhanceLocalProcessing(@Nonnull List<URL> urls) {
-    }
-
     @Nonnull
     @Override
     public Supplier<? extends ExternalSystemProjectResolver<GradleExecutionSettings>> getProjectResolverFactory() {

@@ -24,14 +24,12 @@ import consulo.externalSystem.model.ProjectKeys;
 import consulo.externalSystem.model.project.ModuleData;
 import consulo.externalSystem.model.task.TaskData;
 import consulo.externalSystem.rt.model.ExternalSystemException;
-import consulo.externalSystem.service.ParametersEnhancer;
 import consulo.externalSystem.service.project.ProjectData;
 import consulo.util.lang.Couple;
-import org.gradle.tooling.model.idea.IdeaModule;
-import org.gradle.tooling.model.idea.IdeaProject;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaProject;
 
 import java.io.File;
 import java.util.Collection;
@@ -46,11 +44,10 @@ import java.util.function.Consumer;
  * to instantiate it.
  *
  * @author Denis Zhdanov, Vladislav Soroka
- * @see GradleManager#enhanceRemoteProcessing(OwnSimpleJavaParameters)   sample enhanceParameters() implementation
  * @since 4/17/13 11:24 AM
  */
 @ExtensionAPI(ComponentScope.APPLICATION)
-public interface GradleProjectResolverExtension extends ParametersEnhancer {
+public interface GradleProjectResolverExtension {
   ExtensionPointName<GradleProjectResolverExtension> EP_NAME = ExtensionPointName.create(GradleProjectResolverExtension.class);
 
   void setProjectResolverContext(@Nonnull ProjectResolverContext projectResolverContext);

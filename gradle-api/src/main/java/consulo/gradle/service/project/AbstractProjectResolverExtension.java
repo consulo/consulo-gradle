@@ -27,11 +27,9 @@ import jakarta.annotation.Nullable;
 import org.gradle.tooling.model.idea.IdeaModule;
 import org.gradle.tooling.model.idea.IdeaProject;
 
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -148,10 +146,6 @@ public abstract class AbstractProjectResolverExtension implements GradleProjectR
         @Nullable String buildFilePath
     ) {
         return nextResolver.getUserFriendlyError(error, projectPath, buildFilePath);
-    }
-
-    @Override
-    public void enhanceLocalProcessing(@Nonnull List<URL> urls) {
     }
 
     @Override
