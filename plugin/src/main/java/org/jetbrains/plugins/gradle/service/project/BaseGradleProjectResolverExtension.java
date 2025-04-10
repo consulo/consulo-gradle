@@ -25,11 +25,11 @@ import consulo.externalSystem.model.task.TaskData;
 import consulo.externalSystem.rt.model.*;
 import consulo.externalSystem.service.project.ProjectData;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
+import consulo.externalSystem.util.ExternalSystemDebugEnvironment;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.service.project.GradleProjectResolverExtension;
 import consulo.gradle.service.project.ProjectResolverContext;
 import consulo.http.HttpProxyManager;
-import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemDebugEnvironment;
 import consulo.logging.Logger;
 import consulo.module.content.layer.orderEntry.DependencyScope;
 import consulo.platform.Platform;
@@ -59,7 +59,6 @@ import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.function.Consumer;
 

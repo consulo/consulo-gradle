@@ -15,16 +15,16 @@
  */
 package org.jetbrains.plugins.gradle.service.project;
 
-import consulo.externalSystem.ExternalSystemAutoImportAware;
 import consulo.externalSystem.ExternalSystemManager;
+import consulo.externalSystem.service.project.autoimport.ExternalSystemAutoImportAware;
 import consulo.externalSystem.setting.AbstractExternalSystemSettings;
 import consulo.externalSystem.setting.ExternalProjectSettings;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
-import consulo.project.Project;
 import consulo.gradle.GradleConstants;
-
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;

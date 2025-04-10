@@ -16,17 +16,16 @@
 package org.jetbrains.plugins.gradle.service.settings;
 
 import consulo.externalSystem.service.execution.ExternalSystemSettingsControl;
-import consulo.ide.impl.idea.openapi.externalSystem.service.settings.AbstractImportFromExternalSystemControl;
+import consulo.externalSystem.service.setting.AbstractImportFromExternalSystemControl;
+import consulo.gradle.GradleConstants;
 import consulo.project.ProjectManager;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
-import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.gradle.util.GradleUtil;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov

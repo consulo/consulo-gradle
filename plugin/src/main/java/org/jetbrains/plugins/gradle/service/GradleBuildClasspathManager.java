@@ -11,7 +11,6 @@ import consulo.externalSystem.model.project.ExternalProjectBuildClasspathPojo;
 import consulo.externalSystem.setting.AbstractExternalSystemLocalSettings;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.gradle.GradleConstants;
-import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemUtil;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.virtualFileSystem.VirtualFile;
@@ -63,7 +62,7 @@ public class GradleBuildClasspathManager {
         for (final ExternalProjectBuildClasspathPojo projectBuildClasspathPojo : localSettings.getProjectBuildClasspath().values()) {
             final List<VirtualFile> projectBuildClasspath = new ArrayList<>();
             for (String path : projectBuildClasspathPojo.getProjectBuildClasspath()) {
-                final VirtualFile virtualFile = ExternalSystemUtil.findLocalFileByPath(path);
+                final VirtualFile virtualFile = ExternalSystemApiUtil.findLocalFileByPath(path);
                 ContainerUtil.addIfNotNull(
                     projectBuildClasspath,
                     virtualFile == null || virtualFile.isDirectory()
@@ -76,7 +75,7 @@ public class GradleBuildClasspathManager {
                 .values()) {
                 final List<VirtualFile> moduleBuildClasspath = ContainerUtil.newArrayList(projectBuildClasspath);
                 for (String path : moduleBuildClasspathPojo.getEntries()) {
-                    final VirtualFile virtualFile = ExternalSystemUtil.findLocalFileByPath(path);
+                    final VirtualFile virtualFile = ExternalSystemApiUtil.findLocalFileByPath(path);
                     ContainerUtil.addIfNotNull(
                         moduleBuildClasspath,
                         virtualFile == null || virtualFile.isDirectory()

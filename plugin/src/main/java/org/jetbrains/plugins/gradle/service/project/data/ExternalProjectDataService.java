@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.gradle.service.project.data;
 
+import consulo.application.Application;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.Task;
 import consulo.application.util.ConcurrentFactoryMap;
@@ -26,16 +27,17 @@ import consulo.externalSystem.model.ProjectSystemId;
 import consulo.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import consulo.externalSystem.rt.model.DefaultExternalProject;
 import consulo.externalSystem.rt.model.ExternalProject;
+import consulo.externalSystem.service.ExternalSystemResolveProjectTask;
+import consulo.externalSystem.service.ExternalSystemResolveProjectTaskFactory;
+import consulo.externalSystem.service.notification.ExternalSystemNotificationManager;
 import consulo.externalSystem.service.notification.NotificationSource;
 import consulo.externalSystem.service.project.ProjectData;
+import consulo.externalSystem.service.project.manage.ProjectDataManager;
 import consulo.externalSystem.service.project.manage.ProjectDataService;
 import consulo.externalSystem.setting.ExternalProjectSettings;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
 import consulo.externalSystem.util.Order;
-import consulo.ide.impl.idea.openapi.externalSystem.service.internal.ExternalSystemResolveProjectTask;
-import consulo.ide.impl.idea.openapi.externalSystem.service.notification.ExternalSystemNotificationManager;
-import consulo.ide.impl.idea.openapi.externalSystem.service.project.manage.ProjectDataManager;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.module.Module;
@@ -48,9 +50,9 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.Pair;
 import consulo.util.lang.ref.Ref;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
@@ -177,10 +179,9 @@ public class ExternalProjectDataService implements ProjectDataService<ExternalPr
                         return;
                     }
 
-                    ExternalSystemNotificationManager.getInstance(project)
-                        .clearNotifications(null, NotificationSource.PROJECT_SYNC, projectSystemId);
-                    ExternalSystemResolveProjectTask task =
-                        new ExternalSystemResolveProjectTask(projectSystemId, project, linkedProjectPath, false);
+                    ExternalSystemNotificationManager.getInstance(project).clearNotifications(NotificationSource.PROJECT_SYNC, projectSystemId);
+                    ExternalSystemResolveProjectTaskFactory taskFactory = Application.get().getInstance(ExternalSystemResolveProjectTaskFactory.class);
+                    ExternalSystemResolveProjectTask task = taskFactory.createResolveProjectTask(projectSystemId, project, linkedProjectPath, false);
                     task.execute(indicator, ExternalSystemTaskNotificationListener.EP_NAME.getExtensions());
                     if (project.isDisposed()) {
                         return;

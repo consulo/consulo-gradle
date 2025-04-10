@@ -1,12 +1,11 @@
 package org.jetbrains.plugins.gradle.ui;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.externalSystem.ui.AbstractExternalSystemToolWindowFactory;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
-import consulo.ide.impl.idea.openapi.externalSystem.service.task.ui.AbstractExternalSystemToolWindowFactory;
 import consulo.ui.ex.toolWindow.ToolWindowAnchor;
 import consulo.ui.image.Image;
-
 import jakarta.annotation.Nonnull;
 
 @ExtensionImpl

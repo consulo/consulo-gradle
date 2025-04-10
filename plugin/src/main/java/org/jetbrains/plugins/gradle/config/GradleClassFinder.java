@@ -22,7 +22,7 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiJavaPackage;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.util.ConcurrentFactoryMap;
-import consulo.ide.impl.idea.openapi.externalSystem.psi.search.ExternalModuleBuildGlobalSearchScope;
+import consulo.externalSystem.scope.ExternalModuleBuildGlobalSearchScope;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.scope.EverythingGlobalScope;
 import consulo.language.psi.scope.GlobalSearchScope;
@@ -30,12 +30,12 @@ import consulo.module.content.PackageDirectoryCache;
 import consulo.module.content.ProjectFileIndex;
 import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 

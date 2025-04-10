@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.gradle.service.execution;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.ide.impl.idea.openapi.externalSystem.service.execution.AbstractExternalSystemRuntimeConfigurationProducer;
+import consulo.externalSystem.service.execution.AbstractExternalSystemRuntimeConfigurationProducer;
 
 /**
  * @author Denis Zhdanov

@@ -1,16 +1,15 @@
 package consulo.gradle.impl.module.extension;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.externalSystem.service.module.extension.ExternalSystemModuleExtensionImpl;
+import consulo.externalSystem.service.module.extension.ExternalSystemMutableModuleExtensionImpl;
 import consulo.gradle.icon.GradleIconGroup;
-import consulo.ide.impl.externalSystem.module.extension.impl.ExternalSystemModuleExtensionImpl;
-import consulo.ide.impl.externalSystem.module.extension.impl.ExternalSystemMutableModuleExtensionImpl;
 import consulo.localize.LocalizeValue;
 import consulo.module.content.layer.ModuleExtensionProvider;
 import consulo.module.content.layer.ModuleRootLayer;
 import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.ui.image.Image;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 

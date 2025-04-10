@@ -19,16 +19,15 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.configurable.ProjectConfigurable;
 import consulo.configurable.StandardConfigurableIds;
 import consulo.externalSystem.service.execution.ExternalSystemSettingsControl;
-import consulo.ide.impl.idea.openapi.externalSystem.service.settings.AbstractExternalSystemConfigurable;
+import consulo.externalSystem.service.setting.AbstractExternalSystemConfigurable;
+import consulo.gradle.GradleConstants;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
-import consulo.gradle.GradleConstants;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * @author Denis Zhdanov

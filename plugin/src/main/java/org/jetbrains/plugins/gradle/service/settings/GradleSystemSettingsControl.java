@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.gradle.service.settings;
 
 import consulo.configurable.ConfigurationException;
+import consulo.externalSystem.model.setting.LocationSettingType;
 import consulo.externalSystem.service.execution.ExternalSystemSettingsControl;
 import consulo.externalSystem.ui.awt.ExternalSystemUiUtil;
 import consulo.externalSystem.ui.awt.PaintAwarePanel;
@@ -23,7 +24,6 @@ import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.fileChooser.FileChooserDescriptor;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.localize.GradleLocalize;
-import consulo.ide.impl.idea.openapi.externalSystem.model.settings.LocationSettingType;
 import consulo.platform.Platform;
 import consulo.ui.ex.awt.JBLabel;
 import consulo.ui.ex.awt.JBTextField;
@@ -31,10 +31,10 @@ import consulo.ui.ex.awt.TextComponentAccessor;
 import consulo.ui.ex.awt.TextFieldWithBrowseButton;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
-import org.jetbrains.plugins.gradle.settings.GradleSettings;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.gradle.settings.GradleSettings;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.io.File;

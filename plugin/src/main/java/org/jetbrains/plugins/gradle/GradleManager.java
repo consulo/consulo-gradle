@@ -22,7 +22,6 @@ import consulo.component.messagebus.MessageBusConnection;
 import consulo.configurable.Configurable;
 import consulo.content.bundle.Sdk;
 import consulo.content.bundle.SdkTable;
-import consulo.externalSystem.ExternalSystemAutoImportAware;
 import consulo.externalSystem.ExternalSystemConfigurableAware;
 import consulo.externalSystem.ExternalSystemManager;
 import consulo.externalSystem.model.DataNode;
@@ -32,8 +31,13 @@ import consulo.externalSystem.model.execution.ExternalTaskExecutionInfo;
 import consulo.externalSystem.model.execution.ExternalTaskPojo;
 import consulo.externalSystem.model.project.ExternalProjectPojo;
 import consulo.externalSystem.model.task.ProgressExecutionMode;
+import consulo.externalSystem.service.project.ExternalProjectRefreshCallback;
+import consulo.externalSystem.service.project.ExternalSystemProjectRefresher;
 import consulo.externalSystem.service.project.ExternalSystemProjectResolver;
 import consulo.externalSystem.service.project.ProjectData;
+import consulo.externalSystem.service.project.autoimport.CachingExternalSystemAutoImportAware;
+import consulo.externalSystem.service.project.autoimport.ExternalSystemAutoImportAware;
+import consulo.externalSystem.service.project.manage.ProjectDataManager;
 import consulo.externalSystem.task.ExternalSystemTaskManager;
 import consulo.externalSystem.ui.ExternalSystemUiAware;
 import consulo.externalSystem.util.DisposeAwareProjectChange;
@@ -46,10 +50,6 @@ import consulo.gradle.setting.ClassHolder;
 import consulo.gradle.setting.DistributionType;
 import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.ide.ServiceManager;
-import consulo.ide.impl.idea.openapi.externalSystem.service.project.ExternalProjectRefreshCallback;
-import consulo.ide.impl.idea.openapi.externalSystem.service.project.autoimport.CachingExternalSystemAutoImportAware;
-import consulo.ide.impl.idea.openapi.externalSystem.service.project.manage.ProjectDataManager;
-import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemUtil;
 import consulo.java.execution.impl.util.JreSearchUtil;
 import consulo.logging.Logger;
 import consulo.module.content.ProjectRootManager;
@@ -77,7 +77,6 @@ import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -248,7 +247,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
             public void onProjectsLinked(@Nonnull Collection<GradleProjectSettings> settings) {
                 final ProjectDataManager projectDataManager = ServiceManager.getService(ProjectDataManager.class);
                 for (GradleProjectSettings gradleProjectSettings : settings) {
-                    ExternalSystemUtil.refreshProject(project,
+                    ExternalSystemProjectRefresher.getInstance().refreshProject(project,
                         GradleConstants.SYSTEM_ID,
                         gradleProjectSettings.getExternalProjectPath(),
                         new ExternalProjectRefreshCallback() {
@@ -282,7 +281,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
             }
 
             private void ensureProjectsRefresh() {
-                ExternalSystemUtil.refreshProjects(project, GradleConstants.SYSTEM_ID, true);
+                ExternalSystemProjectRefresher.getInstance().refreshProjects(project, GradleConstants.SYSTEM_ID, true);
             }
         });
 

@@ -21,7 +21,10 @@ import consulo.application.dumb.IndexNotReadyException;
 import consulo.component.ProcessCanceledException;
 import consulo.externalSystem.model.DataNode;
 import consulo.externalSystem.model.task.ProgressExecutionMode;
+import consulo.externalSystem.service.project.ExternalProjectRefreshCallback;
+import consulo.externalSystem.service.project.ExternalSystemProjectRefresher;
 import consulo.externalSystem.service.project.ProjectData;
+import consulo.externalSystem.service.project.manage.ProjectDataManager;
 import consulo.externalSystem.util.DisposeAwareProjectChange;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
@@ -32,9 +35,6 @@ import consulo.fileEditor.FileEditor;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.localize.GradleLocalize;
 import consulo.gradle.setting.DistributionType;
-import consulo.ide.impl.idea.openapi.externalSystem.service.project.ExternalProjectRefreshCallback;
-import consulo.ide.impl.idea.openapi.externalSystem.service.project.manage.ProjectDataManager;
-import consulo.ide.impl.idea.openapi.externalSystem.util.ExternalSystemUtil;
 import consulo.language.util.ModuleUtilCore;
 import consulo.logging.Logger;
 import consulo.module.Module;
@@ -134,7 +134,7 @@ public class UseDistributionWithSourcesNotificationProvider implements EditorNot
                         final Project project = module.getProject();
                         EditorNotifications.getInstance(project).updateAllNotifications();
                         final ProjectDataManager projectDataManager = project.getApplication().getInstance(ProjectDataManager.class);
-                        ExternalSystemUtil.refreshProject(
+                        ExternalSystemProjectRefresher.getInstance().refreshProject(
                             project,
                             GradleConstants.SYSTEM_ID,
                             settings.getExternalProjectPath(),

@@ -1,12 +1,11 @@
 package org.jetbrains.plugins.gradle.config;
 
-import consulo.ide.impl.idea.openapi.externalSystem.settings.ExternalSystemSettingsListenerAdapter;
+import consulo.externalSystem.setting.ExternalSystemSettingsListenerAdapter;
 import consulo.gradle.setting.DistributionType;
-import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
-import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
+import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 
 /**
  * @author Denis Zhdanov
