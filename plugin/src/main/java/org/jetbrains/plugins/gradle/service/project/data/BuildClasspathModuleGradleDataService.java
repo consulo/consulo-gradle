@@ -30,17 +30,17 @@ import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
 import consulo.externalSystem.util.Order;
 import consulo.gradle.GradleConstants;
-import consulo.ide.impl.idea.util.containers.ContainerUtil;
 import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.FactoryMap;
 import consulo.util.io.FileUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
-import jakarta.annotation.Nonnull;
 import java.io.File;
 import java.util.*;
 
@@ -150,7 +150,7 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
                 projectBuildClasspathPojo.setProjectBuildClasspath(projectBuildClasspath);
                 projectBuildClasspathPojo.getModulesBuildClasspath().put(
                     externalModulePath,
-                    new ExternalModuleBuildClasspathPojo(externalModulePath, ContainerUtil.newArrayList(buildClasspath))
+                    new ExternalModuleBuildClasspathPojo(externalModulePath, new ArrayList<>(buildClasspath))
                 );
             }
         }

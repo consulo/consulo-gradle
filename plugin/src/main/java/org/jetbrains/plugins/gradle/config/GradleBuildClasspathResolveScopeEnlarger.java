@@ -19,13 +19,13 @@ import com.intellij.java.language.impl.psi.NonClasspathDirectoriesScope;
 import com.intellij.java.language.psi.PsiElementFinder;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.content.scope.SearchScope;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.language.psi.ResolveScopeEnlarger;
 import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public class GradleBuildClasspathResolveScopeEnlarger extends ResolveScopeEnlarg
 
             final List<VirtualFile> roots = gradleClassFinder.getClassRoots();
             for (VirtualFile root : roots) {
-                if (VfsUtilCore.isAncestor(root, file, true)) {
+                if (VirtualFileUtil.isAncestor(root, file, true)) {
                     return NonClasspathDirectoriesScope.compose(roots);
                 }
             }

@@ -18,7 +18,5 @@ open module org.jetbrains.plugins.gradle {
     requires org.jetbrains.plugins.gradle.api;
     requires org.jetbrains.plugins.gradle.tooling;
 
-    // TODO remove in future
-    requires consulo.ide.impl;
     requires java.desktop;
 }

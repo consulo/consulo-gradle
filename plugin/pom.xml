@@ -166,15 +166,14 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>consulo</groupId>
-            <artifactId>consulo-ide-impl</artifactId>
-            <version>${project.version}</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
             <scope>provided</scope>
         </dependency>
 

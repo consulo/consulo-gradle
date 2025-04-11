@@ -18,7 +18,6 @@ import consulo.gradle.service.project.GradleProjectResolverExtension;
 import consulo.gradle.service.project.ProjectResolverContext;
 import consulo.gradle.setting.ClassHolder;
 import consulo.gradle.setting.GradleExecutionSettings;
-import consulo.ide.impl.idea.util.containers.ContainerUtil;
 import consulo.logging.Logger;
 import consulo.process.cmd.ParametersList;
 import consulo.util.lang.Couple;
@@ -235,7 +234,7 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
         }
 
         // populate modules nodes
-        final List<TaskData> allTasks = ContainerUtil.newArrayList();
+        final List<TaskData> allTasks = new ArrayList<>();
         for (final Pair<DataNode<ModuleData>, IdeaModule> pair : moduleMap.values()) {
             final DataNode<ModuleData> moduleDataNode = pair.first;
             final IdeaModule ideaModule = pair.second;

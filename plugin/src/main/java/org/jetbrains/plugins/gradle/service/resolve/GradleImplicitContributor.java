@@ -22,13 +22,14 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.externalSystem.model.execution.ExternalTaskPojo;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
-import consulo.ide.impl.idea.util.containers.ContainerUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
-import consulo.util.lang.Couple;
+import consulo.util.collection.ImmutableMapBuilder;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleLocalSettings;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -37,9 +38,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -53,32 +51,32 @@ import static org.jetbrains.plugins.gradle.service.resolve.GradleResolverUtil.ca
  */
 @ExtensionImpl
 public class GradleImplicitContributor implements GradleMethodContextContributor {
-    private final static Map<String, String> BUILT_IN_TASKS = ContainerUtil.newHashMap(
-        Couple.of("assemble", GRADLE_API_DEFAULT_TASK),
-        Couple.of("build", GRADLE_API_DEFAULT_TASK),
-        Couple.of("buildDependents", GRADLE_API_DEFAULT_TASK),
-        Couple.of("buildNeeded", GRADLE_API_DEFAULT_TASK),
-        Couple.of("clean", GRADLE_API_TASKS_DELETE),
-        Couple.of("jar", GRADLE_API_TASKS_BUNDLING_JAR),
-        Couple.of("war", GRADLE_API_TASKS_BUNDLING_WAR),
-        Couple.of("classes", GRADLE_API_DEFAULT_TASK),
-        Couple.of("compileJava", GRADLE_API_TASKS_COMPILE_JAVA_COMPILE),
-        Couple.of("compileTestJava", GRADLE_API_DEFAULT_TASK),
-        Couple.of("processTestResources", GRADLE_API_DEFAULT_TASK),
-        Couple.of("testClasses", GRADLE_API_DEFAULT_TASK),
-        Couple.of("processResources", GRADLE_LANGUAGE_JVM_TASKS_PROCESS_RESOURCES),
-        Couple.of("setupBuild", GRADLE_BUILDSETUP_TASKS_SETUP_BUILD),
-        Couple.of("wrapper", GRADLE_API_TASKS_WRAPPER_WRAPPER),
-        Couple.of("javadoc", GRADLE_API_TASKS_JAVADOC_JAVADOC),
-        Couple.of("dependencies", GRADLE_API_TASKS_DIAGNOSTICS_DEPENDENCY_REPORT_TASK),
-        Couple.of("dependencyInsight", GRADLE_API_TASKS_DIAGNOSTICS_DEPENDENCY_INSIGHT_REPORT_TASK),
-        Couple.of("projects", GRADLE_API_TASKS_DIAGNOSTICS_PROJECT_REPORT_TASK),
-        Couple.of("properties", GRADLE_API_TASKS_DIAGNOSTICS_PROPERTY_REPORT_TASK),
-        Couple.of("tasks", GRADLE_API_TASKS_DIAGNOSTICS_TASK_REPORT_TASK),
-        Couple.of("check", GRADLE_API_DEFAULT_TASK),
-        Couple.of("test", GRADLE_API_TASKS_TESTING_TEST),
-        Couple.of("uploadArchives", GRADLE_API_TASKS_UPLOAD)
-    );
+    private final static Map<String, String> BUILT_IN_TASKS = ImmutableMapBuilder.<String, String>newBuilder()
+        .put("assemble", GRADLE_API_DEFAULT_TASK)
+        .put("build", GRADLE_API_DEFAULT_TASK)
+        .put("buildDependents", GRADLE_API_DEFAULT_TASK)
+        .put("buildNeeded", GRADLE_API_DEFAULT_TASK)
+        .put("clean", GRADLE_API_TASKS_DELETE)
+        .put("jar", GRADLE_API_TASKS_BUNDLING_JAR)
+        .put("war", GRADLE_API_TASKS_BUNDLING_WAR)
+        .put("classes", GRADLE_API_DEFAULT_TASK)
+        .put("compileJava", GRADLE_API_TASKS_COMPILE_JAVA_COMPILE)
+        .put("compileTestJava", GRADLE_API_DEFAULT_TASK)
+        .put("processTestResources", GRADLE_API_DEFAULT_TASK)
+        .put("testClasses", GRADLE_API_DEFAULT_TASK)
+        .put("processResouMrces", GRADLE_LANGUAGE_JVM_TASKS_PROCESS_RESOURCES)
+        .put("setupBuild", GRADLE_BUILDSETUP_TASKS_SETUP_BUILD)
+        .put("wrapper", GRADLE_API_TASKS_WRAPPER_WRAPPER)
+        .put("javadoc", GRADLE_API_TASKS_JAVADOC_JAVADOC)
+        .put("dependencies", GRADLE_API_TASKS_DIAGNOSTICS_DEPENDENCY_REPORT_TASK)
+        .put("dependencyInsight", GRADLE_API_TASKS_DIAGNOSTICS_DEPENDENCY_INSIGHT_REPORT_TASK)
+        .put("projects", GRADLE_API_TASKS_DIAGNOSTICS_PROJECT_REPORT_TASK)
+        .put("properties", GRADLE_API_TASKS_DIAGNOSTICS_PROPERTY_REPORT_TASK)
+        .put("tasks", GRADLE_API_TASKS_DIAGNOSTICS_TASK_REPORT_TASK)
+        .put("check", GRADLE_API_DEFAULT_TASK)
+        .put("test", GRADLE_API_TASKS_TESTING_TEST)
+        .put("uploadArchives", GRADLE_API_TASKS_UPLOAD)
+        .build();
 
     @Override
     @RequiredReadAction
@@ -107,10 +105,7 @@ public class GradleImplicitContributor implements GradleMethodContextContributor
             }
         }
 
-        if (methodCallInfo.size() >= 3 && Arrays.equals(
-            ContainerUtil.ar("dirs", "flatDir", "repositories"),
-            methodCallInfo.subList(0, 3).toArray()
-        )) {
+        if (methodCallInfo.size() >= 3 && List.of("dirs", "flatDir", "repositories").equals(methodCallInfo.subList(0, 3))) {
             final GroovyPsiManager psiManager = GroovyPsiManager.getInstance(place.getProject());
             GradleResolverUtil.processDeclarations(
                 psiManager,

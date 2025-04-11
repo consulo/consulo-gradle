@@ -17,11 +17,12 @@ package org.jetbrains.plugins.gradle.config;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.*;
+import consulo.application.util.CachedValue;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.application.util.ConcurrentFactoryMap;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.internal.com.sun.jdi.AbsentInformationException;
 import consulo.internal.com.sun.jdi.ReferenceType;
 import consulo.language.psi.PsiFile;
@@ -38,14 +39,15 @@ import consulo.util.lang.StringUtil;
 import consulo.util.nodep.classloader.UrlClassLoader;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.groovy.impl.extensions.debugger.ScriptPositionManagerHelper;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -96,7 +98,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
             return "";
         }
 
-        final File scriptFile = VfsUtilCore.virtualToIoFile(virtualFile);
+        final File scriptFile = VirtualFileUtil.virtualToIoFile(virtualFile);
         final String className = CachedValuesManager.getManager(module.getProject())
             .getCachedValue(module, GRADLE_CLASS_NAME, new ScriptSourceMapCalculator(module), false).get(scriptFile);
         return className == null ? "" : className;
@@ -163,7 +165,7 @@ public class GradlePositionManager extends ScriptPositionManagerHelper {
         assert libDir != null;
         for (final VirtualFile child : libDir.getChildren()) {
             if ("jar".equals(child.getExtension())) {
-                urls.add(VfsUtil.convertToURL(child.getUrl()));
+                urls.add(VirtualFileUtil.convertToURL(child.getUrl()));
             }
         }
 

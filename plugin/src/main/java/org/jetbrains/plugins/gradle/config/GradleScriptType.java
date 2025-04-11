@@ -31,13 +31,12 @@ import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
-import consulo.ide.impl.idea.openapi.roots.impl.LibraryScopeCache;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.scope.LibraryScopeCache;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
@@ -72,7 +71,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -304,17 +302,13 @@ public class GradleScriptType extends GroovyRunnableScriptType {
             launcher = gradleHome.findFileByRelativePath("bin/gradle.bat");
         }
         if (launcher != null) {
-            try {
-                final String text = StringUtil.convertLineSeparators(VfsUtilCore.loadText(launcher));
-                final Matcher matcher = MAIN_CLASS_NAME_PATTERN.matcher(text);
-                if (matcher.find()) {
-                    String candidate = matcher.group(1);
-                    if (StringUtil.isNotEmpty(candidate)) {
-                        return candidate;
-                    }
+            final String text = StringUtil.convertLineSeparators(launcher.loadText().toString());
+            final Matcher matcher = MAIN_CLASS_NAME_PATTERN.matcher(text);
+            if (matcher.find()) {
+                String candidate = matcher.group(1);
+                if (StringUtil.isNotEmpty(candidate)) {
+                    return candidate;
                 }
-            }
-            catch (IOException ignored) {
             }
         }
 

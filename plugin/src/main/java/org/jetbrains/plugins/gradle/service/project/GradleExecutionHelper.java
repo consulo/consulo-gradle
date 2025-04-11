@@ -26,7 +26,6 @@ import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.setting.DistributionType;
 import consulo.gradle.setting.GradleExecutionSettings;
-import consulo.ide.impl.idea.util.PathUtil;
 import consulo.logging.Logger;
 import consulo.platform.Platform;
 import consulo.util.collection.ArrayUtil;
@@ -39,7 +38,6 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.gradle.tooling.*;
 import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
-import org.gradle.tooling.internal.consumer.Distribution;
 import org.gradle.tooling.model.build.BuildEnvironment;
 import org.jetbrains.plugins.gradle.GradleManager;
 import org.jetbrains.plugins.gradle.util.GradleEnvironment;
@@ -50,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -283,7 +282,7 @@ public class GradleExecutionHelper {
                 );
                 launcher.forTasks("wrapper");
                 launcher.run();
-                String wrapperPropertyFile = consulo.ide.impl.idea.openapi.util.io.FileUtil.loadFile(wrapperPropertyFileLocation);
+                String wrapperPropertyFile = Files.readString(wrapperPropertyFileLocation.toPath());
                 settings.setWrapperPropertyFile(wrapperPropertyFile);
             }
             catch (IOException e) {

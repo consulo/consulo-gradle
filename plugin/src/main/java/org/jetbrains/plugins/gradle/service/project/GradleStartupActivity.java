@@ -22,14 +22,13 @@ import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.impl.importProvider.GradleModuleImportProvider;
 import consulo.gradle.localize.GradleLocalize;
-import consulo.ide.impl.idea.ide.util.PropertiesComponent;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.ide.moduleImport.ModuleImportContext;
 import consulo.ide.moduleImport.ModuleImportProcessor;
 import consulo.ide.moduleImport.ModuleImportProvider;
 import consulo.module.ModifiableModuleModel;
 import consulo.module.ModuleManager;
 import consulo.project.Project;
+import consulo.project.ProjectPropertiesComponent;
 import consulo.project.startup.PostStartupActivity;
 import consulo.project.ui.notification.Notification;
 import consulo.project.ui.notification.NotificationType;
@@ -41,10 +40,11 @@ import consulo.util.io.FileUtil;
 import consulo.util.lang.Pair;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
-import jakarta.annotation.Nonnull;
 import javax.swing.event.HyperlinkEvent;
 import java.io.File;
 import java.util.Collections;
@@ -71,14 +71,14 @@ public class GradleStartupActivity implements PostStartupActivity {
     }
 
     private static void showNotificationForUnlinkedGradleProject(@Nonnull final Project project) {
-        if (!PropertiesComponent.getInstance(project).getBoolean(SHOW_UNLINKED_GRADLE_POPUP, true)
+        if (!ProjectPropertiesComponent.getInstance(project).getBoolean(SHOW_UNLINKED_GRADLE_POPUP, true)
             || !GradleSettings.getInstance(project).getLinkedProjectsSettings().isEmpty()
             || project.getUserData(ExternalSystemDataKeys.NEWLY_IMPORTED_PROJECT) == Boolean.TRUE
             || project.getBaseDir() == null) {
             return;
         }
 
-        File baseDir = VfsUtilCore.virtualToIoFile(project.getBaseDir());
+        File baseDir = VirtualFileUtil.virtualToIoFile(project.getBaseDir());
         final File[] files = baseDir.listFiles((dir, name) -> FileUtil.namesEqual(GradleConstants.DEFAULT_SCRIPT_NAME, name));
 
         if (files != null && files.length != 0) {
@@ -118,7 +118,7 @@ public class GradleStartupActivity implements PostStartupActivity {
                             });
                         }
                         else if (DO_NOT_SHOW_EVENT_DESCRIPTION.equals(e.getDescription())) {
-                            PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, Boolean.FALSE.toString());
+                            ProjectPropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, Boolean.FALSE.toString());
                         }
                     }
                 }

@@ -117,11 +117,13 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
         JavaProjectData javaProjectData = new JavaProjectData(GradleConstants.SYSTEM_ID, projectDirPath + "/build/classes");
         javaProjectData.setJdkVersion(ideaProject.getJdkName());
 
-        LanguageLevel languageLevel = consulo.ide.impl.idea.openapi.util.text.StringUtil.parseEnum(
-            ideaProject.getLanguageLevel().getLevel(),
-            null,
-            LanguageLevel.class
-        );
+        LanguageLevel languageLevel = null;
+        try {
+            languageLevel = LanguageLevel.valueOf(ideaProject.getLanguageLevel().getLevel());
+        }
+        catch (IllegalArgumentException ignored) {
+        }
+
         if (languageLevel != null) {
             javaProjectData.setLanguageLevel(languageLevel);
         }
@@ -447,7 +449,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
         if (!proxyExceptions.isEmpty()) {
             extraJvmArgs.add(Couple.of(
                 "http.nonProxyHosts",
-                StringUtil.join(proxyExceptions, consulo.ide.impl.idea.openapi.util.text.StringUtil.TRIMMER, "|")
+                StringUtil.join(proxyExceptions, String::trim, "|")
             ));
         }
 

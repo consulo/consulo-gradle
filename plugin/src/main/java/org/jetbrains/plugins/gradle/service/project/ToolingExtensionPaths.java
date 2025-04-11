@@ -1,7 +1,8 @@
 package org.jetbrains.plugins.gradle.service.project;
 
-import consulo.ide.impl.idea.util.PathUtil;
+import consulo.util.io.ClassPathUtil;
 import consulo.util.io.FileUtil;
+import consulo.util.io.PathUtil;
 
 import java.io.File;
 import java.util.Iterator;
@@ -16,7 +17,7 @@ public class ToolingExtensionPaths {
     private final Set<String> myPaths = new LinkedHashSet<>();
 
     public ToolingExtensionPaths addJarByClass(Class<?> clazz) {
-        myPaths.add(PathUtil.getCanonicalPath(PathUtil.getJarPathForClass(clazz)));
+        myPaths.add(PathUtil.getCanonicalPath(ClassPathUtil.getJarPathForClass(clazz)));
         return this;
     }
 

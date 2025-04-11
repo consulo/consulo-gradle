@@ -1,17 +1,16 @@
 package org.jetbrains.plugins.gradle.util;
 
+import consulo.application.ApplicationPropertiesComponent;
 import consulo.externalSystem.rt.model.ExternalSystemException;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.externalSystem.util.ExternalSystemConstants;
 import consulo.fileChooser.FileChooserDescriptor;
+import consulo.fileChooser.FileChooserDescriptorFactory;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
-import consulo.ide.impl.idea.ide.actions.OpenProjectFileChooserDescriptor;
-import consulo.ide.impl.idea.ide.util.PropertiesComponent;
 import consulo.util.collection.Stack;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
-import consulo.virtualFileSystem.VirtualFile;
 import org.gradle.tooling.model.GradleProject;
 import org.gradle.tooling.model.gradle.GradleScript;
 import org.gradle.wrapper.WrapperConfiguration;
@@ -49,12 +48,14 @@ public class GradleUtil {
    */
   @Nonnull
   public static FileChooserDescriptor getGradleProjectFileChooserDescriptor() {
-    return DescriptorHolder.GRADLE_BUILD_FILE_CHOOSER_DESCRIPTOR;
+    FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor();
+    descriptor.withFileFilter(file -> file.isDirectory() || GradleConstants.EXTENSION.equals(file.getExtension()));
+    return descriptor;
   }
 
   @Nonnull
   public static FileChooserDescriptor getGradleHomeFileChooserDescriptor() {
-    return DescriptorHolder.GRADLE_HOME_FILE_CHOOSER_DESCRIPTOR;
+    return new FileChooserDescriptor(false, true, false, false, false, false);
   }
 
   @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
@@ -114,30 +115,6 @@ public class GradleUtil {
   }
 
   /**
-   * We use this class in order to avoid static initialisation of the wrapped object - it loads number of pico container-based
-   * dependencies that are unavailable to the slave gradle project, so, we don't want to get unexpected NPE there.
-   */
-  private static class DescriptorHolder {
-    public static final FileChooserDescriptor GRADLE_BUILD_FILE_CHOOSER_DESCRIPTOR = new OpenProjectFileChooserDescriptor(true) {
-      @Override
-      public boolean isFileSelectable(VirtualFile file) {
-        return file.getName().endsWith(GradleConstants.EXTENSION);
-      }
-
-      @Override
-      public boolean isFileVisible(VirtualFile file, boolean showHiddenFiles) {
-        if (!super.isFileVisible(file, showHiddenFiles)) {
-          return false;
-        }
-        return file.isDirectory() || file.getName().endsWith(GradleConstants.EXTENSION);
-      }
-    };
-
-    public static final FileChooserDescriptor GRADLE_HOME_FILE_CHOOSER_DESCRIPTOR
-      = new FileChooserDescriptor(false, true, false, false, false, false);
-  }
-
-  /**
    * Allows to build file system path to the target gradle sub-project given the root project path.
    *
    * @param subProject       target sub-project which config path we're interested in
@@ -184,12 +161,12 @@ public class GradleUtil {
 
   @Nonnull
   public static String getLastUsedGradleHome() {
-    return PropertiesComponent.getInstance().getValue(LAST_USED_GRADLE_HOME_KEY, "");
+    return ApplicationPropertiesComponent.getInstance().getValue(LAST_USED_GRADLE_HOME_KEY, "");
   }
 
   public static void storeLastUsedGradleHome(@Nullable String gradleHomePath) {
     if (gradleHomePath != null) {
-      PropertiesComponent.getInstance().setValue(LAST_USED_GRADLE_HOME_KEY, gradleHomePath);
+      ApplicationPropertiesComponent.getInstance().setValue(LAST_USED_GRADLE_HOME_KEY, gradleHomePath);
     }
   }
 

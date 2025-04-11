@@ -19,19 +19,19 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.library.LibraryKind;
 import consulo.content.library.ui.LibraryEditor;
+import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
-import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.impl.config.GroovyLibraryPresentationProviderBase;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.regex.Matcher;
 
@@ -102,7 +102,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
         if (jars != null) {
             for (File file : jars) {
                 if (file.getName().endsWith(".jar")) {
-                    libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
+                    libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
                 }
             }
         }
