@@ -272,11 +272,11 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
                 }
 
                 if (resourceCompileOutputPath == null) {
-                    resourceCompileOutputPath = compilerOutput.getMainClassesDir();
+                    resourceCompileOutputPath = compilerOutput.getMainResourcesDir();
                 }
 
                 if (testResourceCompileOutputPath == null) {
-                    testResourceCompileOutputPath = compilerOutput.getTestClassesDir();
+                    testResourceCompileOutputPath = compilerOutput.getTestResourcesDir();
                 }
             }
         }
@@ -301,8 +301,13 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
             testResourceCompileOutputPath = getCompileOutputPath(externalProject, TEST_SOURCE_SET, ExternalSystemSourceType.TEST_RESOURCE);
         }
         else {
-            resourceCompileOutputPath = sourceCompileOutputPath;
-            testResourceCompileOutputPath = testCompileOutputPath;
+            if (resourceCompileOutputPath == null) {
+                resourceCompileOutputPath = sourceCompileOutputPath;
+            }
+
+            if (testResourceCompileOutputPath == null) {
+                testResourceCompileOutputPath = testCompileOutputPath;
+            }
 
             if (externalProject != null) {
                 final ExternalSourceSet mainSourceSet = externalProject.getSourceSets().get(MAIN_SOURCE_SET);
@@ -331,12 +336,15 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
         if (sourceCompileOutputPath != null) {
             moduleData.setCompileOutputPath(ExternalSystemSourceType.SOURCE, sourceCompileOutputPath.getAbsolutePath());
         }
+
         if (resourceCompileOutputPath != null) {
             moduleData.setCompileOutputPath(ExternalSystemSourceType.RESOURCE, resourceCompileOutputPath.getAbsolutePath());
         }
+
         if (testCompileOutputPath != null) {
             moduleData.setCompileOutputPath(ExternalSystemSourceType.TEST, testCompileOutputPath.getAbsolutePath());
         }
+
         if (testResourceCompileOutputPath != null) {
             moduleData.setCompileOutputPath(ExternalSystemSourceType.TEST_RESOURCE, testResourceCompileOutputPath.getAbsolutePath());
         }
