@@ -35,6 +35,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.io.File;
@@ -58,6 +59,8 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
     private JBTextField myGradleVmOptionsField;
     private boolean myServiceDirectoryPathModifiedByUser;
 
+    private JCheckBox myCompilerOverride;
+
     public GradleSystemSettingsControl(@Nonnull GradleSettings settings) {
         myInitialSettings = settings;
     }
@@ -73,6 +76,9 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
         canvas.add(myGradleVmOptionsLabel, ExternalSystemUiUtil.getLabelConstraints(indentLevel));
         myGradleVmOptionsField = new JBTextField();
         canvas.add(myGradleVmOptionsField, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
+
+        myCompilerOverride = new JCheckBox("Override builtin compiler by Gradle");
+        canvas.add(myCompilerOverride, ExternalSystemUiUtil.getFillLineConstraints(indentLevel));
     }
 
     @Override
@@ -122,6 +128,7 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
         }
 
         myGradleVmOptionsField.setText(trimIfPossible(myInitialSettings.getGradleVmOptions()));
+        myCompilerOverride.setSelected(myInitialSettings.isEnableCompilerOverride());
     }
 
     private void deduceServiceDirectoryIfPossible() {
@@ -136,12 +143,22 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
 
     @Override
     public boolean isModified() {
-        return (myServiceDirectoryPathModifiedByUser
-            && !Comparing.equal(
-                ExternalSystemApiUtil.normalizePath(myServiceDirectoryPathField.getText()),
-                ExternalSystemApiUtil.normalizePath(myInitialSettings.getServiceDirectoryPath())
-            ))
-            || !Comparing.equal(trimIfPossible(myGradleVmOptionsField.getText()), trimIfPossible(myInitialSettings.getGradleVmOptions()));
+        if (myServiceDirectoryPathModifiedByUser) {
+            if (!Comparing.equal(ExternalSystemApiUtil.normalizePath(myServiceDirectoryPathField.getText()),
+                ExternalSystemApiUtil.normalizePath(myInitialSettings.getServiceDirectoryPath()))) {
+                return true;
+            }
+        }
+
+        if (!Comparing.equal(trimIfPossible(myGradleVmOptionsField.getText()), trimIfPossible(myInitialSettings.getGradleVmOptions()))) {
+            return true;
+        }
+
+        if (myCompilerOverride.isSelected() != myInitialSettings.isEnableCompilerOverride()) {
+            return true;
+        }
+
+        return false;
     }
 
     @Nullable
@@ -159,6 +176,7 @@ public class GradleSystemSettingsControl implements ExternalSystemSettingsContro
             settings.setServiceDirectoryPath(ExternalSystemApiUtil.normalizePath(myServiceDirectoryPathField.getText()));
         }
         settings.setGradleVmOptions(trimIfPossible(myGradleVmOptionsField.getText()));
+        settings.setEnableCompilerOverride(myCompilerOverride.isSelected());
     }
 
     @Override
