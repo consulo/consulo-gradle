@@ -1,11 +1,13 @@
 package consulo.gradle.bundle;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.application.Application;
 import consulo.content.OrderRootType;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.base.SourcesOrderRootType;
 import consulo.content.bundle.BundleType;
 import consulo.content.bundle.SdkModificator;
+import consulo.content.bundle.SdkType;
 import consulo.gradle.icon.GradleIconGroup;
 import consulo.platform.Platform;
 import consulo.ui.image.Image;
@@ -31,7 +33,7 @@ public class GradleBundleType extends BundleType {
 
     @Nonnull
     public static GradleBundleType getInstance() {
-        return EP_NAME.findExtensionOrFail(GradleBundleType.class);
+        return Application.get().getExtensionPoint(SdkType.class).findExtensionOrFail(GradleBundleType.class);
     }
 
     private static final String GRADLE_CORE_PREFIX = "gradle-core-";
