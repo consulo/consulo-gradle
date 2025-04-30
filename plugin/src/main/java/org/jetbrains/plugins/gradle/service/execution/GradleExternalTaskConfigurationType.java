@@ -16,6 +16,8 @@
 package org.jetbrains.plugins.gradle.service.execution;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.application.Application;
+import consulo.execution.configuration.ConfigurationType;
 import consulo.externalSystem.service.execution.AbstractExternalSystemTaskConfigurationType;
 import consulo.gradle.GradleConstants;
 
@@ -27,12 +29,13 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GradleExternalTaskConfigurationType extends AbstractExternalSystemTaskConfigurationType {
-    @Nonnull
-    public static GradleExternalTaskConfigurationType getInstance() {
-        return EP_NAME.findExtensionOrFail(GradleExternalTaskConfigurationType.class);
-    }
+  @Nonnull
+  public static GradleExternalTaskConfigurationType getInstance() {
+    return Application.get().getExtensionPoint(ConfigurationType.class)
+        .findExtensionOrFail(GradleExternalTaskConfigurationType.class);
+  }
 
-    public GradleExternalTaskConfigurationType() {
-        super(GradleConstants.SYSTEM_ID);
-    }
+  public GradleExternalTaskConfigurationType() {
+    super(GradleConstants.SYSTEM_ID);
+  }
 }
