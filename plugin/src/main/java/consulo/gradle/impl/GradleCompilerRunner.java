@@ -94,6 +94,13 @@ public class GradleCompilerRunner implements CompilerRunner {
                 continue;
             }
 
+            String projectPath = extension.getOption(ExternalSystemConstants.LINKED_PROJECT_PATH_KEY);
+            String rootPath = extension.getOption(ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
+            if (projectPath != null && projectPath.equals(rootPath)) {
+                // in case single module project do not add project id, gradle can't find by name
+                projectId = "";
+            }
+
             tasks.add(projectId + ":compileJava");
 
             if (compileScope.includeTestScope()) {
