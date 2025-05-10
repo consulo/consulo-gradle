@@ -18,11 +18,12 @@ package org.jetbrains.plugins.gradle.service.resolve;
 import com.intellij.java.language.psi.*;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.RecursionManager;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.PsiTreeUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.gradle.util.GradleLog;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -40,8 +41,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightParameter;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Arrays;
 
 /**
@@ -66,6 +65,7 @@ public class GradleResolverUtil {
         return argsCount;
     }
 
+    @RequiredReadAction
     public static void addImplicitVariable(
         @Nonnull PsiScopeProcessor processor,
         @Nonnull ResolveState state,
@@ -118,7 +118,7 @@ public class GradleResolverUtil {
         }
         else {
             PsiClassType closureClassTypeParameter =
-                factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_OBJECT, place.getResolveScope());
+                factory.createTypeByFQClassName(CommonClassNames.JAVA_LANG_OBJECT, place.getResolveScope());
             closureType = factory.createType(closureClass, closureClassTypeParameter);
         }
 
@@ -126,7 +126,7 @@ public class GradleResolverUtil {
         GrLightParameter closureParameter = new GrLightParameter("closure", closureType, methodWithClosure);
         methodWithClosure.addParameter(closureParameter);
         PsiClassType retType = factory.createTypeByFQClassName(
-            returnType != null ? returnType : JavaClassNames.JAVA_LANG_OBJECT,
+            returnType != null ? returnType : CommonClassNames.JAVA_LANG_OBJECT,
             place.getResolveScope()
         );
         methodWithClosure.setReturnType(retType);
@@ -154,9 +154,9 @@ public class GradleResolverUtil {
     ) {
         GrLightMethodBuilder builder = new GrLightMethodBuilder(place.getManager(), methodName);
         PsiElementFactory factory = JavaPsiFacade.getElementFactory(place.getManager().getProject());
-        PsiType type = new PsiArrayType(factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_OBJECT, place.getResolveScope()));
+        PsiType type = new PsiArrayType(factory.createTypeByFQClassName(CommonClassNames.JAVA_LANG_OBJECT, place.getResolveScope()));
         builder.addParameter(new GrLightParameter("param", type, builder));
-        PsiClassType retType = factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_OBJECT, place.getResolveScope());
+        PsiClassType retType = factory.createTypeByFQClassName(CommonClassNames.JAVA_LANG_OBJECT, place.getResolveScope());
         builder.setReturnType(retType);
         processor.execute(builder, state);
 

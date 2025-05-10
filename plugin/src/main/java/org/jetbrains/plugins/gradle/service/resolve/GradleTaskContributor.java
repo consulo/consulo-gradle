@@ -17,13 +17,14 @@ package org.jetbrains.plugins.gradle.service.resolve;
 
 import com.intellij.java.language.impl.psi.impl.source.PsiImmediateClassType;
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -35,7 +36,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightParameter;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -45,6 +45,7 @@ import java.util.List;
 @ExtensionImpl
 public class GradleTaskContributor implements GradleMethodContextContributor {
     @Override
+    @RequiredReadAction
     public void process(
         @Nonnull List<String> methodCallInfo,
         @Nonnull PsiScopeProcessor processor,
@@ -140,9 +141,9 @@ public class GradleTaskContributor implements GradleMethodContextContributor {
 
         GrLightMethodBuilder builder = new GrLightMethodBuilder(place.getManager(), name);
         PsiElementFactory factory = JavaPsiFacade.getElementFactory(place.getManager().getProject());
-        PsiType type = new PsiArrayType(factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_OBJECT, place.getResolveScope()));
+        PsiType type = new PsiArrayType(factory.createTypeByFQClassName(CommonClassNames.JAVA_LANG_OBJECT, place.getResolveScope()));
         builder.addParameter(new GrLightParameter("taskInfo", type, builder));
-        PsiClassType retType = factory.createTypeByFQClassName(JavaClassNames.JAVA_LANG_STRING, place.getResolveScope());
+        PsiClassType retType = factory.createTypeByFQClassName(CommonClassNames.JAVA_LANG_STRING, place.getResolveScope());
         builder.setReturnType(retType);
         processor.execute(builder, state);
 
