@@ -19,6 +19,7 @@ import com.intellij.java.language.impl.psi.NonClasspathDirectoriesScope;
 import com.intellij.java.language.psi.JavaPsiFacade;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.Application;
+import consulo.application.ReadAction;
 import consulo.compiler.execution.CompileStepBeforeRun;
 import consulo.compiler.execution.CompileStepBeforeRunNoErrorCheck;
 import consulo.execution.CantRunException;
@@ -46,7 +47,6 @@ import consulo.module.content.layer.orderEntry.OrderEntry;
 import consulo.platform.Platform;
 import consulo.process.ExecutionException;
 import consulo.project.Project;
-import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.image.Image;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
@@ -113,9 +113,8 @@ public class GradleScriptType extends GroovyRunnableScriptType {
     }
 
     @Override
-    @RequiredUIAccess
     public void tuneConfiguration(@Nonnull GroovyFile file, @Nonnull GroovyScriptRunConfiguration configuration, Location location) {
-        List<String> tasks = getTasksTarget(location);
+        List<String> tasks = ReadAction.compute(() -> getTasksTarget(location));
         if (tasks != null) {
             String s = StringUtil.join(tasks, " ");
             configuration.setScriptParameters(s);
