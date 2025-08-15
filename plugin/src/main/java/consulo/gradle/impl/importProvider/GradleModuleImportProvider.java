@@ -3,6 +3,7 @@ package consulo.gradle.impl.importProvider;
 import com.intellij.java.impl.externalSystem.JavaProjectData;
 import com.intellij.java.language.projectRoots.JavaSdkVersion;
 import consulo.annotation.component.ExtensionImpl;
+import consulo.application.Application;
 import consulo.content.bundle.Sdk;
 import consulo.externalSystem.model.DataNode;
 import consulo.externalSystem.service.project.ProjectData;
@@ -13,7 +14,9 @@ import consulo.gradle.icon.GradleIconGroup;
 import consulo.gradle.localize.GradleLocalize;
 import consulo.ide.externalSystem.importing.AbstractExternalModuleImportProvider;
 import consulo.ide.externalSystem.importing.ExternalModuleImportContext;
+import consulo.ide.moduleImport.ModuleImportProvider;
 import consulo.java.language.bundle.JavaSdkTypeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.image.Image;
 import consulo.util.io.FileUtil;
@@ -35,18 +38,12 @@ import java.util.List;
 public class GradleModuleImportProvider extends AbstractExternalModuleImportProvider<ImportFromGradleControl> {
     @Nonnull
     public static GradleModuleImportProvider getInstance() {
-        return EP_NAME.findExtensionOrFail(GradleModuleImportProvider.class);
+        return Application.get().getExtensionPoint(ModuleImportProvider.class).findExtensionOrFail(GradleModuleImportProvider.class);
     }
 
     @Inject
     public GradleModuleImportProvider(@Nonnull ProjectDataManager dataManager) {
         super(dataManager, new ImportFromGradleControl(), GradleConstants.SYSTEM_ID);
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return GradleLocalize.gradleName().get();
     }
 
     @Nullable
@@ -84,12 +81,6 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
             String extension = FileUtil.getExtension(fileOrDirectory.getName());
             return extension.equalsIgnoreCase(GradleConstants.EXTENSION) || extension.equalsIgnoreCase(GradleConstants.KOTLIN_DSL_SCRIPT_EXTENSION);
         }
-    }
-
-    @Nonnull
-    @Override
-    public String getFileSample() {
-        return "<b>Gradle</b> build script (*.gradle &amp; *.gradle.kts)";
     }
 
     @Override
