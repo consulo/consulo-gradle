@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.gradle.codeInspection;
 
+import consulo.gradle.localize.GradleLocalize;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 
 import jakarta.annotation.Nonnull;
@@ -26,7 +28,7 @@ import jakarta.annotation.Nonnull;
 public abstract class GradleBaseInspection extends BaseInspection {
     @Nonnull
     @Override
-    public String[] getGroupPath() {
-        return new String[]{"Gradle", getGroupDisplayName()};
+    public LocalizeValue[] getGroupPath() {
+        return new LocalizeValue[]{GradleLocalize.gradleName(), getGroupDisplayName()};
     }
 }

@@ -18,13 +18,14 @@ package org.jetbrains.plugins.gradle.codeInspection;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.gradle.codeInspection.localize.GradleInspectionLocalize;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.io.FileUtil;
-import org.jetbrains.annotations.Nls;
 import consulo.gradle.GradleConstants;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -50,17 +51,16 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
         return new MyVisitor();
     }
 
-    @Nls
     @Nonnull
     @Override
-    public String getGroupDisplayName() {
+    public LocalizeValue getGroupDisplayName() {
         return PROBABLE_BUGS;
     }
 
     @Nonnull
     @Override
-    public String[] getGroupPath() {
-        return new String[]{"Gradle"};
+    public LocalizeValue[] getGroupPath() {
+        return new LocalizeValue[]{GradleLocalize.gradleName()};
     }
 
     @Override
@@ -68,11 +68,10 @@ public class MultipleRepositoryUrlsInspection extends GradleBaseInspection {
         return GradleInspectionLocalize.multipleRepositoryUrls().get();
     }
 
-    @Nls
     @Nonnull
     @Override
-    public String getDisplayName() {
-        return GradleInspectionLocalize.multipleRepositoryUrls().get();
+    public LocalizeValue getDisplayName() {
+        return GradleInspectionLocalize.multipleRepositoryUrls();
     }
 
     private static class MyVisitor extends BaseInspectionVisitor {
