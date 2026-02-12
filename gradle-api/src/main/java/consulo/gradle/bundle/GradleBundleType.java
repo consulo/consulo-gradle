@@ -9,8 +9,8 @@ import consulo.content.bundle.BundleType;
 import consulo.content.bundle.SdkModificator;
 import consulo.content.bundle.SdkType;
 import consulo.gradle.icon.GradleIconGroup;
+import consulo.gradle.localize.GradleLocalize;
 import consulo.platform.Platform;
-import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileManager;
@@ -39,7 +39,7 @@ public class GradleBundleType extends BundleType {
     private static final String GRADLE_CORE_PREFIX = "gradle-core-";
 
     public GradleBundleType() {
-        super("GRADLE");
+        super("GRADLE", GradleLocalize.gradleName(), GradleIconGroup.gradle());
     }
 
     @Override
@@ -148,17 +148,5 @@ public class GradleBundleType extends BundleType {
     @Override
     public boolean isRootTypeApplicable(OrderRootType type) {
         return type == BinariesOrderRootType.getInstance() || type == SourcesOrderRootType.getInstance();
-    }
-
-    @Nonnull
-    @Override
-    public String getPresentableName() {
-        return "Gradle";
-    }
-
-    @Nonnull
-    @Override
-    public Image getIcon() {
-        return GradleIconGroup.gradle();
     }
 }
