@@ -42,13 +42,7 @@ public final class GradleBeforeRunTaskProvider extends ExternalSystemBeforeRunTa
     }
 
     @Override
-    public Image getIcon() {
-        return GradleIconGroup.gradle();
-    }
-
-    @Nullable
-    @Override
-    public Image getTaskIcon(ExternalSystemBeforeRunTask task) {
+    public Image getIcon(@Nonnull RunConfiguration runConfiguration) {
         return GradleIconGroup.gradle();
     }
 

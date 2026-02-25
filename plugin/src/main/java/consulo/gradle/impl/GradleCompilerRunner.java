@@ -3,9 +3,12 @@ package consulo.gradle.impl;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.ProgressIndicatorListener;
+import consulo.build.ui.progress.BuildProgress;
+import consulo.build.ui.progress.BuildProgressDescriptor;
 import consulo.compiler.*;
 import consulo.compiler.scope.CompileScope;
 import consulo.compiler.util.ModuleCompilerUtil;
+import consulo.dataContext.DataContext;
 import consulo.disposer.Disposable;
 import consulo.execution.event.ExecutionListener;
 import consulo.execution.executor.DefaultRunExecutor;
@@ -26,7 +29,6 @@ import consulo.process.ProcessHandler;
 import consulo.process.event.ProcessEvent;
 import consulo.process.event.ProcessListener;
 import consulo.project.Project;
-import consulo.ui.image.Image;
 import consulo.util.lang.Pair;
 import consulo.util.lang.ref.SimpleReference;
 import jakarta.annotation.Nonnull;
@@ -44,6 +46,8 @@ import java.util.concurrent.CompletableFuture;
  */
 @ExtensionImpl
 public class GradleCompilerRunner implements CompilerRunner {
+    private static final YesResult YES = new YesResult(GradleIconGroup.gradlebuild());
+
     private static final Logger LOG = Logger.getInstance(GradleCompilerRunner.class);
 
     private final Project myProject;
@@ -55,9 +59,13 @@ public class GradleCompilerRunner implements CompilerRunner {
         myGradleSettings = gradleSettings;
     }
 
+    @Nonnull
     @Override
-    public boolean isAvailable() {
-        return myGradleSettings.get().isEnableCompilerOverride();
+    public Result checkAvailable(@Nonnull DataContext dataContext) {
+        if (myGradleSettings.get().isEnableCompilerOverride()) {
+            return YES;
+        }
+        return NO;
     }
 
     @Nonnull
@@ -66,14 +74,15 @@ public class GradleCompilerRunner implements CompilerRunner {
         return GradleLocalize.gradleName();
     }
 
-    @Nonnull
     @Override
-    public Image getBuildIcon() {
-        return GradleIconGroup.gradlebuild();
-    }
-
-    @Override
-    public boolean build(CompileDriver compileDriver, CompileContextEx context, boolean isRebuild, boolean forceCompile, boolean onlyCheckStatus) throws ExitException {
+    public boolean build(
+        CompileDriver compileDriver,
+        CompileContextEx context,
+        BuildProgress<BuildProgressDescriptor> buildProgress,
+        boolean isRebuild,
+        boolean forceCompile,
+        boolean onlyCheckStatus
+    ) throws ExitException {
         ExternalSystemTaskExecutionSettings settings = new ExternalSystemTaskExecutionSettings();
 
         CompileScope compileScope = context.getCompileScope();
@@ -123,7 +132,7 @@ public class GradleCompilerRunner implements CompilerRunner {
             ExternalSystemTaskExecutionSettings settings = new ExternalSystemTaskExecutionSettings();
             settings.setTaskNames(List.of("clean"));
             settings.setExternalProjectPath(myProject.getBasePath());
-            
+
             execute(context, settings);
         }
         catch (ExitException ignored) {
@@ -134,7 +143,7 @@ public class GradleCompilerRunner implements CompilerRunner {
         ProgressIndicator progressIndicator = context.getProgressIndicator();
 
         executionSettings.setExternalSystemIdString(GradleConstants.SYSTEM_ID.toString());
-        
+
         Disposable disposable = Disposable.newDisposable("build gradle waiter");
 
         CompletableFuture<Void> result = new CompletableFuture<>();
