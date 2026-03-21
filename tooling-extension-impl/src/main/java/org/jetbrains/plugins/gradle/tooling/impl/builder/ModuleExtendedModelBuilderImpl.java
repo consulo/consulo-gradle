@@ -18,10 +18,13 @@ package org.jetbrains.plugins.gradle.tooling.impl.builder;
 import consulo.gradle.tooling.impl.buildler.util.ReflectionMethod;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.plugins.JavaPluginExtension;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.SourceSetOutput;
+import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.plugins.ide.idea.IdeaPlugin;
@@ -61,6 +64,12 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
     private static final ReflectionMethod<Iterable<File>, IdeaModule> IdeaModule__getTestSources =
         new ReflectionMethod<>(IdeaModule.class, "getTestSources");
 
+    private static final ReflectionMethod<File, AbstractArchiveTask> AbstractArchiveTask_getArchivePath=
+        new ReflectionMethod<>(AbstractArchiveTask.class, "getArchivePath");
+
+    private static final ReflectionMethod<Provider<RegularFile>, AbstractArchiveTask> AbstractArchiveTask_getArchiveFile =
+        new ReflectionMethod<>(AbstractArchiveTask.class, "getArchiveFile");
+
     private static final String SOURCE_SETS_PROPERTY = "sourceSets";
     private static final String TEST_SRC_DIRS_PROPERTY = "testSrcDirs";
 
@@ -95,7 +104,19 @@ public class ModuleExtendedModelBuilderImpl implements ModelBuilderService {
         for (Task task : project.getTasks()) {
             if (task instanceof Jar) {
                 Jar jar = (Jar) task;
-                artifacts.add(jar.getArchivePath());
+
+                File jarFile = AbstractArchiveTask_getArchivePath.invoke(jar);
+                if (jarFile != null) {
+                    artifacts.add(jarFile);
+                }
+
+                Provider<RegularFile> provider = AbstractArchiveTask_getArchiveFile.invoke(jar);
+                if (provider != null) {
+                    RegularFile file = provider.getOrNull();
+                    if (file != null) {
+                        artifacts.add(file.getAsFile());
+                    }
+                }
             }
         }
 
