@@ -19,7 +19,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
-import consulo.application.AllIcons;
 import consulo.codeEditor.Editor;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.localize.GradleLocalize;
@@ -28,6 +27,7 @@ import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiCompiledElement;
 import consulo.language.psi.PsiFile;
 import consulo.maven.rt.server.common.model.MavenId;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
@@ -43,9 +43,9 @@ public class AddGradleDslDependencyAction extends CodeInsightAction {
     static final ThreadLocal<List<MavenId>> TEST_THREAD_LOCAL = new ThreadLocal<>();
 
     public AddGradleDslDependencyAction() {
-        getTemplatePresentation().setDescriptionValue(GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyDescription());
-        getTemplatePresentation().setTextValue(GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyText());
-        getTemplatePresentation().setIcon(AllIcons.Nodes.PpLib);
+        getTemplatePresentation().setText(GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyText());
+        getTemplatePresentation().setDescription(GradleLocalize.gradleCodeinsightActionAdd_maven_dependencyDescription());
+        getTemplatePresentation().setIcon(PlatformIconGroup.nodesPplib());
     }
 
     @Nonnull

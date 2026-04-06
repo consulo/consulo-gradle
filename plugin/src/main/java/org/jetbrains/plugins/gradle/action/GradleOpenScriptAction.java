@@ -26,8 +26,8 @@ public class GradleOpenScriptAction extends AbstractGradleLinkedProjectAction im
     private static final Logger LOG = Logger.getInstance(GradleOpenScriptAction.class);
 
     public GradleOpenScriptAction() {
-        getTemplatePresentation().setTextValue(GradleLocalize.gradleActionOpenScriptText());
-        getTemplatePresentation().setDescriptionValue(GradleLocalize.gradleActionOpenScriptDescription());
+        getTemplatePresentation().setText(GradleLocalize.gradleActionOpenScriptText());
+        getTemplatePresentation().setDescription(GradleLocalize.gradleActionOpenScriptDescription());
     }
 
     @Override
