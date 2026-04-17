@@ -23,7 +23,6 @@ import consulo.externalSystem.service.setting.AbstractExternalProjectSettingsCon
 import consulo.externalSystem.ui.awt.ExternalSystemUiUtil;
 import consulo.externalSystem.ui.awt.PaintAwarePanel;
 import consulo.fileChooser.FileChooserDescriptor;
-import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.localize.GradleLocalize;
 import consulo.gradle.setting.DistributionType;
@@ -200,12 +199,12 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
         if (myUseLocalDistributionButton.isSelected()) {
             if (StringUtil.isEmpty(gradleHomePath)) {
                 myGradleHomeSettingType = LocationSettingType.UNKNOWN;
-                throw new ConfigurationException(GradleBundle.message("gradle.home.setting.type.explicit.empty", gradleHomePath));
+                throw new ConfigurationException(GradleLocalize.gradleHomeSettingTypeExplicitEmpty());
             }
             else if (!myInstallationManager.isGradleSdkHome(new File(gradleHomePath))) {
                 myGradleHomeSettingType = LocationSettingType.EXPLICIT_INCORRECT;
                 new DelayedBalloonInfo(NotificationType.ERROR, myGradleHomeSettingType, 0).run();
-                throw new ConfigurationException(GradleLocalize.gradleHomeSettingTypeExplicitIncorrect(gradleHomePath).get());
+                throw new ConfigurationException(GradleLocalize.gradleHomeSettingTypeExplicitIncorrect(gradleHomePath));
             }
         }
         return true;

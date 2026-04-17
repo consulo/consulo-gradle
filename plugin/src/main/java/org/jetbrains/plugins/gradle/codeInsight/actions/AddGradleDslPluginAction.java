@@ -20,7 +20,6 @@ import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
 import consulo.annotation.component.ActionRefAnchor;
-import consulo.application.AllIcons;
 import consulo.codeEditor.Editor;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.GradleDocumentationBundle;
@@ -29,6 +28,7 @@ import consulo.language.editor.action.CodeInsightAction;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiCompiledElement;
 import consulo.language.psi.PsiFile;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Couple;
@@ -52,9 +52,9 @@ public class AddGradleDslPluginAction extends CodeInsightAction {
     private final Pair[] myPlugins;
 
     public AddGradleDslPluginAction() {
-        getTemplatePresentation().setDescription(GradleLocalize.gradleCodeinsightActionApply_pluginDescription());
         getTemplatePresentation().setText(GradleLocalize.gradleCodeinsightActionApply_pluginText());
-        getTemplatePresentation().setIcon(AllIcons.Nodes.Plugin);
+        getTemplatePresentation().setDescription(GradleLocalize.gradleCodeinsightActionApply_pluginDescription());
+        getTemplatePresentation().setIcon(PlatformIconGroup.nodesPlugin());
 
         final List<String> plugins = StringUtil.split(
             "java,groovy,idea,eclipse,scala,antlr,application,ear,jetty,maven,osgi,war,announce," +
