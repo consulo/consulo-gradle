@@ -49,7 +49,6 @@ import consulo.gradle.service.project.GradleProjectResolverExtension;
 import consulo.gradle.setting.ClassHolder;
 import consulo.gradle.setting.DistributionType;
 import consulo.gradle.setting.GradleExecutionSettings;
-import consulo.ide.ServiceManager;
 import consulo.java.execution.impl.util.JreSearchUtil;
 import consulo.logging.Logger;
 import consulo.module.content.ProjectRootManager;
@@ -245,7 +244,7 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 
             @Override
             public void onProjectsLinked(@Nonnull Collection<GradleProjectSettings> settings) {
-                final ProjectDataManager projectDataManager = ServiceManager.getService(ProjectDataManager.class);
+                final ProjectDataManager projectDataManager = Application.get().getInstance(ProjectDataManager.class);
                 for (GradleProjectSettings gradleProjectSettings : settings) {
                     ExternalSystemProjectRefresher.getInstance().refreshProject(project,
                         GradleConstants.SYSTEM_ID,

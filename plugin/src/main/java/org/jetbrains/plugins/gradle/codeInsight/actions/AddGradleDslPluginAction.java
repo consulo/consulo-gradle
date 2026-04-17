@@ -52,8 +52,8 @@ public class AddGradleDslPluginAction extends CodeInsightAction {
     private final Pair[] myPlugins;
 
     public AddGradleDslPluginAction() {
-        getTemplatePresentation().setDescriptionValue(GradleLocalize.gradleCodeinsightActionApply_pluginDescription());
-        getTemplatePresentation().setTextValue(GradleLocalize.gradleCodeinsightActionApply_pluginText());
+        getTemplatePresentation().setDescription(GradleLocalize.gradleCodeinsightActionApply_pluginDescription());
+        getTemplatePresentation().setText(GradleLocalize.gradleCodeinsightActionApply_pluginText());
         getTemplatePresentation().setIcon(AllIcons.Nodes.Plugin);
 
         final List<String> plugins = StringUtil.split(

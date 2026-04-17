@@ -27,7 +27,7 @@ import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.localize.GradleLocalize;
 import consulo.gradle.setting.DistributionType;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.localize.LocalizeValue;
 import consulo.module.ui.BundleBox;
 import consulo.module.ui.BundleBoxBuilder;
@@ -86,7 +86,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 
     public GradleProjectSettingsControl(@Nonnull GradleProjectSettings initialSettings) {
         super(initialSettings);
-        myInstallationManager = ServiceManager.getService(GradleInstallationManager.class);
+        myInstallationManager = Application.get().getInstance(GradleInstallationManager.class);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
         content.add(myGradleHomePathField, ExternalSystemUiUtil.getFillLineConstraints(0));
 
         BundleBoxBuilder builder = BundleBoxBuilder.create(uiDisposable);
-        builder.withNoneItem("Auto Select", PlatformIconGroup.actionsFind());
+        builder.withNoneItem(LocalizeValue.localizeTODO("Auto Select"), PlatformIconGroup.actionsFind());
         builder.withSdkTypeFilterByClass(JavaSdkType.class);
 
         myBundleBox = builder.build();

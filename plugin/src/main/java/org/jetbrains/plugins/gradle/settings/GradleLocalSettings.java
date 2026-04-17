@@ -8,7 +8,6 @@ import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
 import consulo.externalSystem.setting.AbstractExternalSystemLocalSettings;
-import consulo.ide.ServiceManager;
 import consulo.project.Project;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -35,7 +34,7 @@ public class GradleLocalSettings extends AbstractExternalSystemLocalSettings
 
   @Nonnull
   public static GradleLocalSettings getInstance(@Nonnull Project project) {
-    return ServiceManager.getService(project, GradleLocalSettings.class);
+    return project.getInstance(GradleLocalSettings.class);
   }
 
   @Nullable
