@@ -3,7 +3,6 @@
  * @since 01/04/2023
  */
 module org.jetbrains.plugins.gradle.api {
-  requires transitive consulo.ide.api;
   requires transitive org.intellij.groovy.psi;
 
   requires transitive gradle.tooling.api;
@@ -15,6 +14,7 @@ module org.jetbrains.plugins.gradle.api {
   requires consulo.external.system.rt;
   requires consulo.language.api;
   requires consulo.language.editor.api;
+  requires consulo.language.impl;
   requires consulo.localize.api;
   requires consulo.platform.api;
   requires consulo.ui.api;
