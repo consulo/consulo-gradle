@@ -374,7 +374,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
 
     private class DelayedBalloonInfo implements Runnable {
         private final NotificationType myMessageType;
-        private final String myText;
+        private final LocalizeValue myText;
         private final long myTriggerTime;
 
         DelayedBalloonInfo(@Nonnull NotificationType messageType, @Nonnull LocationSettingType settingType, long delayMillis) {
@@ -395,7 +395,7 @@ public class GradleProjectSettingsControl extends AbstractExternalProjectSetting
                 // Don't schedule the balloon if the configurable is hidden.
                 return;
             }
-            ExternalSystemUiUtil.showBalloon(myGradleHomePathField, myMessageType, myText);
+            ExternalSystemUiUtil.showBalloon(myGradleHomePathField, myMessageType, myText.get());
         }
     }
 }
