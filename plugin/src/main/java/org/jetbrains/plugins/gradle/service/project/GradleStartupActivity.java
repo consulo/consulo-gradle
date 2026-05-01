@@ -16,17 +16,18 @@
 package org.jetbrains.plugins.gradle.service.project;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.application.Application;
 import consulo.application.WriteAction;
 import consulo.externalSystem.model.ExternalSystemDataKeys;
 import consulo.gradle.GradleBundle;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.impl.importProvider.GradleModuleImportProvider;
 import consulo.gradle.localize.GradleLocalize;
-import consulo.ide.moduleImport.ModuleImportContext;
-import consulo.ide.moduleImport.ModuleImportProcessor;
-import consulo.ide.moduleImport.ModuleImportProvider;
 import consulo.module.ModifiableModuleModel;
 import consulo.module.ModuleManager;
+import consulo.module.creation.ModuleCreationHelper;
+import consulo.module.creation.importing.ModuleImportContext;
+import consulo.module.creation.importing.ModuleImportProvider;
 import consulo.project.Project;
 import consulo.project.ProjectPropertiesComponent;
 import consulo.project.startup.PostStartupActivity;
@@ -101,7 +102,7 @@ public class GradleStartupActivity implements PostStartupActivity {
                             assert vFile != null;
                             AsyncResult<Pair<ModuleImportContext, ModuleImportProvider<ModuleImportContext>>> result =
                                 AsyncResult.undefined();
-                            ModuleImportProcessor.showImportChooser(
+                            Application.get().getInstance(ModuleCreationHelper.class).showImportChooser(
                                 project,
                                 vFile,
                                 Collections.<ModuleImportProvider>singletonList(GradleModuleImportProvider.getInstance()),
