@@ -72,7 +72,7 @@
                 <configuration>
                     <dependencies>
                         <dependency>consulo.java</dependency>
-                        <dependency>consulo.javaee</dependency>
+                        <dependency>consulo.jakarta.web</dependency>
                         <dependency>org.intellij.groovy</dependency>
                         <dependency>com.intellij.xml</dependency>
                         <dependency>com.intellij.properties</dependency>
@@ -191,7 +191,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>consulo.javaee</artifactId>
+            <artifactId>consulo.jakarta.web</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

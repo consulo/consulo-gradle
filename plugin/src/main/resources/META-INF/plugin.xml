@@ -26,7 +26,7 @@
   </tags>
   <depends>org.intellij.groovy</depends>
   <depends optional="true">org.jetbrains.idea.maven</depends>
-  <depends optional="true">consulo.javaee</depends>
+  <depends optional="true">consulo.jakarta.web</depends>
 
   <permissions>
     <permission type="GET_ENV"/>

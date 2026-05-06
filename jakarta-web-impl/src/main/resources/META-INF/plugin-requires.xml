@@ -1,5 +1,5 @@
 <consulo-plugin-requires>
   <plugins>
-    <plugin>consulo.javaee</plugin>
+    <plugin>consulo.jakarta.web</plugin>
   </plugins>
 </consulo-plugin-requires>
