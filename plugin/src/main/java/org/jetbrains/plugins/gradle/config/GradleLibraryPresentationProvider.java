@@ -102,7 +102,7 @@ public class GradleLibraryPresentationProvider extends GroovyLibraryPresentation
         if (jars != null) {
             for (File file : jars) {
                 if (file.getName().endsWith(".jar")) {
-                    libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
+                    libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.ID);
                 }
             }
         }

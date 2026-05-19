@@ -1,5 +1,6 @@
 package org.jetbrains.plugins.gradle.remote.impl;
 
+import consulo.content.OrderRootType;
 import consulo.externalSystem.model.DataNode;
 import consulo.externalSystem.model.project.LibraryData;
 import consulo.externalSystem.model.project.LibraryPathType;
@@ -198,8 +199,8 @@ public class GradleLibraryNamesMixer {
 
     Wrapped(@Nonnull LibraryData library) {
       this.library = library;
-      for (LibraryPathType pathType : LibraryPathType.values()) {
-        for (String path : library.getPaths(pathType)) {
+      for (OrderRootType orderRootType : OrderRootType.getAllTypes()) {
+        for (String path : library.getPaths(orderRootType.getId())) {
           files.add(new File(path));
         }
       }
