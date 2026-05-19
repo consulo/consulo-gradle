@@ -103,7 +103,7 @@ public class GradleBundleType extends BundleType {
                         VirtualFile vFile = VirtualFileManager.getInstance().refreshAndFindFileByNioPath(srcChild);
 
                         if (vFile != null) {
-                            sdkModificator.addRoot(vFile, SourcesOrderRootType.getInstance());
+                            sdkModificator.addRoot(vFile, SourcesOrderRootType.ID);
                         }
                     }
                 }
@@ -137,7 +137,7 @@ public class GradleBundleType extends BundleType {
                         continue;
                     }
 
-                    sdkModificator.addRoot(archiveRoot, BinariesOrderRootType.getInstance());
+                    sdkModificator.addRoot(archiveRoot, BinariesOrderRootType.ID);
                 }
             }
         }
@@ -146,7 +146,7 @@ public class GradleBundleType extends BundleType {
     }
 
     @Override
-    public boolean isRootTypeApplicable(OrderRootType type) {
-        return type == BinariesOrderRootType.getInstance() || type == SourcesOrderRootType.getInstance();
+    public boolean isRootTypeApplicable(String type) {
+        return BinariesOrderRootType.ID.equals(type) || SourcesOrderRootType.ID.equals(type);
     }
 }
