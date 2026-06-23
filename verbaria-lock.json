@@ -1,0 +1,35 @@
+{
+  "lockVersion" : 1,
+  "server" : "https://i.verbaria.org/",
+  "project" : "consulo-gradle",
+  "projectVersion" : "master",
+  "generatedAt" : "2026-06-23T20:48:27.719160249Z",
+  "documents" : {
+    "consulo.gradle.GradleLocalize" : {
+      "source" : {
+        "revision" : 1
+      },
+      "translations" : {
+        "en-US" : {
+          "sig" : "9aab62193a2131762a4fd653c3b90c64",
+          "state" : "Approved",
+          "total" : 28,
+          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
+        }
+      }
+    },
+    "consulo.gradle.codeInspection.GradleInspectionLocalize" : {
+      "source" : {
+        "revision" : 1
+      },
+      "translations" : {
+        "en-US" : {
+          "sig" : "4c315447458989b9cccee04544d14e3f",
+          "state" : "Approved",
+          "total" : 3,
+          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
+        }
+      }
+    }
+  }
+}
