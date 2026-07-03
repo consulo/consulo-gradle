@@ -5,6 +5,7 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.util.lang.Pair;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
@@ -19,9 +20,8 @@ import jakarta.annotation.Nullable;
  * @author Denis Zhdanov
  * @since 2021-01-31
  */
-public abstract class AbstractGradleLinkedProjectAction extends AnAction {
+public abstract class AbstractGradleLinkedProjectAction extends AnAction implements AnActionWithSyncUpdate {
     @Override
-    @RequiredUIAccess
     public void update(AnActionEvent e) {
         final Pair<Project, String> pair = deriveProjects(e.getDataContext());
         final boolean visible = pair != null;
