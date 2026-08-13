@@ -49,6 +49,7 @@ import org.jetbrains.plugins.gradle.settings.GradleSettings;
 import javax.swing.event.HyperlinkEvent;
 import java.io.File;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Vladislav.Soroka
@@ -100,8 +101,7 @@ public class GradleStartupActivity implements PostStartupActivity {
                         if (IMPORT_EVENT_DESCRIPTION.equals(e.getDescription())) {
                             VirtualFile vFile = LocalFileSystem.getInstance().findFileByIoFile(files[0]);
                             assert vFile != null;
-                            AsyncResult<Pair<ModuleImportContext, ModuleImportProvider<ModuleImportContext>>> result =
-                                AsyncResult.undefined();
+                            CompletableFuture<Pair<ModuleImportContext, ModuleImportProvider<ModuleImportContext>>> result = new CompletableFuture<>();
                             Application.get().getInstance(ModuleCreationHelper.class).showImportChooser(
                                 project,
                                 vFile,
@@ -109,7 +109,11 @@ public class GradleStartupActivity implements PostStartupActivity {
                                 result
                             );
 
-                            result.doWhenDone(pair -> {
+                            result.whenComplete((pair, t) -> {
+                                if (t != null) {
+                                    return;
+                                }
+                                
                                 ModuleImportContext context = pair.getFirst();
                                 ModuleImportProvider<ModuleImportContext> provider = pair.getSecond();
 
