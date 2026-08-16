@@ -34,8 +34,10 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.SimpleTextAttributes;
 import consulo.ui.ex.awt.ColoredListCellRenderer;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.ui.ex.popup.JBPopup;
 import consulo.ui.ex.popup.JBPopupFactory;
+import consulo.ui.font.Font;
 import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -114,7 +116,7 @@ class AddGradleDslPluginActionHandler implements CodeInsightActionHandler {
                 ) {
                     EditorColorsScheme scheme = EditorColorsManager.getInstance().getGlobalScheme();
                     Font font = scheme.getFont(EditorFontType.PLAIN);
-                    setFont(font);
+                    setFont(TargetAWT.to(font));
 
                     append(String.valueOf(descriptor.getFirst()));
 
