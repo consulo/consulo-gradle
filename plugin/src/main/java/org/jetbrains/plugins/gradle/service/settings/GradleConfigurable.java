@@ -18,7 +18,6 @@ package org.jetbrains.plugins.gradle.service.settings;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.configurable.ProjectConfigurable;
 import consulo.configurable.StandardConfigurableIds;
-import consulo.externalSystem.service.execution.ExternalSystemSettingsControl;
 import consulo.externalSystem.service.setting.AbstractExternalSystemConfigurable;
 import consulo.gradle.GradleConstants;
 import consulo.project.Project;
@@ -38,24 +37,6 @@ public class GradleConfigurable extends AbstractExternalSystemConfigurable<Gradl
     @Inject
     public GradleConfigurable(@Nonnull Project project) {
         super(project, GradleConstants.SYSTEM_ID);
-    }
-
-    @Nonnull
-    @Override
-    protected ExternalSystemSettingsControl<GradleProjectSettings> createProjectSettingsControl(@Nonnull GradleProjectSettings settings) {
-        return new GradleProjectSettingsControl(settings);
-    }
-
-    @Nullable
-    @Override
-    protected ExternalSystemSettingsControl<GradleSettings> createSystemSettingsControl(@Nonnull GradleSettings settings) {
-        return new GradleSystemSettingsControl(settings);
-    }
-
-    @Nonnull
-    @Override
-    protected GradleProjectSettings newProjectSettings() {
-        return new GradleProjectSettings();
     }
 
     @Nonnull

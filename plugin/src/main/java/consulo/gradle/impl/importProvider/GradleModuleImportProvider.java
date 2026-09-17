@@ -24,7 +24,6 @@ import consulo.virtualFileSystem.VirtualFile;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
-import org.jetbrains.plugins.gradle.service.settings.ImportFromGradleControl;
 
 import java.io.File;
 import java.util.List;
@@ -34,7 +33,7 @@ import java.util.List;
  * @since 31-Jan-17
  */
 @ExtensionImpl
-public class GradleModuleImportProvider extends AbstractExternalModuleImportProvider<ImportFromGradleControl> {
+public class GradleModuleImportProvider extends AbstractExternalModuleImportProvider {
     @Nonnull
     public static GradleModuleImportProvider getInstance() {
         return Application.get().getExtensionPoint(ModuleImportProvider.class).findExtensionOrFail(GradleModuleImportProvider.class);
@@ -42,7 +41,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
 
     @Inject
     public GradleModuleImportProvider(@Nonnull ProjectDataManager dataManager) {
-        super(dataManager, new ImportFromGradleControl(), GradleConstants.SYSTEM_ID);
+        super(dataManager, GradleConstants.SYSTEM_ID);
     }
 
     @Nullable
@@ -83,7 +82,7 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
     }
 
     @Override
-    protected void doPrepare(@Nonnull ExternalModuleImportContext<ImportFromGradleControl> context) {
+    protected void doPrepare(@Nonnull ExternalModuleImportContext context) {
         String importFile = context.getFileToImport();
         VirtualFile file = LocalFileSystem.getInstance().refreshAndFindFileByPath(importFile);
         if (file != null && !file.isDirectory()) {
@@ -103,8 +102,8 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
     }
 
     @Override
-    protected void applyExtraSettings(@Nonnull ExternalModuleImportContext<ImportFromGradleControl> context) {
-        DataNode<ProjectData> node = getExternalProjectNode();
+    protected void applyExtraSettings(@Nonnull ExternalModuleImportContext context) {
+        DataNode<ProjectData> node = context.getExternalProjectNode();
         if (node == null) {
             return;
         }
