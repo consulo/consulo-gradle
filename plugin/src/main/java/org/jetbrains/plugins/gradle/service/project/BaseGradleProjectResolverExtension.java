@@ -424,6 +424,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
                 continue;
             }
             TaskData taskData = new TaskData(GradleConstants.SYSTEM_ID, taskName, moduleConfigPath, task.getDescription());
+            taskData.setGroup(task.getGroup());
             ideModule.createChild(ProjectKeys.TASK, taskData);
             tasks.add(taskData);
         }
