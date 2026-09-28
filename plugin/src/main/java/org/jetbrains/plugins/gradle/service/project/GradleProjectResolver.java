@@ -252,15 +252,19 @@ public class GradleProjectResolver implements ExternalSystemProjectResolver<Grad
         // populate root project tasks
         final Collection<TaskData> rootProjectTaskCandidates = projectResolverChain.filterRootProjectTasks(allTasks);
 
-        Set<Couple<String>> rootProjectTaskCandidatesMap = new HashSet<>();
+        Map<Couple<String>, TaskData> rootProjectTaskCandidatesMap = new LinkedHashMap<>();
         for (final TaskData taskData : rootProjectTaskCandidates) {
-            rootProjectTaskCandidatesMap.add(Couple.of(taskData.getName(), taskData.getDescription()));
+            rootProjectTaskCandidatesMap.putIfAbsent(Couple.of(taskData.getName(), taskData.getDescription()), taskData);
         }
-        for (final Couple<String> p : rootProjectTaskCandidatesMap) {
-            projectDataNode.createChild(
-                ProjectKeys.TASK,
-                new TaskData(GradleConstants.SYSTEM_ID, p.first, projectData.getLinkedExternalProjectPath(), p.second)
+        for (final TaskData candidate : rootProjectTaskCandidatesMap.values()) {
+            TaskData rootProjectTask = new TaskData(
+                GradleConstants.SYSTEM_ID,
+                candidate.getName(),
+                projectData.getLinkedExternalProjectPath(),
+                candidate.getDescription()
             );
+            rootProjectTask.setGroup(candidate.getGroup());
+            projectDataNode.createChild(ProjectKeys.TASK, rootProjectTask);
         }
 
         // ensure unique library names

@@ -17,9 +17,7 @@ package org.jetbrains.plugins.gradle.config;
 
 import consulo.externalSystem.setting.DelegatingExternalSystemSettingsListener;
 import consulo.externalSystem.setting.ExternalSystemSettingsListener;
-import consulo.gradle.setting.DistributionType;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettingsListener;
 
@@ -32,21 +30,5 @@ public class DelegatingGradleSettingsListenerAdapter extends DelegatingExternalS
 
     public DelegatingGradleSettingsListenerAdapter(@Nonnull ExternalSystemSettingsListener<GradleProjectSettings> delegate) {
         super(delegate);
-    }
-
-    @Override
-    public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
-    }
-
-    @Override
-    public void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath) {
-    }
-
-    @Override
-    public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath) {
-    }
-
-    @Override
-    public void onGradleVmOptionsChange(@Nullable String oldOptions, @Nullable String newOptions) {
     }
 }

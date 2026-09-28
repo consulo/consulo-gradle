@@ -21,7 +21,18 @@ public class GradleConstants {
     public static final String KOTLIN_DSL_SCRIPT_NAME = "build.gradle.kts";
     public static final String SETTINGS_FILE_NAME = "settings.gradle";
 
-    public static final String SYSTEM_DIRECTORY_PATH_KEY = "GRADLE_USER_HOME";
+    public static final String USER_HOME_PROPERTY_KEY = "user.home";
+    public static final String GRADLE_USER_HOME_ENV_KEY = "GRADLE_USER_HOME";
+    public static final String GRADLE_USER_HOME_PROPERTY_KEY = "gradle.user.home";
+
+    public static final String SYSTEM_DIRECTORY_PATH_KEY = GRADLE_USER_HOME_ENV_KEY;
+
+    public static final String GRADLE_PROPERTIES_FILE_NAME = "gradle.properties";
+    public static final String GRADLE_LOCAL_PROPERTIES_FILE_NAME = "config.properties";
+    public static final String GRADLE_DAEMON_JVM_PROPERTIES_FILE_NAME = "gradle-daemon-jvm.properties";
+
+    public static final String GRADLE_DIR_NAME = "gradle";
+    public static final String GRADLE_CACHE_DIR_NAME = ".gradle";
 
     public static final String TOOL_WINDOW_TOOLBAR_PLACE = "GRADLE_SYNC_CHANGES_TOOLBAR";
 

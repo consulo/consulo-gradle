@@ -38,6 +38,7 @@ import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
+import org.jetbrains.plugins.gradle.settings.GradleLocalSettings;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
@@ -68,6 +69,17 @@ public class BuildClasspathModuleGradleDataService implements ProjectDataService
         }
         if (!project.isInitialized()) {
             return;
+        }
+
+        DataNode<BuildScriptClasspathData> firstNode = toImport.iterator().next();
+        DataNode<ProjectData> firstProjectNode = ExternalSystemApiUtil.findParent(firstNode, ProjectKeys.PROJECT);
+        File gradleHomeDir = firstNode.getData().getGradleHomeDir();
+        if (firstProjectNode != null && gradleHomeDir != null) {
+            GradleLocalSettings.getInstance(project).setGradleHome(
+                firstProjectNode.getData().getLinkedExternalProjectPath(),
+                gradleHomeDir.getPath(),
+                GradleInstallationManager.getGradleVersion(gradleHomeDir.toPath())
+            );
         }
 
         final GradleInstallationManager gradleInstallationManager = project.getInstance(GradleInstallationManager.class);

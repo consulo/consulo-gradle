@@ -21,6 +21,9 @@ import consulo.externalSystem.model.ProjectSystemId;
 import consulo.externalSystem.service.project.AbstractExternalEntityData;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +42,9 @@ public class BuildScriptClasspathData extends AbstractExternalEntityData
 	@Nonnull
 	private final List<ClasspathEntry> myClasspathEntries;
 
+	@Nullable
+	private File myGradleHomeDir;
+
 
 	public BuildScriptClasspathData(@Nonnull ProjectSystemId owner, @Nonnull List<ClasspathEntry> classpathEntries)
 	{
@@ -50,6 +56,17 @@ public class BuildScriptClasspathData extends AbstractExternalEntityData
 	public List<ClasspathEntry> getClasspathEntries()
 	{
 		return myClasspathEntries;
+	}
+
+	@Nullable
+	public File getGradleHomeDir()
+	{
+		return myGradleHomeDir;
+	}
+
+	public void setGradleHomeDir(@Nullable File gradleHomeDir)
+	{
+		myGradleHomeDir = gradleHomeDir;
 	}
 
 	public static class ClasspathEntry implements Serializable

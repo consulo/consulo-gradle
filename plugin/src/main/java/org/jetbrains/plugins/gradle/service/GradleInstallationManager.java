@@ -31,10 +31,17 @@ import org.jetbrains.plugins.gradle.util.GradleUtil;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Encapsulates algorithm of gradle libraries discovery.
@@ -493,5 +500,47 @@ public class GradleInstallationManager {
 //            localDistribution.getDistributionDir().listFiles(f -> f.isDirectory() && StringUtil.startsWith(f.getName(), "gradle-"));
 //
 //        return distFiles == null || distFiles.length == 0 ? null : distFiles[0];
+    }
+
+    @Nullable
+    public static String getGradleVersion(@Nullable Path gradleHome) {
+        if (gradleHome == null) {
+            return null;
+        }
+        Path libs = gradleHome.resolve("lib");
+        if (!Files.isDirectory(libs)) {
+            return null;
+        }
+        try (Stream<Path> children = Files.list(libs)) {
+            return children.map(path -> {
+                    Path fileName = path.getFileName();
+                    if (fileName != null) {
+                        Matcher matcher = GRADLE_JAR_FILE_PATTERN.matcher(fileName.toString());
+                        if (matcher.matches()) {
+                            return matcher.group(2);
+                        }
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+        }
+        catch (IOException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static String getGradleVersion(@Nullable String gradleHome) {
+        if (gradleHome == null) {
+            return null;
+        }
+        try {
+            return getGradleVersion(Path.of(gradleHome));
+        }
+        catch (InvalidPathException e) {
+            return null;
+        }
     }
 }

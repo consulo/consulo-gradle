@@ -24,23 +24,18 @@ import consulo.content.bundle.Sdk;
 import consulo.content.bundle.SdkTable;
 import consulo.externalSystem.ExternalSystemConfigurableAware;
 import consulo.externalSystem.ExternalSystemManager;
-import consulo.externalSystem.model.DataNode;
+import consulo.externalSystem.autoimport.ExternalSystemProjectId;
+import consulo.externalSystem.autoimport.ExternalSystemProjectTracker;
 import consulo.externalSystem.model.ProjectSystemId;
 import consulo.externalSystem.model.execution.ExternalSystemTaskExecutionSettings;
 import consulo.externalSystem.model.execution.ExternalTaskExecutionInfo;
 import consulo.externalSystem.model.execution.ExternalTaskPojo;
 import consulo.externalSystem.model.project.ExternalProjectPojo;
-import consulo.externalSystem.model.task.ProgressExecutionMode;
-import consulo.externalSystem.service.project.ExternalProjectRefreshCallback;
-import consulo.externalSystem.service.project.ExternalSystemProjectRefresher;
 import consulo.externalSystem.service.project.ExternalSystemProjectResolver;
-import consulo.externalSystem.service.project.ProjectData;
 import consulo.externalSystem.service.project.autoimport.CachingExternalSystemAutoImportAware;
 import consulo.externalSystem.service.project.autoimport.ExternalSystemAutoImportAware;
-import consulo.externalSystem.service.project.manage.ProjectDataManager;
 import consulo.externalSystem.task.ExternalSystemTaskManager;
 import consulo.externalSystem.ui.ExternalSystemUiAware;
-import consulo.externalSystem.util.DisposeAwareProjectChange;
 import consulo.externalSystem.util.ExternalSystemApiUtil;
 import consulo.fileChooser.FileChooserDescriptor;
 import consulo.gradle.GradleConstants;
@@ -51,7 +46,6 @@ import consulo.gradle.setting.DistributionType;
 import consulo.gradle.setting.GradleExecutionSettings;
 import consulo.java.execution.impl.util.JreSearchUtil;
 import consulo.logging.Logger;
-import consulo.module.content.ProjectRootManager;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.project.startup.StartupActivity;
@@ -62,7 +56,6 @@ import consulo.util.lang.Pair;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
-import org.jetbrains.plugins.gradle.config.GradleSettingsListenerAdapter;
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager;
 import org.jetbrains.plugins.gradle.service.project.GradleAutoImportAware;
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver;
@@ -76,6 +69,7 @@ import org.jetbrains.plugins.gradle.util.GradleUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -90,8 +84,10 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 
     private static final Logger LOG = Logger.getInstance(GradleManager.class);
 
+    private final GradleAutoImportAware myAutoImportAware = new GradleAutoImportAware();
+
     @Nonnull
-    private final ExternalSystemAutoImportAware myAutoImportDelegate = new CachingExternalSystemAutoImportAware(new GradleAutoImportAware());
+    private final ExternalSystemAutoImportAware myAutoImportDelegate = new CachingExternalSystemAutoImportAware(myAutoImportAware);
 
     @Nonnull
     private final GradleInstallationManager myInstallationManager;
@@ -215,6 +211,20 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
 
     @Nonnull
     @Override
+    public List<Path> getAffectedExternalProjectFilePaths(String projectPath, @Nonnull Project project) {
+        return myAutoImportAware.getAffectedExternalProjectFilePaths(projectPath, project);
+    }
+
+    private static void markDirty(Project project, String linkedProjectPath) {
+        ExternalSystemProjectTracker projectTracker = ExternalSystemProjectTracker.getInstance(project);
+        project.getApplication().invokeLater(() -> {
+            projectTracker.markDirty(new ExternalSystemProjectId(GradleConstants.SYSTEM_ID, linkedProjectPath));
+            projectTracker.scheduleProjectRefresh();
+        }, project.getDisposed());
+    }
+
+    @Nonnull
+    @Override
     public FileChooserDescriptor getExternalProjectDescriptor() {
         return GradleUtil.getGradleProjectFileChooserDescriptor();
     }
@@ -223,64 +233,22 @@ public class GradleManager implements ExternalSystemConfigurableAware, ExternalS
     public void runActivity(@Nonnull final Project project, UIAccess uiAccess) {
         // We want to automatically refresh linked projects on gradle service directory change.
         MessageBusConnection connection = project.getMessageBus().connect(project);
-        connection.subscribe(GradleSettings.getInstance(project).getChangesTopic(), new GradleSettingsListenerAdapter() {
-
+        connection.subscribe(GradleSettings.getInstance(project).getChangesTopic(), new GradleSettingsListener() {
             @Override
             public void onServiceDirectoryPathChange(@Nullable String oldPath, @Nullable String newPath) {
-                ensureProjectsRefresh();
+                for (GradleProjectSettings projectSettings : GradleSettings.getInstance(project).getLinkedProjectsSettings()) {
+                    markDirty(project, projectSettings.getExternalProjectPath());
+                }
             }
 
             @Override
-            public void onGradleHomeChange(@Nullable String oldPath,
-                                           @Nullable String newPath,
-                                           @Nonnull String linkedProjectPath) {
-                ensureProjectsRefresh();
+            public void onGradleHomeChange(@Nullable String oldPath, @Nullable String newPath, @Nonnull String linkedProjectPath) {
+                markDirty(project, linkedProjectPath);
             }
 
             @Override
             public void onGradleDistributionTypeChange(DistributionType currentValue, @Nonnull String linkedProjectPath) {
-                ensureProjectsRefresh();
-            }
-
-            @Override
-            public void onProjectsLinked(@Nonnull Collection<GradleProjectSettings> settings) {
-                final ProjectDataManager projectDataManager = Application.get().getInstance(ProjectDataManager.class);
-                for (GradleProjectSettings gradleProjectSettings : settings) {
-                    ExternalSystemProjectRefresher.getInstance().refreshProject(project,
-                        GradleConstants.SYSTEM_ID,
-                        gradleProjectSettings.getExternalProjectPath(),
-                        new ExternalProjectRefreshCallback() {
-                            @Override
-                            public void onSuccess(@Nullable final DataNode<ProjectData> externalProject) {
-                                if (externalProject == null) {
-                                    return;
-                                }
-                                ExternalSystemApiUtil.executeProjectChangeAction(true, new DisposeAwareProjectChange(project) {
-                                    @Override
-                                    public void execute() {
-                                        ProjectRootManager.getInstance(project).mergeRootsChangesDuring(
-                                            () -> projectDataManager.importData(
-                                                externalProject.getKey(),
-                                                Collections.singleton(externalProject),
-                                                project,
-                                                true
-                                            )
-                                        );
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onFailure(@Nonnull String errorMessage, @Nullable String errorDetails) {
-                            }
-                        },
-                        false,
-                        ProgressExecutionMode.MODAL_SYNC);
-                }
-            }
-
-            private void ensureProjectsRefresh() {
-                ExternalSystemProjectRefresher.getInstance().refreshProjects(project, GradleConstants.SYSTEM_ID, true);
+                markDirty(project, linkedProjectPath);
             }
         });
 

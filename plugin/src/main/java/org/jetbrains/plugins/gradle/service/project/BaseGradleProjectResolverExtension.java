@@ -191,6 +191,7 @@ public class BaseGradleProjectResolverExtension implements GradleProjectResolver
             classpathEntries = List.of();
         }
         BuildScriptClasspathData buildScriptClasspathData = new BuildScriptClasspathData(GradleConstants.SYSTEM_ID, classpathEntries);
+        buildScriptClasspathData.setGradleHomeDir(buildScriptClasspathModel != null ? buildScriptClasspathModel.getGradleHomeDir() : null);
         ideModule.createChild(BuildScriptClasspathData.KEY, buildScriptClasspathData);
     }
 
