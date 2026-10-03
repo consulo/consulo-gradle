@@ -38,7 +38,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.scope.LibraryScopeCache;
-import consulo.language.util.ModuleUtilCore;
+import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
 import consulo.module.content.layer.OrderEnumerator;
@@ -234,16 +234,16 @@ public class GradleScriptType extends GroovyRunnableScriptType {
 
                 final GradleInstallationManager libraryManager = project.getApplication().getInstance(GradleInstallationManager.class);
                 if (module == null) {
-                    throw new CantRunException("Target module is undefined");
+                    throw new CantRunException(LocalizeValue.localizeTODO("Target module is undefined"));
                 }
                 String rootProjectPath =
                     ExternalSystemApiUtil.getExtensionSystemOption(module, ExternalSystemConstants.ROOT_PROJECT_PATH_KEY);
                 if (StringUtil.isEmpty(rootProjectPath)) {
-                    throw new CantRunException(String.format("Module '%s' is not backed by gradle", module.getName()));
+                    throw new CantRunException(LocalizeValue.localizeTODO(String.format("Module '%s' is not backed by gradle", module.getName())));
                 }
                 final VirtualFile gradleHome = libraryManager.getGradleHome(module, project, rootProjectPath);
                 if (gradleHome == null) {
-                    throw new CantRunException("Gradle home can not be found");
+                    throw new CantRunException(LocalizeValue.localizeTODO("Gradle home can not be found"));
                 }
 
                 params.setMainClass(findMainClass(gradleHome, script, project));
@@ -278,7 +278,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
 
                 final String scriptPath = configuration.getScriptPath();
                 if (scriptPath == null) {
-                    throw new CantRunException("Target script is undefined");
+                    throw new CantRunException(LocalizeValue.localizeTODO("Target script is undefined"));
                 }
                 params.getProgramParametersList().add("--build-file");
                 params.getProgramParametersList().add(FileUtil.toSystemDependentName(scriptPath));
@@ -327,7 +327,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
             return baseScope;
         }
 
-        final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+        final Module module = file.getModule();
         if (module == null) {
             return GlobalSearchScope.EMPTY_SCOPE;
         }
