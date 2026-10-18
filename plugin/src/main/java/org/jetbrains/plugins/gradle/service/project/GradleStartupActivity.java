@@ -36,6 +36,7 @@ import consulo.project.ui.notification.NotificationType;
 import consulo.project.ui.notification.event.NotificationListener;
 import consulo.ui.UIAccess;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.event.HyperlinkEvent;
 import consulo.util.concurrent.AsyncResult;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.Pair;
@@ -46,7 +47,6 @@ import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
 import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
-import javax.swing.event.HyperlinkEvent;
 import java.io.File;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
@@ -94,10 +94,10 @@ public class GradleStartupActivity implements PostStartupActivity {
                 GradleLocalize.gradleNotificationsUnlinkedProjectFoundTitle().get(),
                 message,
                 NotificationType.INFORMATION,
-                new NotificationListener.Adapter() {
+                new NotificationListener() {
                     @Override
                     @RequiredUIAccess
-                    protected void hyperlinkActivated(@Nonnull Notification notification, @Nonnull HyperlinkEvent e) {
+                    public void hyperlinkActivated(@Nonnull Notification notification, @Nonnull HyperlinkEvent e) {
                         if (IMPORT_EVENT_DESCRIPTION.equals(e.getDescription())) {
                             VirtualFile vFile = LocalFileSystem.getInstance().findFileByIoFile(files[0]);
                             assert vFile != null;

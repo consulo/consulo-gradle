@@ -58,10 +58,7 @@ public class GradleNotification {
         @Nonnull final NotificationType type,
         @Nullable final NotificationListener listener
     ) {
-        AppUIUtil.invokeLaterIfProjectAlive(
-            myProject,
-            () -> NOTIFICATION_GROUP.createNotification(title, message, type, listener).notify(myProject)
-        );
+        NOTIFICATION_GROUP.createNotification(title, message, type, listener).notify(myProject);
     }
 }
 
