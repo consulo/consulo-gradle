@@ -18,23 +18,20 @@ package org.jetbrains.plugins.gradle.execution;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.dumb.DumbAware;
 import consulo.execution.configuration.RunConfiguration;
-import consulo.externalSystem.execution.ExternalSystemBeforeRunTask;
 import consulo.externalSystem.execution.ExternalSystemBeforeRunTaskProvider;
 import consulo.gradle.GradleConstants;
 import consulo.gradle.icon.GradleIconGroup;
 import consulo.project.Project;
 import consulo.ui.image.Image;
-import consulo.util.dataholder.Key;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 
 /**
  * @author Vladislav.Soroka
  */
 @ExtensionImpl
-public final class GradleBeforeRunTaskProvider extends ExternalSystemBeforeRunTaskProvider implements DumbAware {
-    public static final Key<ExternalSystemBeforeRunTask> ID = Key.create("Gradle.BeforeRunTask");
+public final class GradleBeforeRunTaskProvider extends ExternalSystemBeforeRunTaskProvider<GradleBeforeRunTask> implements DumbAware {
+    public static final String ID = "Gradle.BeforeRunTask";
 
     @Inject
     public GradleBeforeRunTaskProvider(Project project) {
@@ -46,9 +43,14 @@ public final class GradleBeforeRunTaskProvider extends ExternalSystemBeforeRunTa
         return GradleIconGroup.gradle();
     }
 
+    @Override
+    public Class<GradleBeforeRunTask> getStateClass() {
+        return GradleBeforeRunTask.class;
+    }
+
     @Nonnull
     @Override
-    public ExternalSystemBeforeRunTask createTask(@Nonnull RunConfiguration runConfiguration) {
-        return new ExternalSystemBeforeRunTask(ID, GradleConstants.SYSTEM_ID);
+    public GradleBeforeRunTask createTask(@Nonnull RunConfiguration runConfiguration) {
+        return new GradleBeforeRunTask();
     }
 }

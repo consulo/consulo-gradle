@@ -8,6 +8,9 @@ import consulo.gradle.setting.DistributionType;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import java.util.Collection;
+import java.util.Set;
+
 /**
  * Defines callback for the gradle config structure change.
  * <p/>
@@ -64,5 +67,30 @@ public interface GradleSettingsListener extends ExternalSystemSettingsListener<G
    * @param newOptions  new option (if any)
    */
   default void onGradleVmOptionsChange(@Nullable String oldOptions, @Nullable String newOptions) {
+  }
+
+  // the message bus dispatches only methods declared on the topic interface, so the inherited ones are redeclared
+  @Override
+  default void onProjectRenamed(@Nonnull String oldName, @Nonnull String newName) {
+  }
+
+  @Override
+  default void onProjectsLoaded(@Nonnull Collection<GradleProjectSettings> settings) {
+  }
+
+  @Override
+  default void onProjectsLinked(@Nonnull Collection<GradleProjectSettings> settings) {
+  }
+
+  @Override
+  default void onProjectsUnlinked(@Nonnull Set<String> linkedProjectPaths) {
+  }
+
+  @Override
+  default void onBulkChangeStart() {
+  }
+
+  @Override
+  default void onBulkChangeEnd() {
   }
 }

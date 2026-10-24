@@ -122,7 +122,7 @@ public class GradleScriptType extends GroovyRunnableScriptType {
         }
 
         RunManager.getInstance(file.getProject())
-            .disableTasks(configuration, CompileStepBeforeRun.ID, CompileStepBeforeRunNoErrorCheck.ID);
+            .disableTasks(configuration, CompileStepBeforeRun.MakeBeforeRunTask.class, CompileStepBeforeRunNoErrorCheck.MakeBeforeRunTaskNoErrorCheck.class);
     }
 
     @Nullable
