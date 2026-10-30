@@ -40,8 +40,6 @@ import consulo.ui.event.HyperlinkEvent;
 import consulo.util.concurrent.AsyncResult;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.Pair;
-import consulo.virtualFileSystem.LocalFileSystem;
-import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.util.VirtualFileUtil;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.gradle.service.GradleBuildClasspathManager;
@@ -99,12 +97,10 @@ public class GradleStartupActivity implements PostStartupActivity {
                     @RequiredUIAccess
                     public void hyperlinkActivated(@Nonnull Notification notification, @Nonnull HyperlinkEvent e) {
                         if (IMPORT_EVENT_DESCRIPTION.equals(e.getDescription())) {
-                            VirtualFile vFile = LocalFileSystem.getInstance().findFileByIoFile(files[0]);
-                            assert vFile != null;
                             CompletableFuture<Pair<ModuleImportContext, ModuleImportProvider<ModuleImportContext>>> result = new CompletableFuture<>();
                             Application.get().getInstance(ModuleCreationHelper.class).showImportChooser(
                                 project,
-                                vFile,
+                                files[0].toPath(),
                                 Collections.<ModuleImportProvider>singletonList(GradleModuleImportProvider.getInstance()),
                                 result
                             );

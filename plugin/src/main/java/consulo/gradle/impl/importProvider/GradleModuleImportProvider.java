@@ -26,6 +26,8 @@ import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -51,32 +53,19 @@ public class GradleModuleImportProvider extends AbstractExternalModuleImportProv
     }
 
     @Override
-    public boolean canImport(@Nonnull File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            File file = new File(fileOrDirectory, GradleConstants.DEFAULT_SCRIPT_NAME);
-            if (file.exists()) {
-                return true;
-            }
-
-            file = new File(fileOrDirectory, GradleConstants.KOTLIN_DSL_SCRIPT_NAME);
-            if (file.exists()) {
-                return true;
-            }
-
-            file = new File(fileOrDirectory, GradleConstants.SETTINGS_FILE_NAME);
-            if (file.exists()) {
-                return true;
-            }
-
-            file = new File(fileOrDirectory, GradleConstants.KOTLIN_DSL_SETTINGS_FILE_NAME);
-            if (file.exists()) {
-                return true;
-            }
-
-            return false;
+    public boolean canImport(@Nonnull Path fileOrDirectory) {
+        if (Files.isDirectory(fileOrDirectory)) {
+            return Files.exists(fileOrDirectory.resolve(GradleConstants.DEFAULT_SCRIPT_NAME))
+                || Files.exists(fileOrDirectory.resolve(GradleConstants.KOTLIN_DSL_SCRIPT_NAME))
+                || Files.exists(fileOrDirectory.resolve(GradleConstants.SETTINGS_FILE_NAME))
+                || Files.exists(fileOrDirectory.resolve(GradleConstants.KOTLIN_DSL_SETTINGS_FILE_NAME));
         }
         else {
-            String extension = FileUtil.getExtension(fileOrDirectory.getName());
+            Path fileName = fileOrDirectory.getFileName();
+            if (fileName == null) {
+                return false;
+            }
+            String extension = FileUtil.getExtension(fileName.toString());
             return extension.equalsIgnoreCase(GradleConstants.EXTENSION) || extension.equalsIgnoreCase(GradleConstants.KOTLIN_DSL_SCRIPT_EXTENSION);
         }
     }
