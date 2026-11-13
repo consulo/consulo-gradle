@@ -42,7 +42,7 @@ import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.StringUtil;
-import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.RefreshQueue;
 import consulo.virtualFileSystem.VirtualFile;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -207,7 +207,7 @@ public class UseDistributionWithSourcesNotificationProvider implements EditorNot
             wrapperProperties.setProperty(WrapperExecutor.ZIP_STORE_BASE_PROPERTY, wrapperConfiguration.getZipBase());
             wrapperProperties.setProperty(WrapperExecutor.ZIP_STORE_PATH_PROPERTY, wrapperConfiguration.getZipPath());
             // TODO ! GUtil.saveProperties(wrapperProperties, new File(wrapperPropertiesFile.getPath()));
-            LocalFileSystem.getInstance().refreshIoFiles(Collections.singletonList(wrapperPropertiesFile));
+            RefreshQueue.getInstance().refreshPaths(false, false, null, Collections.singletonList(wrapperPropertiesFile.toPath()));
         }
         catch (Exception e) {
             LOG.error(e);
