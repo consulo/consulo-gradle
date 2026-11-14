@@ -18,6 +18,7 @@ package org.jetbrains.plugins.gradle.service.project;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
+import consulo.gradle.GradleNotificationGroups;
 import consulo.project.Project;
 import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationType;
@@ -37,7 +38,7 @@ import jakarta.annotation.Nullable;
 @ServiceImpl
 @Singleton
 public class GradleNotification {
-    public static final NotificationGroup NOTIFICATION_GROUP = NotificationGroup.balloonGroup("Gradle Notification Group");
+    public static final NotificationGroup NOTIFICATION_GROUP = GradleNotificationGroups.GRADLE;
 
     @Nonnull
     private final Project myProject;

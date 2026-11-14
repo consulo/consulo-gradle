@@ -17,6 +17,7 @@ package org.jetbrains.plugins.gradle.tooling.impl.builder;
 
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.scala.ScalaPlugin;
 import org.gradle.api.tasks.scala.ScalaCompile;
 import org.gradle.api.tasks.scala.ScalaCompileOptions;
@@ -27,6 +28,16 @@ import org.jetbrains.plugins.gradle.tooling.impl.internal.scala.ScalaCompileOpti
 import org.jetbrains.plugins.gradle.tooling.impl.internal.scala.ScalaForkOptionsImpl;
 import org.jetbrains.plugins.gradle.tooling.impl.internal.scala.ScalaModelImpl;
 import org.jetbrains.plugins.gradle.tooling.scala.ScalaModel;
+import org.jetbrains.plugins.gradle.tooling.util.GradleVersionUtil;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Vladislav.Soroka
@@ -44,25 +55,49 @@ public class ScalaModelBuilderImpl implements ModelBuilderService {
     @Override
     public Object buildAll(String modelName, Project project) {
         final ScalaPlugin scalaPlugin = project.getPlugins().findPlugin(ScalaPlugin.class);
-        if (scalaPlugin == null) {
+        if (scalaPlugin != null) {
+            return createModel(project.getTasks().findByName(COMPILE_SCALA_TASK));
+        }
+
+        // the scala-base plugin only: take the first ScalaCompile task
+        Iterator<ScalaCompile> it = project.getTasks().withType(ScalaCompile.class).iterator();
+        return it.hasNext() ? createModel(it.next()) : null;
+    }
+
+    private static ScalaModelImpl createModel(Task task) {
+        if (!(task instanceof ScalaCompile)) {
             return null;
         }
 
-        final ScalaModelImpl scalaModel = new ScalaModelImpl();
+        ScalaCompile scalaCompile = (ScalaCompile) task;
+        ScalaModelImpl scalaModel = new ScalaModelImpl();
+        scalaModel.setScalaClasspath(new LinkedHashSet<>(scalaCompile.getScalaClasspath().getFiles()));
+        scalaModel.setZincClasspath(new LinkedHashSet<>(scalaCompile.getZincClasspath().getFiles()));
+        scalaModel.setScalaCompilerPlugins(getScalaCompilerPlugins(scalaCompile));
+        scalaModel.setScalaCompileOptions(create(scalaCompile.getScalaCompileOptions()));
+        scalaModel.setTargetCompatibility(scalaCompile.getTargetCompatibility());
+        scalaModel.setSourceCompatibility(scalaCompile.getSourceCompatibility());
+        return scalaModel;
+    }
 
-        for (Task task : project.getTasks()) {
-            if (task instanceof ScalaCompile && COMPILE_SCALA_TASK.equals(task.getName())) {
-                ScalaCompile scalaCompile = (ScalaCompile) task;
-                scalaModel.setScalaClasspath(scalaCompile.getScalaClasspath().getFiles());
-                scalaModel.setZincClasspath(scalaCompile.getZincClasspath().getFiles());
-                scalaModel.setScalaCompileOptions(create(scalaCompile.getScalaCompileOptions()));
-                scalaModel.setTargetCompatibility(scalaCompile.getTargetCompatibility());
-                scalaModel.setSourceCompatibility(scalaCompile.getSourceCompatibility());
-                break;
-            }
+    /**
+     * {@code ScalaCompile#getScalaCompilerPlugins} exists since Gradle 6.4, the tooling extension is compiled against an older Gradle API
+     */
+    private static Set<File> getScalaCompilerPlugins(ScalaCompile scalaCompile) {
+        if (!GradleVersionUtil.isCurrentGradleAtLeast("6.4")) {
+            return Collections.emptySet();
         }
 
-        return scalaModel;
+        try {
+            Method method = scalaCompile.getClass().getMethod("getScalaCompilerPlugins");
+            Object plugins = method.invoke(scalaCompile);
+            if (plugins instanceof FileCollection) {
+                return new LinkedHashSet<>(((FileCollection) plugins).getFiles());
+            }
+        }
+        catch (ReflectiveOperationException ignored) {
+        }
+        return Collections.emptySet();
     }
 
     @Override
@@ -78,7 +113,7 @@ public class ScalaModelBuilderImpl implements ModelBuilderService {
         }
 
         ScalaCompileOptionsImpl result = new ScalaCompileOptionsImpl();
-        result.setAdditionalParameters(options.getAdditionalParameters());
+        result.setAdditionalParameters(wrapStringList(options.getAdditionalParameters()));
         //result.setDaemonServer(options.getDaemonServer());
         result.setDebugLevel(options.getDebugLevel());
         result.setDeprecation(options.isDeprecation());
@@ -90,7 +125,7 @@ public class ScalaModelBuilderImpl implements ModelBuilderService {
         result.setListFiles(options.isListFiles());
         result.setLoggingLevel(options.getLoggingLevel());
         result.setDebugLevel(options.getDebugLevel());
-        result.setLoggingPhases(options.getLoggingPhases());
+        result.setLoggingPhases(wrapStringList(options.getLoggingPhases()));
         result.setOptimize(options.isOptimize());
         result.setUnchecked(options.isUnchecked());
         //result.setUseAnt(options.isUseAnt());
@@ -100,13 +135,28 @@ public class ScalaModelBuilderImpl implements ModelBuilderService {
     }
 
 
+    /**
+     * the elements may be groovy.lang.GString instances which are not available on the IDE side
+     */
+    private static List<String> wrapStringList(List<?> list) {
+        if (list == null) {
+            return null;
+        }
+
+        List<String> result = new ArrayList<>(list.size());
+        for (Object o : list) {
+            result.add(String.valueOf(o));
+        }
+        return result;
+    }
+
     private static ScalaForkOptionsImpl create(ScalaForkOptions forkOptions) {
         if (forkOptions == null) {
             return null;
         }
 
         ScalaForkOptionsImpl result = new ScalaForkOptionsImpl();
-        result.setJvmArgs(forkOptions.getJvmArgs());
+        result.setJvmArgs(wrapStringList(forkOptions.getJvmArgs()));
         result.setMemoryInitialSize(forkOptions.getMemoryInitialSize());
         result.setMemoryMaximumSize(forkOptions.getMemoryMaximumSize());
         return result;

@@ -29,6 +29,11 @@ public interface ScalaModel extends Serializable {
 
   Set<File> getZincClasspath();
 
+  /**
+   * @return the classpath of the scalac plugins (the {@code scalaCompilerPlugins} configuration, Gradle 6.4+), empty for older Gradle versions
+   */
+  Set<File> getScalaCompilerPlugins();
+
   ScalaCompileOptions getScalaCompileOptions();
 
   String getSourceCompatibility();

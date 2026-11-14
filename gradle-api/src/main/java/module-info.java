@@ -17,6 +17,7 @@ module org.jetbrains.plugins.gradle.api {
   requires consulo.language.impl;
   requires consulo.localize.api;
   requires consulo.platform.api;
+  requires consulo.project.ui.api;
   requires consulo.ui.api;
   requires consulo.util.lang;
   requires consulo.virtual.file.system.api;

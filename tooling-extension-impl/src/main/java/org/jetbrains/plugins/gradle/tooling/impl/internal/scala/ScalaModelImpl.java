@@ -19,6 +19,7 @@ import org.jetbrains.plugins.gradle.tooling.scala.ScalaCompileOptions;
 import org.jetbrains.plugins.gradle.tooling.scala.ScalaModel;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -28,6 +29,7 @@ import java.util.Set;
 public class ScalaModelImpl implements ScalaModel {
   private Set<File> scalaClasspath;
   private Set<File> zincClasspath;
+  private Set<File> scalaCompilerPlugins = Collections.emptySet();
   private String sourceCompatibility;
   private String targetCompatibility;
   private ScalaCompileOptionsImpl scalaCompileOptions;
@@ -48,6 +50,15 @@ public class ScalaModelImpl implements ScalaModel {
 
   public void setZincClasspath(Set<File> zincClasspath) {
     this.zincClasspath = zincClasspath;
+  }
+
+  @Override
+  public Set<File> getScalaCompilerPlugins() {
+    return scalaCompilerPlugins;
+  }
+
+  public void setScalaCompilerPlugins(Set<File> scalaCompilerPlugins) {
+    this.scalaCompilerPlugins = scalaCompilerPlugins;
   }
 
   @Override
